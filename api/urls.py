@@ -17,12 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from api.gina.views import TreeInfoViewset
+from api.gina.views import TreeInfoViewset, TreeTypeViewset
 
 router = DefaultRouter()
 
 router.register("tree-info", TreeInfoViewset, basename="tree-info")
-router.register("tree-type", TreeInfoViewset, basename="tree-type")
+router.register("tree-type", TreeTypeViewset, basename="tree-type")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
