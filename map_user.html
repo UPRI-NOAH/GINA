@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GINA - Grow INdigenous trees in your Area</title>
+  <link rel="icon" type="image/x-icon" href="./resources/gina-icon.ico">
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+	 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+    <!-- put style here -->
+    <style>
+      html, body {
+        height: 100vh;
+        margin: 0;
+      }
+      /* map id */
+          #map {
+            position: absolute;
+            top: 80px; /* adjust to the height of the navigation bar */
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 80px); /* adjust to the height of the navigation bar */
+            z-index: 0; /* make sure the map is behind the overlay */
+          }
+          .overlay {
+            position: absolute;
+            top: 80px; /* adjust to the height of the navigation bar */
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 80px); /* adjust to the height of the navigation bar */
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1; /* make sure the overlay is on top of the map */
+          }
+          .hidden {
+            display: none;
+          }
+          .map-blurred {
+            filter: blur(5px);
+            pointer-events: none;
+          }
+    </style>
+
+</head>
+<body class="bg-teal-200">
+  <nav class="flex justify-between bg-green-200 py-4 drop-shadow-md"> <!-- Navigation Header -->
+    <div class="flex items-center ml-4">
+      <img src="./resources/gina.png" alt="Logo" class="h-15 w-20 mr-4">
+      <ul class="flex items-center">
+        <li class="mr-6">
+          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
+        </li>
+        <li class="mr-6">
+          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
+        </li>
+        <li class="mr-6">
+          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
+        </li>
+        <li class="mr-6">
+          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
+        </li>
+        <li class="mr-6">
+          <a href="#" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
+        </li>
+      </ul>
+    </div>
+    <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, soon to be a display icon for user and cart -->
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Sign Up</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4">Login</button>
+    </div>
+  </nav>
+  <!-- Map Controls -->
+  <div id="map"></div>
+  <script>
+    var map = L.map('map').setView([14.655156528354416, 121.07045364296518], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+  </script>
+
+  <!-- Instruction Overlay -->
+  <div class="overlay" id = "overlay">
+    <div class="bg-white p-4 rounded-xl" id="instructions">
+      <h2 class="text-2xl font-bold mb-4">Welcome to GINA!</h2>
+      <p class="text-lg mb-4">Planting Instructions:</p>
+        <p> <!-- ol is not working here, that's why I manually wrote the number and spacing -->
+          &nbsp;&nbsp;&nbsp;1. Plant your seed at your desired location.<br>
+          &nbsp;&nbsp;&nbsp;2. Take a photo of your planted seed<br>
+          &nbsp;&nbsp;&nbsp;3. Upload the photo using the upload plant this page.<br>
+          &nbsp;&nbsp;&nbsp;4. Specify the location of the plant after uploading the photo of the plant.<br>
+        </p><br>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+  <!-- Upload Overlay - this is where we enter information such as Tree Name, Descriptions, Location and Image -->
+  <div class="overlay hidden" id="uploadoverlay">
+    <div class="bg-white p-4 rounded-xl">
+      <h2 class="text-2xl font-bold mb-4">Add Your Tree</h2>
+      <p class="text-lg mb-4">Please fill in the details of your tree.</p>
+      <!-- Plant Name -->
+      <input type="text" id="plant-name" class="w-full p-2 mb-4" placeholder="Plant Name">
+      <!-- Description -->
+      <textarea id="description" class="resize-none w-full p-2 mb-4" placeholder="Description"></textarea>
+      <!-- Location -->
+      <div class="flex mb-4">
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="logLocation()">Pin Location</button>
+        <div id="map_pin" style="width: 300px; height: 200px;"></div>
+        <input type="hidden" id="latitude" />
+        <input type="hidden" id="longitude" />
+      </div>
+      <!-- Image -->
+      <input type="file" id="tree-photo" accept="image/*">
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadPhoto()">Upload</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+    </div>
+  </div>
+  
+  <script>
+    let map_pin;
+    let marker;
+
+    function nextStep() {
+      document.getElementById("overlay").classList.add("hidden");
+      document.getElementById("uploadoverlay").classList.remove("hidden");
+      initMap();
+    }
+
+    function initMap() {
+      map_pin = L.map('map_pin').setView([14.655156528354416, 121.07045364296518], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+        subdomains: ['a', 'b', 'c']
+      }).addTo(map_pin);
+
+      map_pin.on('click', function(e) {
+        if (marker) {
+          map_pin.removeLayer(marker);
+        }
+        marker = L.marker(e.latlng).addTo(map_pin);
+        document.getElementById('latitude').value = e.latlng.lat;
+        document.getElementById('longitude').value = e.latlng.lng;
+      });
+    }
+
+    function logLocation() {
+      console.log(`Latitude: ${document.getElementById('latitude').value}, Longitude: ${document.getElementById('longitude').value}`);
+    }
+
+    function uploadPhoto() {
+      /* Add what happens when user presses "Upload" (Take in Plant Name, Description and Photo then send them to the database) */
+      console.log("Photo uploaded!");
+      document.getElementById("map").classList.remove("map-blurred");
+      document.getElementById("uploadoverlay").classList.add("hidden");
+    }
+
+    /* For users who just wants to see the map and not upload a new tree */
+    function skip() {
+      document.getElementById("map").classList.remove("map-blurred");
+      document.getElementById("uploadoverlay").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
