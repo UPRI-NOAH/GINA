@@ -22,6 +22,7 @@ from api.gina.views import TreeInfoViewset
 router = DefaultRouter()
 
 router.register("tree-info", TreeInfoViewset, basename="tree-info")
+router.register("tree-type", TreeInfoViewset, basename="tree-type")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
