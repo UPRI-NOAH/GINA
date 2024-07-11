@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from api.gina.views import UserInfoViewset
 
 router = DefaultRouter()
 
+router.register("user-info", UserInfoViewset, basename="user-info")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
