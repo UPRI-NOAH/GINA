@@ -1,4 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from api.gina.models import TreeInfo
 
+# Register your models here.
+admin.site.register(TreeInfo)
