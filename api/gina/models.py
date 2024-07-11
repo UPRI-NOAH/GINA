@@ -7,5 +7,6 @@ class TreeInfo(models.Model):
     tree_type = models.CharField(max_length=100, null=False)
     tree_description = models.TextField()
     tree_name = models.CharField(max_length=100, null=False)
+    tree_image = models.URLField(max_length=200)
     scientific_name = models.CharField(max_length=100, null=False, unique=True)
     family_name = models.CharField(max_length=100, null=False)
