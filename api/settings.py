@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api.gina.apps.GinaConfig'
+    'api.gina.apps.GinaConfig',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
