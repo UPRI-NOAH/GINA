@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, mixins
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo
 from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer
-from api.gina.filters import TreeInfoFilter, TreeTypeFilter
+from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter
 from django_filters import rest_framework as filters
 
 # Create your views here.
@@ -21,6 +21,8 @@ class TreeTypeViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
 class UserInfoViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = UserInfo.objects.order_by("username")
     serializer_class = UserInfoSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserInfoFilter
 
 class UserTreeViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = UserTreeInfo.objects.order_by("planted_on")

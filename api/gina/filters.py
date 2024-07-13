@@ -1,5 +1,5 @@
 import django_filters
-from api.gina.models import TreeInfo, TreeType
+from api.gina.models import TreeInfo, TreeType, UserInfo
 
 class TreeInfoFilter(django_filters.FilterSet):
     class Meta:
@@ -17,4 +17,16 @@ class TreeTypeFilter(django_filters.FilterSet):
         model = TreeType
         fields = {
             "type_name": ["icontains"],
+        }
+
+class UserInfoFilter(django_filters.FilterSet):
+    class Meta:
+        model = UserInfo
+        fields = {
+            "user_id": ["exact"],
+            "username": ["icontains"],
+            "first_name": ["exact"],
+            "last_name": ["exact"],
+            "email": ["exact"],
+            "user_points": ["exact"],
         }
