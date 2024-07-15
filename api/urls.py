@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from api.gina.views import UserInfoViewset
 
 from api.gina.views import TreeInfoViewset, TreeTypeViewset
 
 router = DefaultRouter()
 
+router.register("user-info", UserInfoViewset, basename="user-info")
 router.register("tree-info", TreeInfoViewset, basename="tree-info")
 router.register("tree-type", TreeTypeViewset, basename="tree-type")
 
