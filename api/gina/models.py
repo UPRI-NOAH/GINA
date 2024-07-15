@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.forms import DateField
 
 # Create your models here.
     
@@ -30,3 +31,18 @@ class UserInfo(models.Model):
     profile_picture = models.ImageField(upload_to='images/', default=None, null=True, blank=True)
     # gallery = 
     user_points = models.PositiveIntegerField(default=0)
+
+TREE_STATUS = [
+    ("ORD", "Ordered"),
+    ("SHP", "Shipped"),
+    ("DLV", "Delivered"),
+    ("PLT", "Planted")
+]
+
+class UserTreeInfo(models.Model):
+    reference_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    planted_on = DateField()
+    planted_at
+    owning_user
+    quantity
+    status
