@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.gina.models import TreeInfo, TreeType, UserInfo
+from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo
 
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,4 +14,9 @@ class TreeInfoSerializer(serializers.ModelSerializer):
 class TreeTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TreeType
+        fields = '__all__'
+        
+class UserTreeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTreeInfo
         fields = '__all__'
