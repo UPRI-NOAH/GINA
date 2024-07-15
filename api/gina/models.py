@@ -38,12 +38,12 @@ TREE_STATUS = [
     ("PLT", "Planted")
 ]
 
-
 class UserTreeInfo(models.Model):
     reference_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     planted_on = models.DateField()
-    longitude = models.DecimalField()
-    latitude = models.DecimalField()
-    owning_user = models.ForeignObject("UserInfo", on_delete=models.SET_NULL)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    model_tree = models.ForeignKey("TreeInfo", on_delete=models.SET_NULL, null=True, to_field="scientific_name")
+    owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="username")
     quantity = models.IntegerField()
     status = models.CharField(choices=TREE_STATUS)
