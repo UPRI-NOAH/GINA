@@ -27,7 +27,7 @@ class UserInfo(models.Model):
     email = models.CharField(max_length=100, null=True, unique=True)
     password = models.CharField(max_length=100, null=False)
     contact = models.CharField(max_length=20, null=True, blank=True)
-    profile_picture = models.ImageField(upload_to='images/', default=None, null=True, blank=True)
+    profile_picture = models.URLField(max_length=200, null=True, blank=True)
     # gallery = 
     user_points = models.PositiveIntegerField(default=0)
 
