@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from django.forms import DateField
 
 # Create your models here.
     
@@ -39,10 +38,12 @@ TREE_STATUS = [
     ("PLT", "Planted")
 ]
 
+
 class UserTreeInfo(models.Model):
     reference_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    planted_on = DateField()
-    planted_at
-    owning_user
-    quantity
-    status
+    planted_on = models.DateField()
+    longitude = models.DecimalField()
+    latitude = models.DecimalField()
+    owning_user = models.ForeignObject("UserInfo", on_delete=models.SET_NULL)
+    quantity = models.IntegerField()
+    status = models.CharField(choices=TREE_STATUS)
