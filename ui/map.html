@@ -24,18 +24,18 @@
       /* map id */
           #map {
             position: absolute;
-            top: 80px; /* adjust to the height of the navigation bar */
+            top: 75px; /* adjust to the height of the navigation bar */
             left: 0;
             width: 100%;
-            height: calc(100vh - 80px); /* adjust to the height of the navigation bar */
+            height: calc(100vh - 75px); /* adjust to the height of the navigation bar */
             z-index: 0; /* make sure the map is behind the overlay */
           }
           .overlay {
             position: absolute;
-            top: 80px; /* adjust to the height of the navigation bar */
+            top: 75px; /* adjust to the height of the navigation bar */
             left: 0;
             width: 100%;
-            height: calc(100vh - 80px); /* adjust to the height of the navigation bar */
+            height: calc(100vh - 75px); /* adjust to the height of the navigation bar */
             background-color: rgba(255, 255, 255, 0.8);
             display: flex;
             justify-content: center;
@@ -52,10 +52,10 @@
     </style>
 
 </head>
-<body class="bg-teal-200">
-  <nav class="flex justify-between bg-green-200 py-4 drop-shadow-md"> <!-- Navigation Header -->
+<body class="bg-green-200">
+  <nav class="flex justify-between bg-green-200 py-2 drop-shadow-md"> <!-- Navigation Header -->
     <div class="flex items-center ml-4">
-      <img src="./assets/img/gina.png" alt="Logo" class="h-15 w-20 mr-4">
+      <img src="./assets/img/gina.png" alt="Logo" class="h-20 w-25 mr-4">
       <ul class="flex items-center">
         <li class="mr-6">
           <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
@@ -70,13 +70,20 @@
           <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
         </li>
         <li class="mr-6">
-          <a href="map_user.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
+          <a href="map.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
         </li>
       </ul>
     </div>
-    <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, soon to be a display icon for user and cart -->
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Login</button>
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4">Sign Up</button>
+    <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, icon for user and cart -->
+      <div id="auth-buttons" class="hidden">
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Login</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4">Sign Up</button>
+      </div>
+      <div id="user-buttons" class="hidden">
+        <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/cart.png" ></button>
+        <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/user.png" ></button>
+      </div>
+      
     </div>
   </nav>
   <!-- Map Controls -->
@@ -101,9 +108,12 @@
           &nbsp;&nbsp;&nbsp;3. Upload the photo using the upload plant this page.<br>
           &nbsp;&nbsp;&nbsp;4. Specify the location of the plant after uploading the photo of the plant.<br>
         </p><br>
+        <input type="checkbox" id="remember-me" />
+        <label for="remember-me">Don't show this again</label>
       <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl float-right" onclick="nextStep()">Next</button>
     </div>
   </div>
+
   <!-- Upload Overlay - this is where we enter information such as Tree Name, Descriptions, Location and Image -->
   <div class="overlay hidden" id="uploadoverlay">
     <div class="bg-white p-4 rounded-xl">
@@ -115,8 +125,7 @@
       <textarea id="description" class="resize-none w-full p-2 mb-4" placeholder="Description"></textarea>
       <!-- Location -->
       <div class="flex mb-4">
-        <div id="map_pin" style="width: 300px; height: 200px;"></div>
-        
+        <div id="map_pin" class="w-full" style="height: 200px;"></div>
       </div>
       <div class="flex mb-4">
         <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="logLocation()">Pin Location</button>
@@ -125,21 +134,51 @@
       </div>
       <!-- Image -->
       <input type="file" id="tree-photo" accept="image/*">
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadPhoto()">Upload</button>
       <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadPhoto()">Upload</button>
     </div>
   </div>
-  
+
+  <button class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2 z-0" id="addTree" onclick="addTreeClick()"><img class="rounded-full w-10 h-10" src="./assets/img/addtree.png" ></button>
+
   <script>
     let map_pin;
     let marker;
+    const addtree_button = document.getElementById('addTree');
 
+    var isLoggedIn = true; // change for different buttons on the upper right
+
+    let rememberMe = localStorage.getItem('rememberMe');
+    
+    if (isLoggedIn){
+      document.getElementById('user-buttons').classList.remove('hidden');
+      addtree_button.classList.remove('hidden');
+      if (rememberMe === 'true') {
+        document.getElementById("overlay").classList.add("hidden");
+        document.getElementById("map").classList.remove("map-blurred");
+      } else {
+        document.getElementById("overlay").classList.remove("hidden");
+        document.getElementById("map").classList.add("map-blurred");
+      }
+    } else {
+      addtree_button.classList.add('hidden');
+      document.getElementById('auth-buttons').classList.remove('hidden');
+      document.getElementById("overlay").classList.add("hidden");
+      document.getElementById("uploadoverlay").classList.add("hidden");
+      document.getElementById("map").classList.remove("map-blurred");
+      
+    }
+
+    /* Note: Should be disabled when user is not logged in */
     function nextStep() {
+      if (document.getElementById('remember-me').checked) {
+        localStorage.setItem('rememberMe', 'true');
+      }
       document.getElementById("overlay").classList.add("hidden");
       document.getElementById("uploadoverlay").classList.remove("hidden");
       initMap();
     }
-
+    
     function initMap() {
       map_pin = L.map('map_pin').setView([14.655156528354416, 121.07045364296518], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -155,6 +194,14 @@
         document.getElementById('latitude').value = e.latlng.lat;
         document.getElementById('longitude').value = e.latlng.lng;
       });
+    }
+    /* This is what happens when user presses Add Tree Button on the lower right */
+    /* Note: Should be disabled when user is not logged in */
+    function addTreeClick() {
+      localStorage.setItem('rememberMe', 'false');
+      document.getElementById("overlay").classList.remove("hidden");
+      document.getElementById("uploadoverlay").classList.add("hidden");
+      document.getElementById("map").classList.add("map-blurred");
     }
 
     function logLocation() {
