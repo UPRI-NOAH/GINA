@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GINA - Grow INdigenous trees in your Area</title>
-  <link rel="icon" type="image/x-icon" href="./resources/gina-icon.ico">
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+  <link href="./assets/css/output.css" rel="stylesheet">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -55,7 +55,7 @@
 <body class="bg-teal-200">
   <nav class="flex justify-between bg-green-200 py-4 drop-shadow-md"> <!-- Navigation Header -->
     <div class="flex items-center ml-4">
-      <img src="./resources/gina.png" alt="Logo" class="h-15 w-20 mr-4">
+      <img src="./assets/img/gina.png" alt="Logo" class="h-15 w-20 mr-4">
       <ul class="flex items-center">
         <li class="mr-6">
           <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
@@ -70,13 +70,13 @@
           <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
         </li>
         <li class="mr-6">
-          <a href="#" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
+          <a href="map_user.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
         </li>
       </ul>
     </div>
     <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, soon to be a display icon for user and cart -->
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Sign Up</button>
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4">Login</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Login</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4">Sign Up</button>
     </div>
   </nav>
   <!-- Map Controls -->
@@ -101,7 +101,7 @@
           &nbsp;&nbsp;&nbsp;3. Upload the photo using the upload plant this page.<br>
           &nbsp;&nbsp;&nbsp;4. Specify the location of the plant after uploading the photo of the plant.<br>
         </p><br>
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="nextStep()">Next</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl float-right" onclick="nextStep()">Next</button>
     </div>
   </div>
   <!-- Upload Overlay - this is where we enter information such as Tree Name, Descriptions, Location and Image -->
@@ -115,8 +115,11 @@
       <textarea id="description" class="resize-none w-full p-2 mb-4" placeholder="Description"></textarea>
       <!-- Location -->
       <div class="flex mb-4">
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="logLocation()">Pin Location</button>
         <div id="map_pin" style="width: 300px; height: 200px;"></div>
+        
+      </div>
+      <div class="flex mb-4">
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="logLocation()">Pin Location</button>
         <input type="hidden" id="latitude" />
         <input type="hidden" id="longitude" />
       </div>
