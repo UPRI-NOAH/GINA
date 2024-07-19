@@ -15,5 +15,5 @@ class TreeTypeFilter(django_filters.FilterSet):
     class Meta:
         model = TreeType
         fields = {
-            "type_name": ["iexacticontains"]
+            "type_name": ["iexact", "icontains"]
         }
