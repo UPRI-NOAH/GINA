@@ -1,4 +1,5 @@
 .env
 **\migrations
 Pipfile.lock
+\images
 typings
