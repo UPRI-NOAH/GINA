@@ -10,10 +10,14 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
-	 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+  <!-- ajax library for fetching json/geojson files-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <!-- put style here -->
     <style>
@@ -58,7 +62,7 @@
       <img src="./assets/img/gina.png" alt="Logo" class="h-20 w-25 mr-4">
       <ul class="flex items-center">
         <li class="mr-6">
-          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
+          <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
         </li>
         <li class="mr-6">
           <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
@@ -67,7 +71,7 @@
           <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
         </li>
         <li class="mr-6">
-          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
+          <a href="leaderboard.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
         </li>
         <li class="mr-6">
           <a href="map.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
@@ -76,8 +80,8 @@
     </div>
     <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, icon for user and cart -->
       <div id="auth-buttons" class="hidden">
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Login</button>
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4">Sign Up</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
       </div>
       <div id="user-buttons" class="hidden">
         <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/cart.png" ></button>
@@ -95,6 +99,45 @@
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
+    var sensorIcon = L.icon({
+			iconUrl: "./assets/img/gina_marker.png", // file path of image
+			iconSize: [29, 39], // set size of icon
+		});
+
+    var ph = $.ajax({
+                url: "https://2df8-111-68-43-102.ngrok-free.app/api/user-tree-info/?format=json",
+                dataType: "json",
+                    headers: { 
+                    'ngrok-skip-browser-warning': 'true' 
+                },
+                success: console.log("PH geojson data successfully loaded."),
+                error: function (xhr) {
+                    alert(xhr.statusText)
+                }
+                })
+                $.when(ph).done(function () {
+                bound = ph.responseJSON
+                console.log(bound)
+
+                // Loop through the JSON data and create a custom marker for each point
+                bound.forEach(function (feature) {
+                    var latlng = L.latLng(feature.latitude, feature.longitude);
+                    console.log(latlng);
+                    return L.marker(latlng, { icon: sensorIcon }).addTo(map);
+                });
+            });
+
+            L.Control.geocoder().addTo(map);
+
+            let marker;
+
+            map.on('click', (e) => {
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                marker = L.marker(e.latlng).addTo(map);
+            });
   </script>
 
   <!-- Instruction Overlay -->
@@ -120,30 +163,22 @@
       <h2 class="text-2xl font-bold mb-4">Add Your Tree</h2>
       <p class="text-lg mb-4">Please fill in the details of your tree.</p>
       <!-- Plant Name -->
-      <input type="text" id="plant-name" class="w-full p-2 mb-4" placeholder="Plant Name">
+      <input type="text" id="plant-name" class="w-full p-1 mb-4" placeholder="Plant Name"><br>
       <!-- Description -->
-      <textarea id="description" class="resize-none w-full p-2 mb-4" placeholder="Description"></textarea>
-      <!-- Location -->
-      <div class="flex mb-4">
-        <div id="map_pin" class="w-full" style="height: 200px;"></div>
-      </div>
-      <div class="flex mb-4">
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="logLocation()">Pin Location</button>
-        <input type="hidden" id="latitude" />
-        <input type="hidden" id="longitude" />
-      </div>
+      <textarea id="description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
       <!-- Image -->
-      <input type="file" id="tree-photo" accept="image/*">
-      <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadPhoto()">Upload</button>
+      <p class="text-lg mb-4">Add a photo:</p>
+      <input type="file" id="tree-photo" accept="image/*"><br> <br>
+      <div class="float-right">
+        <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadPhoto()">Upload</button>
+      </div>
     </div>
   </div>
 
   <button class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2 z-0" id="addTree" onclick="addTreeClick()"><img class="rounded-full w-10 h-10" src="./assets/img/addtree.png" ></button>
 
   <script>
-    let map_pin;
-    let marker;
     const addtree_button = document.getElementById('addTree');
 
     var isLoggedIn = true; // change for different buttons on the upper right
@@ -175,33 +210,23 @@
         localStorage.setItem('rememberMe', 'true');
       }
       document.getElementById("overlay").classList.add("hidden");
-      document.getElementById("uploadoverlay").classList.remove("hidden");
-      initMap();
+      document.getElementById("map").classList.remove("map-blurred");
     }
     
-    function initMap() {
-      map_pin = L.map('map_pin').setView([14.655156528354416, 121.07045364296518], 13);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
-        subdomains: ['a', 'b', 'c']
-      }).addTo(map_pin);
-
-      map_pin.on('click', function(e) {
-        if (marker) {
-          map_pin.removeLayer(marker);
-        }
-        marker = L.marker(e.latlng).addTo(map_pin);
-        document.getElementById('latitude').value = e.latlng.lat;
-        document.getElementById('longitude').value = e.latlng.lng;
-      });
-    }
     /* This is what happens when user presses Add Tree Button on the lower right */
     /* Note: Should be disabled when user is not logged in */
     function addTreeClick() {
-      localStorage.setItem('rememberMe', 'false');
-      document.getElementById("overlay").classList.remove("hidden");
-      document.getElementById("uploadoverlay").classList.add("hidden");
-      document.getElementById("map").classList.add("map-blurred");
+      if (marker) {
+        const lat = marker.getLatLng().lat;
+        const lng = marker.getLatLng().lng;
+        document.getElementById("uploadoverlay").classList.remove("hidden");
+        document.getElementById("map").classList.add("map-blurred");
+        // Pass the latitude and longitude to the upload overlay
+        document.getElementById("latitude").value = lat;
+        document.getElementById("longitude").value = lng;
+      } else {
+        alert("Please place a marker on the map first!");
+      }
     }
 
     function logLocation() {
