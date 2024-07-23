@@ -21,7 +21,7 @@ class TreeInfo(models.Model):
     family_name = models.CharField(max_length=100)
 
 class UserInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=False)
     email = models.CharField(max_length=100, null=True, unique=True)
