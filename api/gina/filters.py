@@ -23,8 +23,7 @@ class UserInfoFilter(django_filters.FilterSet):
     class Meta:
         model = UserInfo
         fields = {
-            "user_id": ["exact"],
-            "username": ["icontains"],
+            "user": ["exact"],
             "first_name": ["exact"],
             "last_name": ["exact"],
             "email": ["exact"],
@@ -38,7 +37,7 @@ class UserTreeFilter(django_filters.FilterSet):
             "reference_id": ["exact"],
             "planted_on": ["exact"],
             "model_tree__tree_name": ["icontains"],
-            "owning_user__username": ["icontains"],
+            "owning_user__user": ["exact"],
             "quantity": ["exact"],
             "status": ["exact"],
         }
