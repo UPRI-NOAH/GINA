@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from api import get_str
 from dotenv import load_dotenv
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path, override=True)
+
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
