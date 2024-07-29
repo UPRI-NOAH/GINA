@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from api import get_str
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -140,3 +141,60 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+                'superverbose': {
+                        'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(process)d %(thread)d %(message)s'
+                        },
+                'verbose': {
+                        'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(message)s'
+                        },
+                'simple': {
+                        'format': '%(levelname)s %(message)s'
+                        },
+        },
+        'handlers': {
+                'console': {
+                        'class': 'logging.StreamHandler',
+                        'formatter': 'verbose',
+                        },
+                },
+        'root': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'formatter': 'verbose',
+                },
+        'loggers': {
+                'django.utils.autoreload': {
+                        'handlers': [],
+                        'level': 'ERROR',
+                        },
+
+                'django': {
+                        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                        'handlers': ['console'],
+                        'propagate': True,
+                        },
+
+                'somelib': {
+                        'level': 'DEBUG',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+      
+                'somelib.package': {
+                        'level': 'ERROR',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+
+                'my_app': {
+                        'level': 'DEBUG',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+                }
+        }
