@@ -19,3 +19,10 @@
 .tree-container{
     margin-bottom: 1rem;
 }
+
+@media (width < 767px) and (min-width:500px){
+    .tree-container{
+        margin-left: 4rem;
+        margin-right: 4rem;
+    }
+}
