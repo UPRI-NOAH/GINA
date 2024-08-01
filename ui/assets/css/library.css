@@ -1,0 +1,21 @@
+#tree-grid > div{
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+
+.detail-container{
+    min-width: 8rem;
+}
+
+.detail-container > div{
+    color: #718096;
+}
+
+.tree-container > div > img{
+    min-width: 6rem;
+}
+
+.tree-container{
+    margin-bottom: 1rem;
+}

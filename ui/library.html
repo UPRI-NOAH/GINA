@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GINA - Grow INdigenous trees in your Area</title>        
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <link href="assets/css/nav.css" rel="stylesheet">
+        <link href="assets/css/library.css" rel="stylesheet">
+        <script src="assets/js/nav.js"></script>
+    </head>
+    <body class="bg-teal-100 pt-20 pb-12">
+        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20">
+            <div class="flex justify-between items-center mx-4 h-full">
+                <div class="md:hidden">
+                    <button onclick="toggleNav()">
+                        <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+                    </button>
+                </div>
+
+                <div id="logo-container" class="md:flex">
+                    <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
+
+                    <nav class="hidden md:flex items-center ml-4">
+                        <ul class="flex font-bold">
+                            <li><a href="learn.html">Home</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="library.html" class="bg-gray-200">Library</a></li>
+                            <li><a href="#">Leaderboards</a></li>
+                            <li><a href="map.html">Map</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div id="login-signup-container" class="hidden md:flex text-white">
+                    <button><a href="login.html">Login</a></button>
+                    <button class= "ml-4"><a href="signup.html">Sign Up</a></button>
+                </div>
+
+                <div class="hidden md:hidden flex items-center flex-grow mr-4" id="searchbar-container">
+                    <button class="w-6 h-6 mr-4" id="back-button" onclick="hideSearchBarContainer()">
+                        <img src="assets/img/back.svg">
+                    </button>
+                    <input type="text" class="border rounded px-2 py-2 flex-grow" placeholder="Search library">
+                </div>
+                
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleSearchBarContainer()">
+                        <img src="assets/img/search.svg" class="w-8">
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+            <ul class="flex flex-col font-bold p-4">
+                <li><a href="learn.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="library.html" class="bg-gray-200">Library</a></li>
+                <li><a href="#">Leaderboards</a></li>
+                <li><a href="map.html">Map</a></li>
+                <hr class="border-black border-t-2 mb-4">
+                <li><a href="#">Log in</a></li>
+                <li><a href="#">Sign up</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="mx-4 pt-4 max-w-screen-xl mx-auto" id="tree-library-container">
+                <h1 class="text-3xl font-bold text-center mx-auto">Tree Library</h1>
+        
+                <div class="grid m-4 mx-auto lg:max-w-5xl md:max-w-3xl md:grid-cols-3 lg:grid-cols-4 gap-2" id="tree-grid">
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Tree 1</p></div>
+                            <div><p>Specific name</p></div>
+                            <div><p>Family name</p></div>
+                            <div><p>Rating</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/gina.png" class="h-32 object-contain">
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+            </div>
+        </main>
+    </body>
+</html>
