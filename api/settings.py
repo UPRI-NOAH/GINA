@@ -211,8 +211,11 @@ LOGGING = {
 STATIC_ROOT = "./static/"
 
 SPECTACULAR_SETTINGS = {
+    'TITLE': 'UPRI GINA API',
+    'DESCRIPTION': 'The backend API for the UP Resilience Institute\'s Grow Indigenous Trees App (GINA)',
     'SWAGGER_UI_DIST': 'SIDECAR',
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': STATIC_URL + "favicon.png",
 }
 
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-inline'")
