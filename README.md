@@ -19,11 +19,47 @@ This project was built with a **Django** backend (via Django REST Framework, sup
 
 ## Prerequisites
 
+This project requires
+- [`pyenv`](https://github.com/pyenv/pyenv) == 2.4.7
+- [`pipenv`](https://github.com/pypa/pipenv) == 2024.0.1
+- [`postgis`](https://github.com/postgis/postgis) == 3.4
+- [`postgresql`](https://www.postgresql.org) == 16.3
+
+This project uses Python 3.9. The Python version should be automatically managed by `pyenv` via the `.python-version` file herein. Similarly, all Python packages are managed by `pipenv` using the `Pipfile` herein.
+
 ## Local Installation
+
+Before the backend API can be set up, ensure that a PostgreSQL database instance is running and accessible and provide the following in a `.env` file:
+
+```env
+DB_NAME
+DB_USER
+DB_PASSWORD
+DB_PORT
+DB_HOST
+```
+
+Then, make the migrations via
+
+```bash
+python manage.py makemigrations gina
+```
+
+Afterwards, execute the migrations via
+
+```bash
+python manage.py migrate gina
+```
+
+Finally, run the server using
+
+```bash
+python manage.py runserver [port]
+```
 
 ## API Documentation
 
-Once installed, an API schema is available via the `/api/schema` endpoint in YAML format. It is also available in human-readable form via `/api/schema/swagger-ui`.
+Once installed and running, an API schema is available via the `/api/schema` endpoint in YAML format. It is also available in human-readable form via `/api/schema/swagger-ui`.
 
 # Usage
 
