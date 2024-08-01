@@ -18,7 +18,7 @@ class TreeTypeViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TreeTypeFilter
 
-class UserInfoViewset(generics.ListCreateAPIView, viewsets.GenericViewSet):
+class UserInfoViewset(viewsets.ModelViewSet):
     queryset = UserInfo.objects.order_by("user")
     serializer_class = UserInfoSerializer
     filter_backends = (filters.DjangoFilterBackend,)
