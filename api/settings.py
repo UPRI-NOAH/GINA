@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from api import get_str
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -30,8 +31,12 @@ SECRET_KEY = 'django-insecure-u08+g#%-qff+x480z9!8-xvir@q5r5s1ul&o-xz@es#lcbo(sg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
+# SECURITY WARNING: THIS IS DANGEROUS, DO NOT ALLOW IN PRODUCTION
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
@@ -43,11 +48,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'api.gina.apps.GinaConfig',
     'django_filters',
+    'djoser',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +65,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 ROOT_URLCONF = 'api.urls'
 
@@ -104,9 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
@@ -135,3 +147,63 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+                'superverbose': {
+                        'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(process)d %(thread)d %(message)s'
+                        },
+                'verbose': {
+                        'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(message)s'
+                        },
+                'simple': {
+                        'format': '%(levelname)s %(message)s'
+                        },
+        },
+        'handlers': {
+                'console': {
+                        'class': 'logging.StreamHandler',
+                        'formatter': 'verbose',
+                        },
+                },
+        'root': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'formatter': 'verbose',
+                },
+        'loggers': {
+                'django.utils.autoreload': {
+                        'handlers': [],
+                        'level': 'ERROR',
+                        },
+
+                'django': {
+                        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                        'handlers': ['console'],
+                        'propagate': True,
+                        },
+
+                'somelib': {
+                        'level': 'DEBUG',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+      
+                'somelib.package': {
+                        'level': 'ERROR',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+
+                'my_app': {
+                        'level': 'DEBUG',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+                }
+        }
+
+STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]

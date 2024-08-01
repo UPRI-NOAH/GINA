@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
     
@@ -20,12 +21,10 @@ class TreeInfo(models.Model):
     family_name = models.CharField(max_length=100)
 
 class UserInfo(models.Model):
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    username = models.CharField(max_length=100, null=False, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=False)
     email = models.CharField(max_length=100, null=True, unique=True)
-    password = models.CharField(max_length=100, null=False)
     contact = models.CharField(max_length=20, null=True, blank=True)
     profile_picture = models.URLField(max_length=200, null=True, blank=True)
     # gallery = 
@@ -44,6 +43,6 @@ class UserTreeInfo(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     model_tree = models.ForeignKey("TreeInfo", on_delete=models.SET_NULL, null=True, to_field="scientific_name")
-    owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="username")
+    owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
     quantity = models.IntegerField()
     status = models.CharField(choices=TREE_STATUS)

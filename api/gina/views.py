@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, mixins
+from rest_framework import generics, viewsets, mixins
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo
 from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter
@@ -18,13 +18,13 @@ class TreeTypeViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TreeTypeFilter
 
-class UserInfoViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = UserInfo.objects.order_by("username")
+class UserInfoViewset(generics.ListCreateAPIView, viewsets.GenericViewSet):
+    queryset = UserInfo.objects.order_by("user")
     serializer_class = UserInfoSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = UserInfoFilter
 
-class UserTreeViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
+class UserTreeViewset(generics.ListCreateAPIView, viewsets.GenericViewSet):
     queryset = UserTreeInfo.objects.order_by("planted_on")
     serializer_class = UserTreeSerializer
     filter_backends = (filters.DjangoFilterBackend,)
