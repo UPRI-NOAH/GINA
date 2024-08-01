@@ -15,10 +15,6 @@ for index, row in df.iterrows():
         defaults={'last_name': 'N/A'}
     )
 
-    # img = row['photo']
-    # img = img.replace('/user_upload/', '')
-    # img = img.replace('user_upload/', '')
-
     userTreeInfo = UserTreeInfo(
         planted_on=row['date_inserted'][:10],
         longitude=row['lng'],
