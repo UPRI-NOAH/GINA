@@ -24,7 +24,7 @@ class UserInfoViewset(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = UserInfoFilter
 
-class UserTreeViewset(generics.ListCreateAPIView, viewsets.GenericViewSet):
+class UserTreeViewset(viewsets.ModelViewSet):
     queryset = UserTreeInfo.objects.order_by("planted_on")
     serializer_class = UserTreeSerializer
     filter_backends = (filters.DjangoFilterBackend,)
