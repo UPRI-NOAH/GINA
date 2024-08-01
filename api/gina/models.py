@@ -21,10 +21,9 @@ class TreeInfo(models.Model):
     family_name = models.CharField(max_length=100)
 
 class UserInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, to_field="username")
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=False)
-    email = models.CharField(max_length=100, null=True, unique=True)
     contact = models.CharField(max_length=20, null=True, blank=True)
     profile_picture = models.URLField(max_length=200, null=True, blank=True)
     # gallery = 

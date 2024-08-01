@@ -26,7 +26,6 @@ class UserInfoFilter(django_filters.FilterSet):
             "user": ["exact"],
             "first_name": ["exact"],
             "last_name": ["exact"],
-            "email": ["exact"],
             "user_points": ["exact"],
         }
 
