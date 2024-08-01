@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
 tree_images = FileSystemStorage(location="api/gina/trees")
+usertree_images = FileSystemStorage(location="api/gina/usertrees")
 
 # Create your models here.
     
@@ -47,3 +48,4 @@ class UserTreeInfo(models.Model):
     owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
     quantity = models.IntegerField()
     status = models.CharField(choices=TREE_STATUS)
+    image = models.ImageField(storage=usertree_images, null=True, blank=True)
