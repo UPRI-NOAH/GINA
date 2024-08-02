@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GINA - Grow INdigenous trees in your Area</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+    <link href="./assets/css/output.css" rel="stylesheet">
+
+    <!-- ajax library for fetching json/geojson files-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+</head>
+<body class="bg-teal-150 pt-20 pb-12">
+  <nav class="flex justify-between bg-green-200 py-2 drop-shadow-md"> <!-- Navigation Header -->
+    <div class="flex items-center ml-4">
+      <img src="./assets/img/gina.png" alt="Logo" class="h-20 w-25 mr-4">
+      <ul class="flex items-center">
+        <li class="mr-6">
+          <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
+        </li>
+        <li class="mr-6">
+          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
+        </li>
+        <li class="mr-6">
+          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
+        </li>
+        <li class="mr-6">
+          <a href="leaderboard.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
+        </li>
+        <li class="mr-6">
+          <a href="map.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, icon for user and cart -->
+      <div id="auth-buttons" class="hidden">
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+      </div>
+      <div id="user-buttons" class="hidden">
+        <!-- Cart -->
+        <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+          <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+        </button>
+        <!-- user -->
+        <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+          <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+        </button>
+        <div class="hidden" id="user-dropdown">
+          <div class="bg-white p-4 rounded-xl w-48 absolute top-14 right-4">
+            <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
+            <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+  </nav>
+
+    <div class="container mx-auto mt-10 p-4 rounded-lg shadow-lg"> <!-- Leaderboard Container -->
+        <h2 class="text-2xl font-bold mb-4 text-center">Leaderboard</h2>
+        <table id ="leaderboard" class="w-full text-center">
+            <tr>
+                <th class="bg-teal-150 px-4 py-2">Rank</th>
+                <th class="bg-teal-150 px-4 py-2"></th>
+                <th class="bg-teal-150 px-4 py-2">Username</th>
+                <th class="bg-teal-150 px-4 py-2">Points</th>
+            </tr>
+            <tbody id="leaderboard-body">
+                <!-- Leaderboard data will be loaded here -->
+                
+            </tbody>
+        </table>
+    </div>
+    
+
+    <script>
+        let url = "d92b-110-54-133-136.ngrok-free.app";
+        let userURL = `https://${url}/api/user-info/`;
+
+        const authToken = localStorage.getItem('authToken');
+        const seshAuthToken = sessionStorage.getItem('authToken');
+        var isLoggedIn = true;
+
+        if ((authToken != '') || (seshAuthToken != '')){
+          isLoggedIn = true;
+        } else {
+          isLoggedIn = false;
+        }
+
+        if (isLoggedIn){
+            document.getElementById('user-buttons').classList.remove('hidden');
+        } else {
+            document.getElementById('auth-buttons').classList.remove('hidden');
+        }
+
+        // User Dropdown Toggle
+        document.getElementById('user-dropdown-toggle').addEventListener('click', function(event) {
+          event.stopPropagation();
+          document.getElementById("user-dropdown").classList.toggle("hidden");
+        });
+
+        // Toggle dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+          if (!event.target.closest('#user-dropdown') && !event.target.closest('#user-dropdown-toggle')) {
+            document.getElementById("user-dropdown").classList.add("hidden");
+          }
+        });
+
+        // View Profile Function
+        function viewProfile() {
+          // Add your profile viewing logic here
+          console.log("View Profile clicked");
+          document.getElementById("user-dropdown").classList.add("hidden");
+        }
+
+        // Log Out Function
+        function logOut() {
+          // Add your log out logic here
+          localStorage.setItem('authToken', '');
+          sessionStorage.setItem('authToken', '');
+
+          location.reload();
+        }
+
+        const leaderboardBody = document.getElementById("leaderboard-body");
+
+        var ph = $.ajax({
+            url: userURL,
+            dataType: "json",
+                headers: { 
+                'ngrok-skip-browser-warning': 'true' 
+            },
+            success: console.log("PH geojson data successfully loaded."),
+            error: function (xhr) {
+                alert(xhr.statusText)
+            }
+            })
+            $.when(ph).done(function () {
+              bound = ph.responseJSON
+              bound.sort((a, b) => b.user_points - a.user_points); // Sort in descending order
+              bound.forEach((data, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td class="px-4 py-2">${index+1}</td>
+                <td class="px-4 py-2"><img src="${data.profile_picture}" alt="${data.user}'s profile picture"></td>
+                <td class="px-4 py-2">${data.user}</td>
+                <td class="px-4 py-2">${data.user_points}</td>
+                `;
+                leaderboardBody.appendChild(row);
+              });
+            });
+        
+        
+      </script>
+
+</body>
