@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GINA - Grow INdigenous trees in your Area</title>        
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+    </head>
+    <body class="bg-teal-100 pt-20 pb-12">
+        <header class="flex flex-row justify-between bg-green-200 py-4 drop-shadow-md z-10 fixed top-0 inset-x-0 h-20">
+            <nav class="flex items-center ml-4">
+
+                <button class="block md:hidden text-black mx-2" id="menu-button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <img src="assets/img/gina.png" alt="Logo" class="w-20 mr-4 hidden-on-search">
+                <div class="hidden md:flex items-center whitespace-no-wrap">
+                    <ul class="flex items-center">
+                        <li>
+                          <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Home</a>
+                        </li>
+                        <li>
+                          <a href="events.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Events</a>
+                        </li>
+                        <li>
+                          <a href="library.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Library</a>
+                        </li>
+                        <li>
+                          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Leaderboards</a>
+                        </li>
+                        <li>
+                          <a href="map.html" class="text-black font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white">Map</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Back button and search bar -->
+            <div class="hidden md:hidden flex items-center ml-1 flex-grow" id="back-button-container">
+                <button class="w-6 h-6 mr-4" id="back-button">
+                    <!-- Placeholder back icon -->
+                    <img src="assets/img/gina-icon.ico">
+                </button>
+                <input type="text" class="border rounded px-2 py-2 flex-grow" placeholder="Search events">
+            </div>
+
+            <div class="flex items-center md:hidden">
+                <button class="w-6 h-6 mx-6" id="search-button">
+                    <!-- Placeholder search icon -->
+                    <img src="assets/img/gina-icon.ico">
+                </button>
+            </div>
+
+            <div class="hidden md:flex items-center mr-4 whitespace-no-wrap">
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+            </div>
+        </header>
+
+        <!-- Mobile Nav Bar -->
+        <div class="hidden md:hidden bg-green-200 p-4" id="mobile-menu">
+            <ul class="flex flex-col items-start">
+              <li class="mb-4">
+                <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Home</a>
+              </li>
+              <li class="mb-4">
+                <a href="events.html" class="text-black bg-gray-200 font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Events</a>
+              </li>
+              <li class="mb-4">
+                <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Tree Library</a>
+              </li>
+              <li class="mb-4">
+                <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Leaderboards</a>
+              </li>
+              <li class="mb-4">
+                <a href="map.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Map</a>
+              </li>
+            </ul>
+            <hr class="border-black border-t-2">
+            <ul class="flex flex-col items-start mt-4">
+                <li class="mb-4">
+                    <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Log in</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Sign up</a>
+                </li>
+            </ul>
+          </div>
+          
+          <script>
+            document.getElementById('menu-button').addEventListener('click', function () {
+              const menu = document.getElementById('mobile-menu');
+              menu.classList.toggle('hidden');
+            });
+
+            document.getElementById('search-button').addEventListener('click', function () {
+                document.getElementById('menu-button').classList.toggle('hidden');
+                document.querySelector('.hidden-on-search').classList.toggle('hidden');
+                document.getElementById('back-button-container').classList.toggle('hidden');
+            });
+
+          </script>
+
+        <main>
+            <section class="max-w-screen-xl mx-auto rounded-3xl my-6">
+                <div class="w-full rounded-3xl">
+                    <h1 class="text-2xl ml-4 font-bold rounded-3xl">Latest Event</h1> 
+                </div>
+                <div class="bg-white w-11/12 rounded-3xl mt-4 md:flex md:items-center md:justify-evenly mx-auto md:py-4">  <!-- Latest event container -->
+                    <div class="flex flex-col rounded-3xl md:max-w-sm mx-auto md:mx-8 md:w-3/6 md:flex-grow-0">
+                        <img src="assets/img/gina.png" alt="Latest Event">
+                    </div>
+                    <div class="flex justify-center text-center text-xl font-medium text-gray-600 text-green-800 md:w-5/12 md:flex-col md:justify-around">  <!-- Event text container -->
+                        <div class="block md:hidden">
+                            <h1 class="text-xl font-bold rounded-3xl">Event 1</h1> 
+                        </div>
+                        <div class="hidden md:flex md:flex-col md:justify-evenly md:items-start md:h-56">
+                            <div class="flex justify-start w-full">
+                                <h1 class="text-2xl font-bold rounded-3xl">Event 1</h1> 
+                            </div>
+                            <div class="flex justify-center w-full">
+                                <div class="flex w-full text-base">
+                                    <div class="w-1/2 flex items-center">
+                                        <img src="assets/img/gina-icon.ico" class="w-6 h-6 mr-2">
+                                        <p>Event location</p>
+                                    </div>
+                                    <div class="w-1/2 flex items-center">
+                                        <img src="assets/img/gina-icon.ico" class="w-6 h-6 mr-2">
+                                        <p>Event date</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col text-left w-full h-32">
+                                <h1 class="text-2xl font-bold rounded-3xl">Details</h1>
+                                <p class="text-base h-full overflow-y-scroll">Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                                    Reiciendis sunt eveniet dicta unde, placeat quia velit. Autem tempore suscipit 
+                                    asperiores quod? Tenetur, in similique sit aut provident iure quis omnis. </p> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-opacity-75 max-w-screen-xl mx-auto rounded-3xl my-6">
+                <div class="w-10/12 rounded-3xl">
+                    <h1 class="text-2xl ml-4 font-bold rounded-3xl">Past Events</h1> 
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 content-center mt-6">
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 1</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 2</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 3</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex  justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 4</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 5</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">    
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 6</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </body>
+</html>
