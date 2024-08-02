@@ -56,7 +56,7 @@
       </form>
 
       <script>
-        let url = "d92b-110-54-133-136.ngrok-free.app";
+        let url = "qogqi2a47lij.share.zrok.io";
         let signupURL = `https://${url}/auth/users/`;
         let userURL = `https://${url}/api/user-info/`;
 
@@ -107,13 +107,16 @@
               body: JSON.stringify(userInfo)
             })
             .then(response => response.json())
-            .then(data => console.log('User info registered:', data))
+            .then(data => {
+              console.log('User info registered:', data);
+              // Redirect to login.html after successful registration
+              window.location.href = 'login.html';
+            })
             .catch(error => console.error('Error registering user info:', error));
           })
           .catch(error => console.error('Error registering user:', error));
         });
-      // Open login.html
-      window.location.href = 'login.html';
+      
     </script>
   </body>
   </html>

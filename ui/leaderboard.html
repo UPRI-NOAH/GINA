@@ -20,10 +20,10 @@
           <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
         </li>
         <li class="mr-6">
-          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
+          <a href="events.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
         </li>
         <li class="mr-6">
-          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
+          <a href="library.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
         </li>
         <li class="mr-6">
           <a href="leaderboard.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
@@ -78,14 +78,14 @@
     
 
     <script>
-        let url = "d92b-110-54-133-136.ngrok-free.app";
+        let url = "qogqi2a47lij.share.zrok.io";
         let userURL = `https://${url}/api/user-info/`;
 
-        const authToken = localStorage.getItem('authToken');
-        const seshAuthToken = sessionStorage.getItem('authToken');
-        var isLoggedIn = true;
+        var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
-        if ((authToken != '') || (seshAuthToken != '')){
+        var isLoggedIn = true;
+        
+        if (authToken){
           isLoggedIn = true;
         } else {
           isLoggedIn = false;

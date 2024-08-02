@@ -108,10 +108,10 @@
             <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
           </li>
           <li class="mr-6">
-            <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
+            <a href="events.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
           </li>
           <li class="mr-6">
-            <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
+            <a href="library.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
           </li>
           <li class="mr-6">
             <a href="leaderboard.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
@@ -147,11 +147,6 @@
         
       </div>
     </nav>
-  
-  
-  <script>
-    
-  </script>
 
   <!-- User Dropdown Overlay -->
   <div class="overlay hidden" id="user-dropdown">
@@ -205,17 +200,19 @@
   <button class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2 z-0" id="addTree" onclick="addTreeClick()"><img class="rounded-full w-10 h-10" src="./assets/img/addtree.png" ></button>
 
   <script>
-    let url = "d92b-110-54-133-136.ngrok-free.app";
+    let url = "qogqi2a47lij.share.zrok.io";
     let usertreeURL = `https://${url}/api/user-tree-info/`
     let userURL = `https://${url}/api/user-info/`;
 
     const addtree_button = document.getElementById('addTree');
 
-    const authToken = localStorage.getItem('authToken');
-    const seshAuthToken = sessionStorage.getItem('authToken');
-    var isLoggedIn = true;
+    // const authToken = localStorage.getItem('authToken');
+    // const seshAuthToken = sessionStorage.getItem('authToken');
+    var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
-    if ((authToken != '') || (seshAuthToken != '')){
+    var isLoggedIn = true;
+    
+    if (authToken){
       isLoggedIn = true;
     } else {
       isLoggedIn = false;
