@@ -14,7 +14,10 @@
         <div class="imgcontainer">
           <img src="./assets/img/gina.png" alt="Avatar" class="h-20 w-30 mr-4 center" >
         </div>
-        <h1 class="text-green-400 text-2xl font-bold">Register for an account</h2>
+        <div class="text-green-400 text-2xl font-bold flex">
+          <h1 class="center">Register for an account</h1>
+        </div>
+        
         <div class="container">
           <label for="uname"><b>Username</b></label><br>
           <input type="text" placeholder="Enter Username" name="uname" required class="w-50 p-2 rounded-xl"><br>
@@ -34,7 +37,7 @@
           <label for="psw"><b>Password</b></label><br>
           <input type="password" placeholder="Enter Password" name="psw" required class="w-50 p-2 rounded-xl"><br>
       
-          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Register</button><br>
+          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl center mt-4">Register</button>
         </div>
         <div class="imgcontainer">
             <p class="text-green-600 text-lg"> - or register with -</p><br>
@@ -50,8 +53,10 @@
             </button>
           </div>
       
-        <div class="container">
-          <span class="center text-green-600">Already have an account? <a href="login.html" class="hover:rounded-full hover:bg-gray-300"><u>Login</u></a></span>
+        <div class="container flex">
+          <p class="center">
+            <span class="center text-green-600">Already have an account? <a href="login.html" class="hover:rounded-full hover:bg-gray-300"><u>Login</u></a></span>
+          </p>
         </div>
       </form>
   </body>

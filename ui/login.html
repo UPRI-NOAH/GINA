@@ -14,7 +14,10 @@
         <div class="imgcontainer">
           <img src="./assets/img/gina.png" alt="Avatar" class="h-20 w-30 mr-4 center">
         </div>
-        <h1 class="text-green-400 text-2xl font-bold">Login to your account</h2>
+        <div class="text-green-400 text-2xl font-bold flex">
+          <h1 class="center">Login to your account</h1>
+        </div>
+        
         <div class="container">
           <label for="uname"><b>Username</b></label><br>
           <input type="text" placeholder="Enter Username" name="uname" required class="w-50 p-2 rounded-xl"><br>
@@ -22,7 +25,8 @@
           <label for="psw"><b>Password</b></label><br>
           <input type="password" placeholder="Enter Password" name="psw" required class="w-50 p-2 rounded-xl"><br>
       
-          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Login</button><br>
+          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl mt-4 center">Login</button><br>
+          
           <label>
             <input type="checkbox" checked="checked" name="remember"> Remember me
           </label>
@@ -41,8 +45,10 @@
             </button>
           </div>
       
-        <div class="container">
-          <span class="center text-green-600">Register as an <a href="signup.html" class="hover:rounded-full hover:bg-gray-300"><u>individual?</u></a></span>
+        <div class="container flex">
+          <p class="center">
+            <span class="center text-green-600">Register as an <a href="signup.html" class="hover:rounded-full hover:bg-gray-300"><u>individual?</u></a></span>
+          </p>
         </div>
       </form>
   </body>

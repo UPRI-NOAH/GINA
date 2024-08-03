@@ -5,104 +5,65 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>GINA - Grow INdigenous trees in your Area</title>        
         <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-
+        <link href="assets/css/nav.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+        <script src="assets/js/nav.js"></script>
     </head>
     <body class="bg-teal-100 pt-20 pb-12">
-        <header class="flex flex-row justify-between bg-green-200 py-4 drop-shadow-md z-10 fixed top-0 inset-x-0 h-20">
-            <nav class="flex items-center ml-4">
-
-                <button class="block md:hidden text-black mx-2" id="menu-button">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-                <img src="assets/img/gina.png" alt="Logo" class="w-20 mr-4 hidden-on-search">
-                <div class="hidden md:flex items-center whitespace-no-wrap">
-                    <ul class="flex items-center">
-                        <li>
-                          <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Home</a>
-                        </li>
-                        <li>
-                          <a href="events.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Events</a>
-                        </li>
-                        <li>
-                          <a href="library.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Library</a>
-                        </li>
-                        <li>
-                          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Leaderboards</a>
-                        </li>
-                        <li>
-                          <a href="map.html" class="text-black font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white">Map</a>
-                        </li>
-                    </ul>
+        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20">
+            <div class="flex justify-between items-center mx-4 h-full">
+                <div class="md:hidden">
+                    <button onclick="toggleNav()">
+                        <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+                    </button>
                 </div>
-            </nav>
 
-            <!-- Back button and search bar -->
-            <div class="hidden md:hidden flex items-center ml-1 flex-grow" id="back-button-container">
-                <button class="w-6 h-6 mr-4" id="back-button">
-                    <!-- Placeholder back icon -->
-                    <img src="assets/img/gina-icon.ico">
-                </button>
-                <input type="text" class="border rounded px-2 py-2 flex-grow" placeholder="Search events">
-            </div>
+                <div id="logo-container" class="md:flex">
+                    <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
 
-            <div class="flex items-center md:hidden">
-                <button class="w-6 h-6 mx-6" id="search-button">
-                    <!-- Placeholder search icon -->
-                    <img src="assets/img/gina-icon.ico">
-                </button>
-            </div>
+                    <nav class="hidden md:flex items-center ml-4">
+                        <ul class="flex font-bold">
+                            <li><a href="learn.html">Home</a></li>
+                            <li><a href="events.html" class="bg-gray-200">Events</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="leaderboard.html">Leaderboards</a></li>
+                            <li><a href="map.html">Map</a></li>
+                        </ul>
+                    </nav>
+                </div>
 
-            <div class="hidden md:flex items-center mr-4 whitespace-no-wrap">
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+                <div id="login-signup-container" class="hidden md:flex text-white">
+                    <button><a href="login.html">Login</a></button>
+                    <button class= "ml-4"><a href="signup.html">Sign Up</a></button>
+                </div>
+
+                <div class="hidden md:hidden flex items-center flex-grow mr-4" id="searchbar-container">
+                    <button class="w-6 h-6 mr-4" id="back-button" onclick="hideSearchBarContainer()">
+                        <img src="assets/img/back.svg">
+                    </button>
+                    <input type="text" class="border rounded px-2 py-2 flex-grow" placeholder="Search events">
+                </div>
+                
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleSearchBarContainer()">
+                        <img src="assets/img/search.svg" class="w-8">
+                    </button>
+                </div>
             </div>
         </header>
-
-        <!-- Mobile Nav Bar -->
-        <div class="hidden md:hidden bg-green-200 p-4" id="mobile-menu">
-            <ul class="flex flex-col items-start">
-              <li class="mb-4">
-                <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Home</a>
-              </li>
-              <li class="mb-4">
-                <a href="events.html" class="text-black bg-gray-200 font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Events</a>
-              </li>
-              <li class="mb-4">
-                <a href="library.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Tree Library</a>
-              </li>
-              <li class="mb-4">
-                <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Leaderboards</a>
-              </li>
-              <li class="mb-4">
-                <a href="map.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Map</a>
-              </li>
+        
+        <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+            <ul class="flex flex-col font-bold p-4">
+                <li><a href="learn.html">Home</a></li>
+                <li><a href="events.html" class="bg-gray-200">Events</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="leaderboard.html">Leaderboards</a></li>
+                <li><a href="map.html">Map</a></li>
+                <hr class="border-black border-t-2 mb-4">
+                <li><a href="login.html">Log in</a></li>
+                <li><a href="signup.html">Sign up</a></li>
             </ul>
-            <hr class="border-black border-t-2">
-            <ul class="flex flex-col items-start mt-4">
-                <li class="mb-4">
-                    <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Log in</a>
-                </li>
-                <li class="mb-4">
-                    <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white">Sign up</a>
-                </li>
-            </ul>
-          </div>
-          
-          <script>
-            document.getElementById('menu-button').addEventListener('click', function () {
-              const menu = document.getElementById('mobile-menu');
-              menu.classList.toggle('hidden');
-            });
-
-            document.getElementById('search-button').addEventListener('click', function () {
-                document.getElementById('menu-button').classList.toggle('hidden');
-                document.querySelector('.hidden-on-search').classList.toggle('hidden');
-                document.getElementById('back-button-container').classList.toggle('hidden');
-            });
-
-          </script>
+        </nav>
 
         <main>
             <section class="max-w-screen-xl mx-auto rounded-3xl my-6">

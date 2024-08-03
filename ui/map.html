@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GINA - Grow INdigenous trees in your Area</title>
   <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
-  <link href="./assets/css/output.css" rel="stylesheet">
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/nav.css" rel="stylesheet">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -18,6 +19,7 @@
   <!-- ajax library for fetching json/geojson files-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="assets/js/nav.js"></script>
 
     <!-- put style here -->
     <style>
@@ -46,50 +48,108 @@
             align-items: center;
             z-index: 1; /* make sure the overlay is on top of the map */
           }
-          .hidden {
+          .invis {
             display: none;
           }
           .map-blurred {
             filter: blur(5px);
             pointer-events: none;
           }
+          /* responsive tweaks */
+          @media (max-width: 768px) {
+            #map {
+              top: 50px;
+              height: calc(100vh - 50px);
+            }
+          .overlay {
+              top: 50px;
+              height: calc(100vh - 50px);
+            }
+            nav {
+              padding: 10px;
+            }
+            nav ul {
+              flex-direction: column;
+              display: none;
+            }
+            nav li {
+              margin-bottom: 10px;
+            }
+          }
+          @media (max-width: 480px) {
+            #map {
+              top: 30px;
+              height: calc(100vh - 30px);
+            }
+          .overlay {
+              top: 30px;
+              height: calc(100vh - 30px);
+            }
+            nav {
+              padding: 5px;
+            }
+            nav ul {
+              flex-direction: column;
+              display: none;
+            }
+            nav li {
+              margin-bottom: 5px;
+            }
+          }
     </style>
 
 </head>
-<body class="bg-green-200">
-  <nav class="flex justify-between bg-green-200 py-2 drop-shadow-md"> <!-- Navigation Header -->
-    <div class="flex items-center ml-4">
-      <img src="./assets/img/gina.png" alt="Logo" class="h-20 w-25 mr-4">
-      <ul class="flex items-center">
-        <li class="mr-6">
-          <a href="learn.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Home</a>
-        </li>
-        <li class="mr-6">
-          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Events</a>
-        </li>
-        <li class="mr-6">
-          <a href="#" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Tree Library</a>
-        </li>
-        <li class="mr-6">
-          <a href="leaderboard.html" class="text-black font-bold rounded-xl py-2 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Leaderboards</a>
-        </li>
-        <li class="mr-6">
-          <a href="map.html" class="text-black rounded-xl bg-gray-200 font-bold rounded-xl py-1 px-4 hover:text-green-800 hover:bg-white hover:rounded-2xl py-2 px-4">Map</a>
-        </li>
-      </ul>
-    </div>
-    <div class="flex items-center mr-4"> <!-- Sign Up/Login Button, icon for user and cart -->
-      <div id="auth-buttons" class="hidden">
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+<body class="bg-teal-100 pt-20 pb-12">
+  <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
+    <div class="flex justify-between items-center mx-4 h-full">
+      <div class="md:hidden">
+        <button onclick="toggleNav()">
+            <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+        </button>
       </div>
-      <div id="user-buttons" class="hidden">
-        <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/cart.png" ></button>
-        <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/user.png" ></button>
+
+
+      <div id="logo-container" class="md:flex">
+        <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
+
+        <nav class="hidden md:flex items-center ml-4">
+          <ul class="flex font-bold">
+              <li><a href="learn.html">Home</a></li>
+              <li><a href="events.html">Events</a></li>
+              <li><a href="library.html">Library</a></li>
+              <li><a href="leaderboard.html" >Leaderboards</a></li>
+              <li><a href="map.html" class="bg-gray-200">Map</a></li>
+          </ul>
+        </nav>
       </div>
-      
+
+      <div class="flex items-center"> <!-- Sign Up/Login Button, icon for user and cart -->
+        <div id="auth-buttons" class="md:flex hidden invis">
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+        </div>
+        <div id="user-buttons" class="md:flex hidden invis">
+          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/cart.png" ></button>
+          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/user.png" ></button>
+        </div>
+      </div>
     </div>
+  </header>
+
+  <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+    <ul class="flex flex-col font-bold p-4">
+        <li><a href="learn.html">Home</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="leaderboard.html">Leaderboards</a></li>
+        <li><a href="map.html" class="bg-gray-200">Map</a></li>
+        <hr class="border-black border-t-2 mb-4">
+        <li><a href="login.html">Log in</a></li>
+        <li><a href="signup.html">Sign up</a></li>
+    </ul>
   </nav>
+
+
   <!-- Map Controls -->
   <div id="map"></div>
   <script>
@@ -158,7 +218,7 @@
   </div>
 
   <!-- Upload Overlay - this is where we enter information such as Tree Name, Descriptions, Location and Image -->
-  <div class="overlay hidden" id="uploadoverlay">
+  <div class="overlay invis" id="uploadoverlay">
     <div class="bg-white p-4 rounded-xl">
       <h2 class="text-2xl font-bold mb-4">Add Your Tree</h2>
       <p class="text-lg mb-4">Please fill in the details of your tree.</p>
@@ -186,20 +246,20 @@
     let rememberMe = localStorage.getItem('rememberMe');
     
     if (isLoggedIn){
-      document.getElementById('user-buttons').classList.remove('hidden');
-      addtree_button.classList.remove('hidden');
+      document.getElementById('user-buttons').classList.remove('invis');
+      addtree_button.classList.remove('invis');
       if (rememberMe === 'true') {
-        document.getElementById("overlay").classList.add("hidden");
+        document.getElementById("overlay").classList.add("invis");
         document.getElementById("map").classList.remove("map-blurred");
       } else {
-        document.getElementById("overlay").classList.remove("hidden");
+        document.getElementById("overlay").classList.remove("invis");
         document.getElementById("map").classList.add("map-blurred");
       }
     } else {
-      addtree_button.classList.add('hidden');
-      document.getElementById('auth-buttons').classList.remove('hidden');
-      document.getElementById("overlay").classList.add("hidden");
-      document.getElementById("uploadoverlay").classList.add("hidden");
+      addtree_button.classList.add('invis');
+      document.getElementById('auth-buttons').classList.remove('invis');
+      document.getElementById("overlay").classList.add("invis");
+      document.getElementById("uploadoverlay").classList.add("invis");
       document.getElementById("map").classList.remove("map-blurred");
       
     }
@@ -209,7 +269,7 @@
       if (document.getElementById('remember-me').checked) {
         localStorage.setItem('rememberMe', 'true');
       }
-      document.getElementById("overlay").classList.add("hidden");
+      document.getElementById("overlay").classList.add("invis");
       document.getElementById("map").classList.remove("map-blurred");
     }
     
@@ -219,7 +279,7 @@
       if (marker) {
         const lat = marker.getLatLng().lat;
         const lng = marker.getLatLng().lng;
-        document.getElementById("uploadoverlay").classList.remove("hidden");
+        document.getElementById("uploadoverlay").classList.remove("invis");
         document.getElementById("map").classList.add("map-blurred");
         // Pass the latitude and longitude to the upload overlay
         document.getElementById("latitude").value = lat;
@@ -237,13 +297,13 @@
       /* Add what happens when user presses "Upload" (Take in Plant Name, Description and Photo then send them to the database) */
       console.log("Photo uploaded!");
       document.getElementById("map").classList.remove("map-blurred");
-      document.getElementById("uploadoverlay").classList.add("hidden");
+      document.getElementById("uploadoverlay").classList.add("invis");
     }
 
     /* For users who just wants to see the map and not upload a new tree */
     function skip() {
       document.getElementById("map").classList.remove("map-blurred");
-      document.getElementById("uploadoverlay").classList.add("hidden");
+      document.getElementById("uploadoverlay").classList.add("invis");
     }
   </script>
 </body>
