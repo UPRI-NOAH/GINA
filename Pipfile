@@ -8,6 +8,8 @@ djoser = "*"
 django-filter = "*"
 django-rest-framework = "*"
 django-cors-headers = "*"
+drf-spectacular-sidecar = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 

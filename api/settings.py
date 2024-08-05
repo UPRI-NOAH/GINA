@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'django_extensions',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +72,8 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 ROOT_URLCONF = 'api.urls'
@@ -206,5 +209,15 @@ LOGGING = {
                 }
         }
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = "./static/"
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'UPRI GINA API',
+    'DESCRIPTION': 'The backend API for the UP Resilience Institute\'s Grow Indigenous Trees App (GINA)',
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': STATIC_URL + "favicon.png",
+}
+
+CSP_DEFAULT_SRC = ("'self'", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'", "data:")
