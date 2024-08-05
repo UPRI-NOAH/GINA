@@ -70,6 +70,22 @@ Once installed and running, an API schema is available via the `/api/schema` end
 
 # Usage
 
+## Preliminary Data
+
+Some data for `TreeInfo` and `UserTree` are availble in `api/gina/treeinfo.csv` and `api/gina/usertree.csv`, respectively. The necessary images corresponding to these data can be found in [here](https://drive.google.com/drive/folders/1aYAQ2Zn9Vh8ecuGZkpMRnL5CQhvvfar-), to be added to `api/gina/trees` and `api/gina/usertrees`.
+
+Import the `TreeInfo` data via
+
+```bash
+python manage.py runscript api.gina.import_tree_info.py
+```
+
+Then import the `UserTree` data via
+
+```bash
+python manage.py runscript api.gina.import_usertree.py
+```
+
 <!-- TODO: document usage -->
 
 # Screenshots
