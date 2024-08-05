@@ -1,4 +1,5 @@
-nav > ul > li > a{
+nav > ul > li > a,
+#md-nav > ul > li > a{
     border-radius: 0.75rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -6,7 +7,8 @@ nav > ul > li > a{
     padding-right: 1rem;
 }
 
-nav > ul > li > a:hover{
+nav > ul > li > a:hover,
+#md-nav > ul > li > a:hover{
     background-color: white;
     color:#276749;
 }
@@ -15,7 +17,8 @@ nav > ul > li > a:hover{
     margin-bottom: 1rem;
 }
 
-#login-signup-container > button{
+#login-signup-container > button,
+#auth-buttons > button{
     background-color: #48bb78;
     font-weight:700;
     padding-top: 0.5rem;
@@ -25,6 +28,24 @@ nav > ul > li > a:hover{
     border-radius: 0.75rem;
 }
 
-#login-signup-container > button:hover{
+
+#login-signup-container > button:hover,
+#auth-buttons > button:hover{
     background-color: #2f855a;
+}
+
+/* Add this section */
+@media (max-width: 768px) {
+  #user-buttons {
+    display: none;
+  }
+  #user-buttons.mobile-visible {
+    display: flex;
+  }
+  #auth-buttons {
+    display: none;
+  }
+  #auth-buttons.mobile-visible {
+    display: flex;
+  }
 }

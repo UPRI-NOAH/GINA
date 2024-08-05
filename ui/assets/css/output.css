@@ -554,16 +554,16 @@ video {
   --tw-contain-style:  ;
 }
 
-td {
-  text-align: center;
-}
-
 .absolute {
   position: absolute;
 }
 
 .float-right {
   float: right;
+}
+
+.mt-4 {
+  margin-top: 1rem;
 }
 
 .mb-4 {
@@ -609,9 +609,6 @@ td {
 .w-25 {
   width: 6rem;
 }
-.w-30 {
-  width: 20rem;
-}
 
 .w-full {
   width: 100%;
@@ -625,8 +622,8 @@ td {
   z-index: 1;
 }
 
-.z-2{
-  z-index: 2;
+.bottom-0{
+  bottom: 0;
 }
 
 .bottom-4{
@@ -635,6 +632,10 @@ td {
 
 .right-4{
   right: 1rem;
+}
+
+.right-0{
+  right: 0;
 }
 
 .resize-none {
@@ -671,10 +672,7 @@ td {
   --tw-bg-opacity: 1;
   background-color: rgb(34 197 94 / var(--tw-bg-opacity));
 }
-.bg-teal-150 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(226	242	239 / var(--tw-bg-opacity));
-}
+
 .bg-teal-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(153 246 228 / var(--tw-bg-opacity));
@@ -783,74 +781,36 @@ td {
   color: rgb(22 101 52 / var(--tw-text-opacity));
 }
 
-.hover\:text-red-800:hover {
-  --tw-text-opacity: 1;
-  color: rgb(220 38 38 / var(--tw-text-opacity));
-}
-
-
-.dropdown-menu {
-  display: none;
-}
-
-.dropdown-menu.show {
-  display: block;
-}
-
-#leaderboard {
-  border-collapse: separate;
-  border-spacing: 0 10px; /* add some space between rows */
-}
-
-#leaderboard tr {
-  background-color: white;
-  border-radius: 10px; /* rounded corners */
-  padding: 10px; /* add some padding inside the row */
-  overflow: hidden;
-}
-
-#leaderboard td {
-  padding: 10px; /* add some padding inside each cell */
-}
-
-#leaderboard td:first-child {
-  border-top-left-radius: 100px; /* rounded corner for the first cell */
-  border-bottom-left-radius: 100px; /* rounded corner for the first cell */
-}
-
-#leaderboard td:last-child {
-  border-top-right-radius: 100px; /* rounded corner for the last cell */
-  border-bottom-right-radius: 100px; /* rounded corner for the last cell */
-}
-
-#leaderboard td img {
-  width: 40px; /* set a fixed width for the profile picture */
-  height: 40px;
-  border-radius: 50%; /* make the profile picture a circle */
-  margin: 10px; /* add some margin around the profile picture */
-}
-
 #user-dropdown {
   position: absolute;
-  top: 100%;
-  right: 0;
-}
-
-#user-dropdown div {
-  position: relative;
-  z-index: 1;
+  top: 10px; /* adjust to your desired top offset */
+  right: 10px; /* adjust to your desired right offset */
   background-color: #fff;
   border: 1px solid #ddd;
   padding: 10px;
-  width: 200px;
+  z-index: 1;
+  display: none;
 }
 
-#user-dropdown div::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  right: 20px;
-  border-bottom: 10px solid #fff;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
+#user-dropdown-toggle {
+  position: relative; /* make the button a positioning context */
+}
+
+#user-dropdown-toggle:hover + #user-dropdown, #user-dropdown:hover {
+  display: block; /* show the dropdown on hover */
+}
+
+#user-dropdown {
+  top: 0;
+  right: 0;
+}
+
+.add-tree{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 16px; /* equivalent to mb-4 */
+  margin-right: 16px; /* equivalent to mr-4 */
+  padding: 8px 16px; /* equivalent to py-2 px-4 */
+  border-radius: 4px; /* equivalent to rounded */
 }

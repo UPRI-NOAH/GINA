@@ -10,113 +10,50 @@
 </head>
 
 <body class="bg-green-200">
-    <form id="register-form" action="" method="post" class="max-h-screen">
-        <div class="imgcontainer">
-          <img src="./assets/img/gina.png" alt="Avatar" class="h-20 w-30 mr-4 center" >
+  <form id="register-form" action="" method="post" class="max-h-screen">
+      <div class="imgcontainer">
+        <img src="./assets/img/gina.png" alt="Avatar" class="h-20 w-30 mr-4 center" >
+      </div>
+      <h1 class="text-green-400 text-2xl font-bold">Register for an account</h2>
+      <div class="container">
+        <label for="uname"><b>Username</b></label><br>
+        <input type="text" placeholder="Enter Username" name="uname" required class="w-50 p-2 rounded-xl"><br>
+
+        <label for="fname"><b>First Name</b></label><br>
+        <input type="text" placeholder="Enter First Name" name="fname" required class="w-50 p-2 rounded-xl"><br>
+
+        <label for="lname"><b>Last Name</b></label><br>
+        <input type="text" placeholder="Enter Last Name" name="lname" required class="w-50 p-2 rounded-xl"><br>
+
+        <label for="email"><b>Email</b></label><br>
+        <input type="text" placeholder="Enter Email" name="email" required class="w-50 p-2 rounded-xl"><br>
+
+        <label for="cnum"><b>Contact Number</b></label><br>
+        <input type="text" placeholder="Enter Contact Number" name="cnum" required class="w-50 p-2 rounded-xl"><br>
+    
+        <label for="psw"><b>Password</b></label><br>
+        <input type="password" placeholder="Enter Password" name="psw" required class="w-50 p-2 rounded-xl"><br>
+    
+        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Register</button><br>
+      </div>
+      <div class="imgcontainer">
+          <p class="text-green-600 text-lg"> - or register with -</p><br>
+          <button type="button">
+              <a href="#" class="fb p-2 rounded-xl">
+                  <i class="fa fa-facebook fa-fw rounded-xl"></i>
+                </a>
+          </button>
+          <button type="button">
+              <a href="#" class="google p-2 rounded-xl ml-2">
+                  <i class="fa fa-google fa-fw rounded-xl"></i>
+                </a>
+          </button>
         </div>
-        <h1 class="text-green-400 text-2xl font-bold">Register for an account</h2>
-        <div class="container">
-          <label for="uname"><b>Username</b></label><br>
-          <input type="text" placeholder="Enter Username" name="uname" required class="w-50 p-2 rounded-xl"><br>
-
-          <label for="fname"><b>First Name</b></label><br>
-          <input type="text" placeholder="Enter First Name" name="fname" required class="w-50 p-2 rounded-xl"><br>
-
-          <label for="lname"><b>Last Name</b></label><br>
-          <input type="text" placeholder="Enter Last Name" name="lname" required class="w-50 p-2 rounded-xl"><br>
-
-          <label for="email"><b>Email</b></label><br>
-          <input type="text" placeholder="Enter Email" name="email" required class="w-50 p-2 rounded-xl"><br>
-
-          <label for="cnum"><b>Contact Number</b></label><br>
-          <input type="text" placeholder="Enter Contact Number" name="cnum" required class="w-50 p-2 rounded-xl"><br>
-      
-          <label for="psw"><b>Password</b></label><br>
-          <input type="password" placeholder="Enter Password" name="psw" required class="w-50 p-2 rounded-xl"><br>
-      
-          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Register</button><br>
-        </div>
-        <div class="imgcontainer">
-            <p class="text-green-600 text-lg"> - or register with -</p><br>
-            <button type="button">
-                <a href="#" class="fb p-2 rounded-xl">
-                    <i class="fa fa-facebook fa-fw rounded-xl"></i>
-                  </a>
-            </button>
-            <button type="button">
-                <a href="#" class="google p-2 rounded-xl ml-2">
-                    <i class="fa fa-google fa-fw rounded-xl"></i>
-                  </a>
-            </button>
-          </div>
-      
-        <div class="container">
-          <span class="center text-green-600">Already have an account? <a href="login.html" class="hover:rounded-full hover:bg-gray-300"><u>Login</u></a></span>
-        </div>
-      </form>
-
-      <script>
-        let url = "qogqi2a47lij.share.zrok.io";
-        let signupURL = `https://${url}/auth/users/`;
-        let userURL = `https://${url}/api/user-info/`;
-
-        const form = document.getElementById('register-form');
-
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-
-          const userData = {
-            "email": document.getElementsByName('email')[0].value,
-            "username": document.getElementsByName('uname')[0].value,
-            "password": document.getElementsByName('psw')[0].value
-          };
-
-          const userInfo = {
-            "user": null,
-            "first_name": document.getElementsByName('fname')[0].value,
-            "last_name": document.getElementsByName('lname')[0].value,
-            "email": document.getElementsByName('email')[0].value,
-            "contact": document.getElementsByName('cnum')[0].value,
-            "profile_picture": "",
-            "user_points": 0
-          };
-          console.log(userData);
-          console.log(userInfo);
-
-          // Register user
-          fetch(signupURL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('User registered:', data);
-            // Get the user ID from the response
-            const userId = data.id;
-            userInfo.user = userId;
-            console.log(userInfo.user)
-            // Register user info
-            fetch(userURL, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(userInfo)
-            })
-            .then(response => response.json())
-            .then(data => {
-              console.log('User info registered:', data);
-              // Redirect to login.html after successful registration
-              window.location.href = 'login.html';
-            })
-            .catch(error => console.error('Error registering user info:', error));
-          })
-          .catch(error => console.error('Error registering user:', error));
-        });
-      
-    </script>
+    
+      <div class="container">
+        <span class="center text-green-600">Already have an account? <a href="login.html" class="hover:rounded-full hover:bg-gray-300"><u>Login</u></a></span>
+      </div>
+    </form>
+      <script src="assets/js/signup.js"></script>
   </body>
   </html>
