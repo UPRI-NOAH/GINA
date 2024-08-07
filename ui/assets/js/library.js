@@ -1,5 +1,5 @@
 // change URL for backend
-let url = "5dtfx0rk5mbq.share.zrok.io";
+let url = "akza1d6qzb8z.share.zrok.io";
 let userURL = `https://${url}/api/user-info/`;
 
 var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');

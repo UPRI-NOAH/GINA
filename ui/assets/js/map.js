@@ -1,5 +1,5 @@
 // change URL for backend
-let url = "5dtfx0rk5mbq.share.zrok.io";
+let url = "akza1d6qzb8z.share.zrok.io";
 let usertreeURL = `https://${url}/api/user-tree-info/`
 
 var username = localStorage.getItem('username') || sessionStorage.getItem('username');
@@ -196,44 +196,45 @@ function uploadTree() {
     body: JSON.stringify(treeData)
   })
   .then(response => response.json())
-  // .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-
-  // Get current user points
-  fetch(editUserURL, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => response.json())
   .then(data => {
-    const currentUserPoints = data.user_points;
-    const newPoints = currentUserPoints + 1;
-
-    // Update user points
+    // Get current user points
     fetch(editUserURL, {
-      method: 'PATCH',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "user_points": newPoints
-      })
+      }
     })
     .then(response => response.json())
-    .then(data => console.log(data))
+    .then(data => {
+      const currentUserPoints = data.user_points;
+      const newPoints = currentUserPoints + 1;
+
+      // Update user points
+      fetch(editUserURL, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "user_points": newPoints
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        document.getElementById("map").classList.remove("map-blurred");
+        document.getElementById("uploadoverlay").classList.add("invis");
+        location.reload(); // reload the page after the PATCH request is complete
+      })
+      .catch(error => console.error('Error:', error));
+    })
     .catch(error => console.error('Error:', error));
   })
   .catch(error => console.error('Error:', error));
-
-  document.getElementById("map").classList.remove("map-blurred");
-  document.getElementById("uploadoverlay").classList.add("invis");
-  location.reload();
 }
 
 /* For users who just wants to see the map and not upload a new tree */
 function skip() {
-document.getElementById("map").classList.remove("map-blurred");
-document.getElementById("uploadoverlay").classList.add("invis");
+  document.getElementById("map").classList.remove("map-blurred");
+  document.getElementById("uploadoverlay").classList.add("invis");
 }
