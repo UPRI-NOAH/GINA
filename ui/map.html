@@ -99,7 +99,7 @@
     </style>
 
 </head>
-<body class="bg-teal-100 pt-20 pb-12">
+<body class="bg-teal-100 pt-20 pb-12"> 
   <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
     <div class="flex justify-between items-center mx-4 h-full">
       <div class="md:hidden">
@@ -107,7 +107,6 @@
             <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
         </button>
       </div>
-
 
       <div id="logo-container" class="md:flex">
         <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
@@ -129,11 +128,16 @@
           <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
         </div>
         <div id="user-buttons" class="md:flex hidden invis">
-          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/cart.png" ></button>
-          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2"><img class="rounded-full w-10 h-10" src="./assets/img/user.png" ></button>
+          <!-- Cart -->
+          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+            <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+          </button>
+          <!-- user -->
+          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+            <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+          </button>
         </div>
       </div>
-    </div>
   </header>
 
   <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
@@ -143,63 +147,26 @@
         <li><a href="library.html">Library</a></li>
         <li><a href="leaderboard.html">Leaderboards</a></li>
         <li><a href="map.html" class="bg-gray-200">Map</a></li>
-        <hr class="border-black border-t-2 mb-4">
-        <li><a href="login.html">Log in</a></li>
-        <li><a href="signup.html">Sign up</a></li>
+        <div class="invis" id="mobile-login">
+          <hr class="border-black border-t-2 mb-4">
+          <li><a href="login.html">Log in</a></li>
+          <li><a href="signup.html">Sign up</a></li>
+      </div>
     </ul>
   </nav>
 
-
   <!-- Map Controls -->
-  <div id="map"></div>
-  <script>
-    var map = L.map('map').setView([14.655156528354416, 121.07045364296518], 13);
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-
-    var sensorIcon = L.icon({
-			iconUrl: "./assets/img/gina_marker.png", // file path of image
-			iconSize: [29, 39], // set size of icon
-		});
-
-    var ph = $.ajax({
-                url: "https://2df8-111-68-43-102.ngrok-free.app/api/user-tree-info/?format=json",
-                dataType: "json",
-                    headers: { 
-                    'ngrok-skip-browser-warning': 'true' 
-                },
-                success: console.log("PH geojson data successfully loaded."),
-                error: function (xhr) {
-                    alert(xhr.statusText)
-                }
-                })
-                $.when(ph).done(function () {
-                bound = ph.responseJSON
-                console.log(bound)
-
-                // Loop through the JSON data and create a custom marker for each point
-                bound.forEach(function (feature) {
-                    var latlng = L.latLng(feature.latitude, feature.longitude);
-                    console.log(latlng);
-                    return L.marker(latlng, { icon: sensorIcon }).addTo(map);
-                });
-            });
-
-            L.Control.geocoder().addTo(map);
-
-            let marker;
-
-            map.on('click', (e) => {
-                if (marker) {
-                    map.removeLayer(marker);
-                }
-                marker = L.marker(e.latlng).addTo(map);
-            });
-  </script>
-
+   <div>
+    <div id="map">
+    </div>
+    <div class="invis" id="user-dropdown">
+      <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
+        <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
+        <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+      </div>
+    </div>
+   </div>
+  
   <!-- Instruction Overlay -->
   <div class="overlay" id = "overlay">
     <div class="bg-white p-4 rounded-xl" id="instructions">
@@ -226,85 +193,21 @@
       <input type="text" id="plant-name" class="w-full p-1 mb-4" placeholder="Plant Name"><br>
       <!-- Description -->
       <textarea id="description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
+      <input type="date" id="planted-on" class="w-full p-1 mb-4" placeholder="Planted On">
       <!-- Image -->
       <p class="text-lg mb-4">Add a photo:</p>
       <input type="file" id="tree-photo" accept="image/*"><br> <br>
+      <!-- Add hidden input fields for latitude and longitude -->
+      <input type="hidden" id="latitude" name="latitude">
+      <input type="hidden" id="longitude" name="longitude">
       <div class="float-right">
         <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadPhoto()">Upload</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="uploadTree()">Upload</button>
       </div>
     </div>
   </div>
 
-  <button class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2 z-0" id="addTree" onclick="addTreeClick()"><img class="rounded-full w-10 h-10" src="./assets/img/addtree.png" ></button>
-
-  <script>
-    const addtree_button = document.getElementById('addTree');
-
-    var isLoggedIn = true; // change for different buttons on the upper right
-
-    let rememberMe = localStorage.getItem('rememberMe');
-    
-    if (isLoggedIn){
-      document.getElementById('user-buttons').classList.remove('invis');
-      addtree_button.classList.remove('invis');
-      if (rememberMe === 'true') {
-        document.getElementById("overlay").classList.add("invis");
-        document.getElementById("map").classList.remove("map-blurred");
-      } else {
-        document.getElementById("overlay").classList.remove("invis");
-        document.getElementById("map").classList.add("map-blurred");
-      }
-    } else {
-      addtree_button.classList.add('invis');
-      document.getElementById('auth-buttons').classList.remove('invis');
-      document.getElementById("overlay").classList.add("invis");
-      document.getElementById("uploadoverlay").classList.add("invis");
-      document.getElementById("map").classList.remove("map-blurred");
-      
-    }
-
-    /* Note: Should be disabled when user is not logged in */
-    function nextStep() {
-      if (document.getElementById('remember-me').checked) {
-        localStorage.setItem('rememberMe', 'true');
-      }
-      document.getElementById("overlay").classList.add("invis");
-      document.getElementById("map").classList.remove("map-blurred");
-    }
-    
-    /* This is what happens when user presses Add Tree Button on the lower right */
-    /* Note: Should be disabled when user is not logged in */
-    function addTreeClick() {
-      if (marker) {
-        const lat = marker.getLatLng().lat;
-        const lng = marker.getLatLng().lng;
-        document.getElementById("uploadoverlay").classList.remove("invis");
-        document.getElementById("map").classList.add("map-blurred");
-        // Pass the latitude and longitude to the upload overlay
-        document.getElementById("latitude").value = lat;
-        document.getElementById("longitude").value = lng;
-      } else {
-        alert("Please place a marker on the map first!");
-      }
-    }
-
-    function logLocation() {
-      console.log(`Latitude: ${document.getElementById('latitude').value}, Longitude: ${document.getElementById('longitude').value}`);
-    }
-
-    function uploadPhoto() {
-      /* Add what happens when user presses "Upload" (Take in Plant Name, Description and Photo then send them to the database) */
-      console.log("Photo uploaded!");
-      document.getElementById("map").classList.remove("map-blurred");
-      document.getElementById("uploadoverlay").classList.add("invis");
-    }
-
-    /* For users who just wants to see the map and not upload a new tree */
-    function skip() {
-      document.getElementById("map").classList.remove("map-blurred");
-      document.getElementById("uploadoverlay").classList.add("invis");
-    }
-  </script>
+  <button class="fixed mb-4 mr-4 bottom-0 right-0 bg-green-500 hover:bg-green-700 p-1 rounded-full z-0" id="addTree" onclick="addTreeClick()"><img class="rounded-full w-10 h-10" src="./assets/img/addtree.png" ></button>
+  <script src="assets/js/map.js"></script>
 </body>
 </html>

@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from api import get_str
+import os
 from dotenv import load_dotenv
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path, override=True)
+
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,8 +31,12 @@ SECRET_KEY = 'django-insecure-u08+g#%-qff+x480z9!8-xvir@q5r5s1ul&o-xz@es#lcbo(sg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
+# SECURITY WARNING: THIS IS DANGEROUS, DO NOT ALLOW IN PRODUCTION
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
@@ -43,10 +48,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api.gina.apps.GinaConfig'
+    'rest_framework.authtoken',
+    'api.gina.apps.GinaConfig',
+    'django_filters',
+    'djoser',
+    'corsheaders',
+    'django_extensions',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +68,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 ROOT_URLCONF = 'api.urls'
 
@@ -103,9 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
@@ -134,3 +151,73 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+                'superverbose': {
+                        'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(process)d %(thread)d %(message)s'
+                        },
+                'verbose': {
+                        'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)d %(message)s'
+                        },
+                'simple': {
+                        'format': '%(levelname)s %(message)s'
+                        },
+        },
+        'handlers': {
+                'console': {
+                        'class': 'logging.StreamHandler',
+                        'formatter': 'verbose',
+                        },
+                },
+        'root': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'formatter': 'verbose',
+                },
+        'loggers': {
+                'django.utils.autoreload': {
+                        'handlers': [],
+                        'level': 'ERROR',
+                        },
+
+                'django': {
+                        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                        'handlers': ['console'],
+                        'propagate': True,
+                        },
+
+                'somelib': {
+                        'level': 'DEBUG',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+      
+                'somelib.package': {
+                        'level': 'ERROR',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+
+                'my_app': {
+                        'level': 'DEBUG',
+                        'handlers': ['console'],
+                        'propagate': False,
+                        },
+                }
+        }
+
+STATIC_ROOT = "./static/"
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'UPRI GINA API',
+    'DESCRIPTION': 'The backend API for the UP Resilience Institute\'s Grow Indigenous Trees App (GINA)',
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': STATIC_URL + "favicon.png",
+}
+
+CSP_DEFAULT_SRC = ("'self'", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'", "data:")

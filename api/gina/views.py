@@ -1,17 +1,51 @@
 from django.shortcuts import render
-from rest_framework import viewsets, mixins
-from api.gina.models import TreeInfo, TreeType, UserInfo
-from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer
+from rest_framework import generics, viewsets, mixins
+from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo
+from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer
+from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter
+from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema_view, extend_schema
 
-# Create your views here.
+@extend_schema_view(
+    list=extend_schema(description="Returns a list of all information for all plantable trees")
+)
 class TreeInfoViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = TreeInfo.objects.order_by("tree_name")
     serializer_class = TreeInfoSerializer
-    
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TreeInfoFilter
+
+@extend_schema_view(
+    list=extend_schema(description="Returns a list of all type classes for all plantable trees")
+)
 class TreeTypeViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = TreeType.objects.order_by("type_name")
     serializer_class = TreeTypeSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TreeTypeFilter
 
-class UserInfoViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = UserInfo.objects.order_by("username")
+@extend_schema_view(
+    list=extend_schema(description="Returns a list of all user profiles"),
+    retrieve=extend_schema(description="Returns a user profile, identified by its username"),
+    create=extend_schema(description="Creates a user profile, requires that a Django User object (identified by username) already exist for authentication purposes"),
+    update=extend_schema(description="Updates a user profile, provided the username for the corresponding User object"),
+    destroy=extend_schema(description="Deletes a user profile, provided the username for the corresponding User object")
+)
+class UserInfoViewset(viewsets.ModelViewSet):
+    queryset = UserInfo.objects.order_by("user")
     serializer_class = UserInfoSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserInfoFilter
+
+@extend_schema_view(
+    list=extend_schema(description="Returns a list of all planted trees"),
+    retrieve=extend_schema(description="Returns a planted tree, identified by its reference number"),
+    create=extend_schema(description="Creates a record for a planted tree"),
+    update=extend_schema(description="Updates a planted tree, identified by its reference number"),
+    destroy=extend_schema(description="Deletes a planted tree, identified by its reference number")
+)
+class UserTreeViewset(viewsets.ModelViewSet):
+    queryset = UserTreeInfo.objects.order_by("planted_on")
+    serializer_class = UserTreeSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserTreeFilter

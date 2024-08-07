@@ -12,37 +12,43 @@
     <!-- ajax library for fetching json/geojson files-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="assets/js/nav.js"></script>
+  <style>
+    .invis {
+            display: none;
+          }
+  </style>
 
 </head>
 <body class="bg-teal-100 pt-20 pb-12">
-  <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20">
+  <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
     <div class="flex justify-between items-center mx-4 h-full">
-        <div class="md:hidden">
-            <button onclick="toggleNav()">
-                <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
-            </button>
-        </div>
+      <div class="md:hidden">
+        <button onclick="toggleNav()">
+            <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+        </button>
+      </div>
 
-        <div id="logo-container" class="md:flex">
-            <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
 
-            <nav class="hidden md:flex items-center ml-4">
-                <ul class="flex font-bold">
-                    <li><a href="learn.html">Home</a></li>
-                    <li><a href="events.html">Events</a></li>
-                    <li><a href="library.html">Library</a></li>
-                    <li><a href="leaderboard.html" class="bg-gray-200">Leaderboards</a></li>
-                    <li><a href="map.html">Map</a></li>
-                </ul>
-            </nav>
-        </div>
+      <div id="logo-container" class="md:flex">
+        <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
 
-        <div id="login-signup-container" class="md:flex hidden text-white">
-          <button><a href="login.html">Login</a></button>
-          <button class= "ml-4"><a href="signup.html">Sign Up</a></button>
+        <nav class="hidden md:flex items-center ml-4">
+          <ul class="flex font-bold">
+              <li><a href="learn.html">Home</a></li>
+              <li><a href="events.html">Events</a></li>
+              <li><a href="library.html">Library</a></li>
+              <li><a href="leaderboard.html" class="bg-gray-200">Leaderboards</a></li>
+              <li><a href="map.html">Map</a></li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Sign Up/Login Button, icon for user and cart -->
+      <div class="flex items-center"> 
+        <div id="auth-buttons" class="md:flex hidden invis">
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
         </div>
-      
-        <div id="user-buttons" class="hidden">
+        <div id="user-buttons" class="md:flex hidden invis">
           <!-- Cart -->
           <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
             <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
@@ -51,29 +57,9 @@
           <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
             <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
           </button>
-          <div class="hidden" id="user-dropdown">
-            <div class="bg-white p-4 rounded-xl w-48 absolute top-14 right-4">
-              <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
-              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
-            </div>
-          </div>
-          
         </div>
-
-        <div class="hidden md:hidden flex items-center flex-grow mr-4" id="searchbar-container">
-            <button class="w-6 h-6 mr-4" id="back-button" onclick="hideSearchBarContainer()">
-                <img src="assets/img/back.svg">
-            </button>
-            <input type="text" class="border rounded px-2 py-2 flex-grow" placeholder="Search library">
-        </div>
-        
-        <div class="md:hidden invisible flex items-center">
-            <button onclick="toggleSearchBarContainer()">
-                <img src="assets/img/search.svg" class="w-8">
-            </button>
-        </div>
-    </div>
-</header>
+      </div>
+  </header>
 
   <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
     <ul class="flex flex-col font-bold p-4">
@@ -82,14 +68,25 @@
         <li><a href="library.html">Library</a></li>
         <li><a href="leaderboard.html" class="bg-gray-200">Leaderboards</a></li>
         <li><a href="map.html">Map</a></li>
-        <hr class="border-black border-t-2 mb-4">
-        <li><a href="login.html">Log in</a></li>
-        <li><a href="signup.html">Sign up</a></li>
+        <div class="invis" id="mobile-login">
+          <hr class="border-black border-t-2 mb-4">
+          <li><a href="login.html">Log in</a></li>
+          <li><a href="signup.html">Sign up</a></li>
+      </div>
     </ul>
   </nav>
+  <!-- Drop-down menu for user -->
+  <div class="invis" id="user-dropdown">
+    <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
+      <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
+      <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+    </div>
+  </div>
 
   <main>
-    <div class="container mx-auto mt-10 p-4 rounded-lg shadow-lg"> <!-- Leaderboard Container -->
+    <!-- Leaderboard Container -->
+    <div class="container mx-auto mt-10 p-4 rounded-lg shadow-lg"> 
+
         <h2 class="text-2xl font-bold mb-4 text-center">Leaderboard</h2>
         <table id ="leaderboard" class="w-full text-center">
             <tr>
@@ -105,85 +102,7 @@
         </table>
     </div>
   </main>
-
-    <script>
-        let url = "qogqi2a47lij.share.zrok.io";
-        let userURL = `https://${url}/api/user-info/`;
-
-        var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-
-        var isLoggedIn = true;
-        
-        if (authToken){
-          isLoggedIn = true;
-        } else {
-          isLoggedIn = false;
-        }
-
-        if (isLoggedIn){
-            document.getElementById('user-buttons').classList.remove('hidden');
-        } else {
-            document.getElementById('auth-buttons').classList.remove('hidden');
-        }
-
-        // User Dropdown Toggle
-        document.getElementById('user-dropdown-toggle').addEventListener('click', function(event) {
-          event.stopPropagation();
-          document.getElementById("user-dropdown").classList.toggle("hidden");
-        });
-
-        // Toggle dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-          if (!event.target.closest('#user-dropdown') && !event.target.closest('#user-dropdown-toggle')) {
-            document.getElementById("user-dropdown").classList.add("hidden");
-          }
-        });
-
-        // View Profile Function
-        function viewProfile() {
-          // Add your profile viewing logic here
-          console.log("View Profile clicked");
-          document.getElementById("user-dropdown").classList.add("hidden");
-        }
-
-        // Log Out Function
-        function logOut() {
-          // Add your log out logic here
-          localStorage.setItem('authToken', '');
-          sessionStorage.setItem('authToken', '');
-
-          location.reload();
-        }
-
-        const leaderboardBody = document.getElementById("leaderboard-body");
-
-        var ph = $.ajax({
-            url: userURL,
-            dataType: "json",
-                headers: { 
-                'ngrok-skip-browser-warning': 'true' 
-            },
-            success: console.log("PH geojson data successfully loaded."),
-            error: function (xhr) {
-                alert(xhr.statusText)
-            }
-            })
-            $.when(ph).done(function () {
-              bound = ph.responseJSON
-              bound.sort((a, b) => b.user_points - a.user_points); // Sort in descending order
-              bound.forEach((data, index) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                <td class="px-4 py-2">${index+1}</td>
-                <td class="px-4 py-2"><img src="${data.profile_picture}" alt="${data.user}'s profile picture"></td>
-                <td class="px-4 py-2">${data.user}</td>
-                <td class="px-4 py-2">${data.user_points}</td>
-                `;
-                leaderboardBody.appendChild(row);
-              });
-            });
-        
-        
-      </script>
-
+  <script src="assets/js/leaderboard.js"></script>
 </body>
+</html>
+
