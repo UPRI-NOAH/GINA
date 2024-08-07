@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GINA - Grow INdigenous trees in your Area</title>        
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <link href="assets/css/nav.css" rel="stylesheet">
+        <link href="assets/css/library.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+        <script src="assets/js/nav.js"></script>
+        <style>
+            .invis {
+                    display: none;
+                  }
+          </style>
+
+    </head>
+    <body class="bg-teal-100 pt-20 pb-12">
+        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
+            <div class="flex justify-between items-center mx-4 h-full">
+              <div class="md:hidden">
+                <button onclick="toggleNav()">
+                    <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+                </button>
+              </div>
+        
+        
+              <div id="logo-container" class="md:flex">
+                <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
+        
+                <nav class="hidden md:flex items-center ml-4">
+                  <ul class="flex font-bold">
+                      <li><a href="learn.html">Home</a></li>
+                      <li><a href="events.html">Events</a></li>
+                      <li><a href="library.html" class="bg-gray-200">Library</a></li>
+                      <li><a href="leaderboard.html">Leaderboards</a></li>
+                      <li><a href="map.html">Map</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <!-- Sign Up/Login Button, icon for user and cart -->
+              <div class="flex items-center"> 
+                <div id="auth-buttons" class="md:flex hidden invis">
+                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+                </div>
+                <div id="user-buttons" class="md:flex hidden invis">
+                  <!-- Cart -->
+                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+                  </button>
+                  <!-- user -->
+                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+                  </button>
+                </div>
+              </div>
+          </header>
+        
+          <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+            <ul class="flex flex-col font-bold p-4">
+                <li><a href="learn.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="library.html" class="bg-gray-200">Library</a></li>
+                <li><a href="leaderboard.html">Leaderboards</a></li>
+                <li><a href="map.html">Map</a></li>
+                <div class="invis" id="mobile-login">
+                    <hr class="border-black border-t-2 mb-4">
+                    <li><a href="login.html">Log in</a></li>
+                    <li><a href="signup.html">Sign up</a></li>
+                </div>
+            </ul>
+          </nav>
+          <!-- Drop-down menu for user -->
+          <div class="invis" id="user-dropdown">
+            <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
+              <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
+              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+            </div>
+          </div>
+
+        <main>
+            <div class="mx-4 pt-4 max-w-screen-xl mx-auto" id="tree-library-container">
+                <h1 class="text-3xl font-bold text-center mx-auto">Tree Library</h1>
+        
+                <div class="grid m-4 mx-auto lg:max-w-5xl md:max-w-3xl md:grid-cols-3 lg:grid-cols-4 gap-2" id="tree-grid">
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Bagodlau</p></div>
+                            <div><p>Xanthostemon philippinensis</p></div>
+                            <div><p>Myrtaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/bagoadlau.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Bahkaw</p></div>
+                            <div><p>Rhizophora Stylosa</p></div>
+                            <div><p>Rhizophoraceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/bahkaw.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Bungalon</p></div>
+                            <div><p>Avicennia marina</p></div>
+                            <div><p>Acanthaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/bungalon.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Dao</p></div>
+                            <div><p>Dracontomelon dao</p></div>
+                            <div><p>Anacardiaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/dao.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Kamagong</p></div>
+                            <div><p>Diospyros discolor</p></div>
+                            <div><p>Ebenaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/kamagong.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Malakatmon</p></div>
+                            <div><p>Dillenia luzoniensis</p></div>
+                            <div><p>Dilleniaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/malakatmon.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Manggis</p></div>
+                            <div><p>Koompassia excelsa</p></div>
+                            <div><p>Fabaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/manggis.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Molave</p></div>
+                            <div><p>Vitex parviflora</p></div>
+                            <div><p>Lamiaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/molave.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Narra</p></div>
+                            <div><p>Pterocarpus indicus</p></div>
+                            <div><p>Fabaceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/narra-binhi.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+
+
+
+                    <div class="tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto">
+                        <div class="flex flex-col justify-center detail-container w-full h-32">
+                            <div class="text-xl font-bold" style="color:black"><p>Pagatpat</div>
+                            <div><p>Sonneratia Alba</p></div>
+                            <div><p>Lythraceae</p></div>
+                        </div>
+                        <div class="flex-shrink">
+                            <img src="assets/img/trees/pagatpat.jpg" class="w-64 md:h-64 h-32 object-contain">
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+            </div>
+        </main>
+        <script src="assets/js/library.js"></script>
+    </body>
+</html>

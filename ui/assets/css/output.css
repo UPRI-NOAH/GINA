@@ -562,6 +562,10 @@ video {
   float: right;
 }
 
+.mt-4 {
+  margin-top: 1rem;
+}
+
 .mb-4 {
   margin-bottom: 1rem;
 }
@@ -618,12 +622,20 @@ video {
   z-index: 1;
 }
 
+.bottom-0{
+  bottom: 0;
+}
+
 .bottom-4{
   bottom: 1rem;
 }
 
 .right-4{
   right: 1rem;
+}
+
+.right-0{
+  right: 0;
 }
 
 .resize-none {
@@ -769,10 +781,36 @@ video {
   color: rgb(22 101 52 / var(--tw-text-opacity));
 }
 
-.dropdown-menu {
+#user-dropdown {
+  position: absolute;
+  top: 10px; /* adjust to your desired top offset */
+  right: 10px; /* adjust to your desired right offset */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  z-index: 1;
   display: none;
 }
 
-.dropdown-menu.show {
-  display: block;
+#user-dropdown-toggle {
+  position: relative; /* make the button a positioning context */
+}
+
+#user-dropdown-toggle:hover + #user-dropdown, #user-dropdown:hover {
+  display: block; /* show the dropdown on hover */
+}
+
+#user-dropdown {
+  top: 0;
+  right: 0;
+}
+
+.add-tree{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 16px; /* equivalent to mb-4 */
+  margin-right: 16px; /* equivalent to mr-4 */
+  padding: 8px 16px; /* equivalent to py-2 px-4 */
+  border-radius: 4px; /* equivalent to rounded */
 }

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GINA - Grow INdigenous trees in your Area</title>        
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <link href="assets/css/nav.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+        <script src="assets/js/nav.js"></script>
+        <style>
+            .invis {
+                    display: none;
+                  }
+          </style>
+    </head>
+    <body class="bg-teal-100 pt-20 pb-12">
+        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
+            <div class="flex justify-between items-center mx-4 h-full">
+              <div class="md:hidden">
+                <button onclick="toggleNav()">
+                    <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+                </button>
+              </div>
+        
+        
+              <div id="logo-container" class="md:flex">
+                <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
+        
+                <nav class="hidden md:flex items-center ml-4">
+                  <ul class="flex font-bold">
+                      <li><a href="learn.html">Home</a></li>
+                      <li><a href="events.html" class="bg-gray-200">Events</a></li>
+                      <li><a href="library.html">Library</a></li>
+                      <li><a href="leaderboard.html">Leaderboards</a></li>
+                      <li><a href="map.html">Map</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <!-- Sign Up/Login Button, icon for user and cart -->
+              <div class="flex items-center"> 
+                <div id="auth-buttons" class="md:flex hidden invis">
+                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+                </div>
+                <div id="user-buttons" class="md:flex hidden invis">
+                  <!-- Cart -->
+                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+                  </button>
+                  <!-- user -->
+                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+                  </button>
+                </div>
+              </div>
+          </header>
+        
+          <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+            <ul class="flex flex-col font-bold p-4">
+                <li><a href="learn.html">Home</a></li>
+                <li><a href="events.html" class="bg-gray-200">Events</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="leaderboard.html">Leaderboards</a></li>
+                <li><a href="map.html">Map</a></li>
+                <div class="invis" id="mobile-login">
+                    <hr class="border-black border-t-2 mb-4">
+                    <li><a href="login.html">Log in</a></li>
+                    <li><a href="signup.html">Sign up</a></li>
+                </div>
+            </ul>
+          </nav>
+          <!-- Drop-down menu for user -->
+          <div class="invis" id="user-dropdown">
+            <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
+              <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
+              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+            </div>
+          </div>
+
+        <main>
+            <section class="max-w-screen-xl mx-auto rounded-3xl my-6">
+                <div class="w-full rounded-3xl">
+                    <h1 class="text-2xl ml-4 font-bold rounded-3xl">Latest Event</h1> 
+                </div>
+                <div class="bg-white w-11/12 rounded-3xl mt-4 md:flex md:items-center md:justify-evenly mx-auto md:py-4">  <!-- Latest event container -->
+                    <div class="flex flex-col rounded-3xl md:max-w-sm mx-auto md:mx-8 md:w-3/6 md:flex-grow-0">
+                        <img src="assets/img/gina.png" alt="Latest Event">
+                    </div>
+                    <div class="flex justify-center text-center text-xl font-medium text-gray-600 text-green-800 md:w-5/12 md:flex-col md:justify-around">  <!-- Event text container -->
+                        <div class="block md:hidden">
+                            <h1 class="text-xl font-bold rounded-3xl">Event 1</h1> 
+                        </div>
+                        <div class="hidden md:flex md:flex-col md:justify-evenly md:items-start md:h-56">
+                            <div class="flex justify-start w-full">
+                                <h1 class="text-2xl font-bold rounded-3xl">Event 1</h1> 
+                            </div>
+                            <div class="flex justify-center w-full">
+                                <div class="flex w-full text-base">
+                                    <div class="w-1/2 flex items-center">
+                                        <img src="assets/img/gina-icon.ico" class="w-6 h-6 mr-2">
+                                        <p>Event location</p>
+                                    </div>
+                                    <div class="w-1/2 flex items-center">
+                                        <img src="assets/img/gina-icon.ico" class="w-6 h-6 mr-2">
+                                        <p>Event date</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col text-left w-full h-32">
+                                <h1 class="text-2xl font-bold rounded-3xl">Details</h1>
+                                <p class="text-base h-full overflow-y-scroll">Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                                    Reiciendis sunt eveniet dicta unde, placeat quia velit. Autem tempore suscipit 
+                                    asperiores quod? Tenetur, in similique sit aut provident iure quis omnis. </p> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-opacity-75 max-w-screen-xl mx-auto rounded-3xl my-6">
+                <div class="w-10/12 rounded-3xl">
+                    <h1 class="text-2xl ml-4 font-bold rounded-3xl">Past Events</h1> 
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 content-center mt-6">
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 1</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 2</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 3</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex  justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 4</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">   
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 5</p>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-75 rounded-3xl">    
+                        <div class="flex justify-center">
+                            <img src="assets/img/gina.png" alt="Logo" class="w-64 m-8">
+                        </div>
+                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
+                            <p>Event name 6</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        <script src="assets/js/events.js"></script>
+    </body>
+</html>
