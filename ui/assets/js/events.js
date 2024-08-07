@@ -1,7 +1,4 @@
-// change URL for backend
-let url = "akza1d6qzb8z.share.zrok.io";
-let userURL = `https://${url}/api/user-info/`;
-
+// authentication token
 var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
 var isLoggedIn = true;

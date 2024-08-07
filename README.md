@@ -32,7 +32,27 @@ This project uses Python 3.9. The Python version should be automatically managed
 The frontend and backend are separate systems, though both can be found in this repository.
 
 ## Frontend
-<!-- TODO: document frontend setup -->
+
+First, establish a connection with the backend by replacing the **url** in the .js files with the corresponding backend connection.
+
+These .js files makes use of certain endpoints to make the system work:
+- signup.js
+    - `/auth/users/`     
+        - used for registering the user to the database
+    - `/api/user-info/`  
+        - used for storing other details (such as name and contact number) from the user to the database
+- login.js
+    - `/auth/token/login/` 
+        - used for logging in to the backend and to receive an authentication token
+- leaderboard.js
+    - `/api/user-info/`  
+        - used to query each user's points to display them on the leaderboard
+- map.js
+    - `/api/user-tree-info/`  
+        - used for querying planted trees and displaying them on the map through pins (blue pin = owned, green pin = not owned)
+        - used for uploading new trees along with the planting details (such as location and date planted)
+    - `/api/user-info/${username}/?format=json`
+        - used for updating the points of the user each time a tree is planted
 
 ### Backend
 
@@ -90,4 +110,31 @@ python manage.py runscript api.gina.import_usertree.py
 
 # Screenshots
 
-<!-- TODO: add screenshots -->
+### Registration Page
+- This is where users can register for an account
+![Register](screenshots/signup.png)
+
+### Login Page
+- This is where users can login after registering for an account
+![Login](screenshots/login.png)
+
+### Landing Page
+- This is where users are redirected to after logging in
+- It contains information regarding GINA and some plant care tips
+![Landing Page](screenshots/landing_page.png)
+
+### Events Page
+- This is where events and articles will be located
+![Events](screenshots/events.png)
+
+### Tree Library Page
+- This is where the collection of indigenous trees information is located
+![Tree Library](screenshots/library.png)
+
+### Leaderboards Page
+- This is where the ranking of the users based on trees planted can be seen
+![Leaderboard](screenshots/leaderboard.png)
+
+### Map Page
+- This is where the users can see the planted trees as well as upload the trees that they planted
+![Map](screenshots/map.png)

@@ -4,7 +4,7 @@ let usertreeURL = `https://${url}/api/user-tree-info/`
 
 var username = localStorage.getItem('username') || sessionStorage.getItem('username');
 let editUserURL = `https://${url}/api/user-info/${username}/?format=json`;
-console.log(editUserURL);
+// console.log(editUserURL);
 
 const addtree_button = document.getElementById('addTree');
 
