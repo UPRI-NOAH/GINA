@@ -32,7 +32,7 @@ nav > ul > li > a:hover,
 #login-signup-container > button:hover,
 #auth-buttons > button:hover{
     background-color: #2f855a;
-}
+
 
 /* Add this section */
 @media (max-width: 768px) {
