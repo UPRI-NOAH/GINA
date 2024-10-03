@@ -1,7 +1,7 @@
 // change URL for backend
-let url = "akza1d6qzb8z.share.zrok.io";
-let signupURL = `https://${url}/auth/users/`;
-let userURL = `https://${url}/api/user-info/`;
+let url = "127.0.0.1:8000";
+let signupURL = `http://${url}/auth/users/`;
+let userURL = `http://${url}/api/user-info/`;
 
 const form = document.getElementById('register-form');
 

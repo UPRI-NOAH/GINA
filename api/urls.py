@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from api.gina.views import UserInfoViewset, UserTreeViewset
+from django.conf import settings
+from django.conf.urls.static import static
 
 from api.gina.views import TreeInfoViewset, TreeTypeViewset
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
@@ -35,4 +37,8 @@ urlpatterns = [
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    print(urlpatterns)
