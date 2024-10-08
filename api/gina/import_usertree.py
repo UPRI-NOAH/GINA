@@ -1,4 +1,15 @@
 import pandas as pd
+import sys
+from pathlib import Path
+import os
+import django
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(PROJECT_ROOT))
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "api.settings")  # noqa: E402, E501
+django.setup()
+
 from django.contrib.auth.models import User
 from api.gina.models import UserInfo, TreeInfo, UserTreeInfo
 

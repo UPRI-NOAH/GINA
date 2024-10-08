@@ -1,9 +1,9 @@
 // change URL for backend
-let url = "akza1d6qzb8z.share.zrok.io";
-let usertreeURL = `https://${url}/api/user-tree-info/`
+let url = "127.0.0.1:8000";
+let usertreeURL = `http://${url}/api/user-tree-info/`
 
 var username = localStorage.getItem('username') || sessionStorage.getItem('username');
-let editUserURL = `https://${url}/api/user-info/${username}/?format=json`;
+let editUserURL = `http://${url}/api/user-info/${username}/?format=json`;
 // console.log(editUserURL);
 
 const addtree_button = document.getElementById('addTree');
@@ -45,7 +45,7 @@ if (isLoggedIn){
 var map = L.map('map').setView([14.655156528354416, 121.07045364296518], 13);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
+  maxZoom: 25,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
@@ -86,13 +86,18 @@ var ph = $.ajax({
               var name = feature.model_tree;
               var user = feature.owning_user;
               var plant_date = feature.planted_on;
-
+              
+              var photoImg = '<img src="'+ feature.image+ '" height="150px" width="150px"/>';
+              console.log(feature.image)
+              console.log(photoImg)
               // create popup for marker
               L.popup()
                 .setLatLng(e.latlng)
-                .setContent('<b>Name:</b> ' + name + '<br> <b>User:</b> ' + user + '<br> <b>Date Planted:</b> ' + plant_date)
+                .setContent(photoImg + '<b>Name:</b> ' + name + '<br> <b>User:</b> ' + user + '<br> <b>Date Planted:</b> ' + plant_date)
                 .openOn(map);
             });
+
+
           });
 
           

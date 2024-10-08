@@ -1,6 +1,6 @@
 // change URL for backend
-let url = "akza1d6qzb8z.share.zrok.io";
-let loginURL = `https://${url}/auth/token/login/`;
+let url = "127.0.0.1:8000";
+let loginURL = `http://${url}/auth/token/login/`;
 
 // Check if user has an authToken saved
 const authToken = localStorage.getItem('authToken');
