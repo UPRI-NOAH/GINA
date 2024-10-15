@@ -34,7 +34,7 @@ for index, row in df.iterrows():
         owning_user=userInfo,
         quantity=row['qty'],
         status='PLT',
-        image=row['photo'].replace('/user_upload/', '').replace('user_upload/', ''),
+        image=row['photo'].replace('/user_upload/', 'gina_trees/').replace('user_upload/', 'gina_trees/'),
     )
 
     userTreeInfo.save()

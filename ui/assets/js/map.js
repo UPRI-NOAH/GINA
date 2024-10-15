@@ -178,29 +178,37 @@ function uploadTree() {
   const plantName = document.getElementById('plant-name').value;
   const description = document.getElementById('description').value;
   const plantedOn = document.getElementById('planted-on').value;
+  const image = document.getElementById('tree-photo').files[0];
+  // const image = document.getElementById('tree-photo').files[0];
   const latitude = Number(document.getElementById('latitude').value).toFixed(6);
   const longitude = Number(document.getElementById('longitude').value).toFixed(6);
   var username = localStorage.getItem('username') || sessionStorage.getItem('username');
 
-  // console.log(latitude,longitude);
-  const treeData = {
-    "planted_on": plantedOn,
-    "longitude": longitude,
-    "latitude": latitude,
-    "quantity": 1,
-    "status": "PLT",
-    "model_tree": null,
-    "owning_user": username
-  };
+  var formData = new FormData()
+  formData.append('planted_on', plantedOn)
+  formData.append('longitude', longitude)
+  formData.append('latitude', latitude)
+  formData.append('quantity', 1)
+  formData.append('status', "PLT")
+  formData.append('image', image)
+  // formData.append('model_tree', null) to add value soon
+  formData.append('owning_user', username)
 
+
+  for (const value of formData.values()) {
+    console.log(value);
+  }
+  
   fetch(usertreeURL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(treeData)
+    contentType: false,
+    processData: false,
+    body: formData
   })
-  .then(response => response.json())
+  .then(response => 
+  console.log(response.statusText)
+)
+  
   .then(data => {
     // Get current user points
     fetch(editUserURL, {
