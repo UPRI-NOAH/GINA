@@ -10,6 +10,12 @@ django-rest-framework = "*"
 django-cors-headers = "*"
 drf-spectacular-sidecar = "*"
 drf-spectacular = "*"
+python-dotenv = "*"
+django-extensions = "*"
+psycopg2-binary = "*"
+pandas = "*"
+boto3 = "*"
+django-storages = "*"
 
 [dev-packages]
 

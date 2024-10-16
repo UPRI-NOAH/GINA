@@ -21,7 +21,7 @@ for index, row in df.iterrows():
 
     treeInfo = TreeInfo(
         tree_name=row['tree_name'],
-        tree_image=row['image'],
+        tree_image="static_trees/" + row['image'],
         scientific_name=row['scientific_name'],
         family_name=row['family_name'],
         tree_type=treeType,
