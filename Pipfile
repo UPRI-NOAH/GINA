@@ -16,6 +16,7 @@ psycopg2-binary = "*"
 pandas = "*"
 boto3 = "*"
 django-storages = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

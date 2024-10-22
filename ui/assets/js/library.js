@@ -1,3 +1,7 @@
+// change URL for backend
+let url = "127.0.0.1:8000";
+let userURL = `http://${url}/api/tree-info/`;
+
 // authentication token
 var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
@@ -46,3 +50,42 @@ function logOut() {
 
   location.reload();
 }
+
+
+var treeLib = $.ajax({
+  url: userURL,
+  dataType: "json",
+      headers: { 
+      'ngrok-skip-browser-warning': 'true' 
+  },
+  // success: console.log("PH geojson data successfully loaded."),
+  error: function (xhr) {
+      alert(xhr.statusText)
+  }
+  })
+
+  const treeGrid = document.getElementById("tree-grid");
+
+
+  $.when(treeLib).done(function () {
+    bound = treeLib.responseJSON
+    console.log(bound)
+    // bound.sort((a, b) => b.user_points - a.user_points); // Sort in descending order
+    bound.forEach((data, index) => {
+      const row = document.createElement("div");
+      row.className = "tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto"
+      row.innerHTML = `
+        <div class="flex flex-col justify-center detail-container w-full h-32">
+          <div class="text-xl font-bold" style="color:black"><p>${data.tree_name}</p></div>
+          <div class="text-sm"><p><b>Scientific Name: </b><i>${data.scientific_name}</i></p></div>
+          <div class="text-sm"><p><b>Family Name: </b><i>${data.family_name}</i></p></div>
+        </div>
+
+        <div class="flex-shrink">
+          <img src="${data.tree_image}" class="w-full h-48 object-cover">
+        </div>
+      </div>
+      `;
+      treeGrid.appendChild(row);
+    });
+  });
