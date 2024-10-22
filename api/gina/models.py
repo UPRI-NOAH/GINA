@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
-tree_images = FileSystemStorage(location="static_trees/")
+tree_images = FileSystemStorage(location="tree_library/")
 usertree_images = FileSystemStorage(location="gina_trees/")
 
 # Create your models here.
@@ -19,7 +19,7 @@ class TreeInfo(models.Model):
     tree_type = models.ForeignKey("TreeType", default=get_default_type, on_delete=models.SET_DEFAULT)
     tree_description = models.TextField(null=True, blank=True)
     tree_name = models.CharField(max_length=100, primary_key=True)
-    tree_image = models.ImageField(upload_to='static_trees/', null=True, blank=True)
+    tree_image = models.ImageField(upload_to='tree_library/', null=True, blank=True)
     scientific_name = models.CharField(max_length=100, unique=True)
     family_name = models.CharField(max_length=100)
 

@@ -87,7 +87,7 @@ var ph = $.ajax({
               var user = feature.owning_user;
               var plant_date = feature.planted_on;
               
-              var photoImg = '<img src="'+ feature.image+ '" height="150px" width="150px"/>';
+              var photoImg = '<img src="'+ feature.image+ '" class="w-full h-56 object-cover"/>';
               console.log(feature.image)
               console.log(photoImg)
               // create popup for marker
