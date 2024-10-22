@@ -1,5 +1,5 @@
 // change URL for backend
-let url = "127.0.0.1:8000";
+let url = "202.92.141.153";
 let loginURL = `http://${url}/auth/token/login/`;
 
 // Check if user has an authToken saved

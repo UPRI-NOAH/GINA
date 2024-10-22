@@ -1,5 +1,5 @@
 // change URL for backend
-let url = "127.0.0.1:8000";
+let url = "202.92.141.153";
 let usertreeURL = `http://${url}/api/user-tree-info/`
 
 var username = localStorage.getItem('username') || sessionStorage.getItem('username');

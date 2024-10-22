@@ -1,5 +1,5 @@
 // change URL for backend
-let url = "127.0.0.1:8000";
+let url = "202.92.141.153";
 let signupURL = `http://${url}/auth/users/`;
 let userURL = `http://${url}/api/user-info/`;
 
