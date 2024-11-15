@@ -1,9 +1,9 @@
 // change URL for backend
-let url = "202.92.141.153";
-let usertreeURL = `http://${url}/api/user-tree-info/`
+let url = "punla.up.edu.ph";
+let usertreeURL = `https://${url}/api/user-tree-info/`
 
 var username = localStorage.getItem('username') || sessionStorage.getItem('username');
-let editUserURL = `http://${url}/api/user-info/${username}/?format=json`;
+let editUserURL = `https://${url}/api/user-info/${username}/?format=json`;
 // console.log(editUserURL);
 
 const addtree_button = document.getElementById('addTree');

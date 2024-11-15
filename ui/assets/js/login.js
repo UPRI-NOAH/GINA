@@ -1,6 +1,6 @@
 // change URL for backend
-let url = "202.92.141.153";
-let loginURL = `http://${url}/auth/token/login/`;
+let url = "punla.up.edu.ph";
+let loginURL = `https://${url}/auth/token/login/`;
 
 // Check if user has an authToken saved
 const authToken = localStorage.getItem('authToken');

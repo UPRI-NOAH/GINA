@@ -1,7 +1,7 @@
 // change URL for backend
-let url = "202.92.141.153";
-let signupURL = `http://${url}/auth/users/`;
-let userURL = `http://${url}/api/user-info/`;
+let url = "punla.up.edu.ph";
+let signupURL = `https://${url}/auth/users/`;
+let userURL = `https://${url}/api/user-info/`;
 
 const form = document.getElementById('register-form');
 
