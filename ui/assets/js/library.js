@@ -1,6 +1,6 @@
 // change URL for backend
-let url = "202.92.141.153";
-let userURL = `http://${url}/api/tree-info/`;
+let url = "punla.up.edu.ph";
+let userURL = `https://${url}/api/tree-info/`;
 
 // authentication token
 var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
