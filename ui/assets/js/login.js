@@ -9,7 +9,7 @@ const rememberMe = localStorage.getItem('rememberMe');
 if (authToken && rememberMe) {
     // User has an authToken saved, automatically log them in
     // console.log('Auth token found:', authToken);
-    window.location.href = 'learn.html';
+    window.location.href = 'index.html';
 } else {
     // User doesn't have an authToken saved, show the login form
     const form = document.querySelector('form');
@@ -50,8 +50,8 @@ if (authToken && rememberMe) {
 
     // console.log('Auth token saved:', authToken);
 
-    // Open learn.html
-    window.location.href = 'learn.html';
+    // Open index.html
+    window.location.href = 'index.html';
     } else {
     // Login failed, handle the error
     console.error(data);
