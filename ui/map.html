@@ -96,6 +96,16 @@
               margin-bottom: 5px;
             }
           }
+          /* Extra small devices (phones, 600px and down) */
+          @media only screen and (max-width: 600px) {
+            .example {background: red;}
+          }
+
+
+          /* Small devices (portrait tablets and large phones, 600px and up) */
+          @media only screen and (min-width: 600px) {
+            .example {background: green;}
+          }
     </style>
 
 </head>
@@ -193,6 +203,7 @@
       <input type="text" id="plant-name" class="w-full p-1 mb-4" placeholder="Plant Name"><br>
       <!-- Description -->
       <textarea id="description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
+      <p class="text-lg mb-4">Input Date:</p>
       <input type="date" id="planted-on" class="w-full p-1 mb-4" placeholder="Planted On">
       <!-- Image -->
       <p class="text-lg mb-4">Add a photo:</p>
