@@ -20,7 +20,7 @@ from api.gina.views import UserInfoViewset, UserTreeViewset
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api.gina.views import TreeInfoViewset, TreeTypeViewset
+from api.gina.views import TreeInfoViewset, TreeTypeViewset, activate_page, reset_password
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 router = DefaultRouter()
@@ -35,8 +35,10 @@ urlpatterns = [
     path("api/", include(router.urls)), 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    re_path(r'^auth/', include('djoser.urls')),
-    re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('activate.html', activate_page),
+    path('reset_password.html', reset_password),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]
 
 # for local

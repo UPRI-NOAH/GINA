@@ -23,6 +23,18 @@ if (isLoggedIn){
   document.getElementById('user-buttons').classList.remove('mobile-visible');
 }
 
+
+const loadingOverlay = document.getElementById('loading-overlay');
+
+function showLoading() {
+  loadingOverlay.style.display = 'flex';
+}
+
+function hideLoading() {
+  loadingOverlay.style.display = 'none';
+}
+
+
 // User Dropdown Toggle
 document.getElementById('user-dropdown-toggle').addEventListener('click', function() {
     var dropdown = document.getElementById('user-dropdown');
@@ -63,17 +75,18 @@ var treeLib = $.ajax({
       alert(xhr.statusText)
   }
   })
-
+  showLoading()
   const treeGrid = document.getElementById("tree-grid");
 
-
   $.when(treeLib).done(function () {
+    hideLoading()
     const bound = treeLib.responseJSON;
     const itemsPerPage = 12;
     let currentPage = 1;
     let filteredData = bound;
     // Function to render a specific page
     function renderPage(page) {
+      // hideLoading()
       treeGrid.innerHTML = '';
       const startIndex = (page - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;

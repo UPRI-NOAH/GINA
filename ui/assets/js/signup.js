@@ -1,61 +1,92 @@
-// change URL for backend
+// change URL    backend
 let url = "punla.up.edu.ph";
 let signupURL = `https://${url}/auth/users/`;
 let userURL = `https://${url}/api/user-info/`;
 
 const form = document.getElementById('register-form');
 
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
+const loadingOverlay = document.getElementById('loading-overlay');
 
-          const userData = {
-            "email": document.getElementsByName('email')[0].value,
-            "username": document.getElementsByName('uname')[0].value,
-            "password": document.getElementsByName('psw')[0].value
-          };
+function showLoading() {
+  loadingOverlay.style.display = 'flex';
+}
 
-          const userInfo = {
-            "user": null,
-            "first_name": document.getElementsByName('fname')[0].value,
-            "last_name": document.getElementsByName('lname')[0].value,
-            "email": document.getElementsByName('email')[0].value,
-            "contact": document.getElementsByName('cnum')[0].value,
-            "profile_picture": "",
-            "user_points": 0
-          };
-          console.log(userData);
-          console.log(userInfo);
+function hideLoading() {
+  loadingOverlay.style.display = 'none';
+}
 
-          // Register user
-          fetch(signupURL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('User registered:', data);
-            // Get the user ID from the response
-            const userId = data.id;
-            userInfo.user = userId;
-            console.log(userInfo.user)
-            // Register user info
-            fetch(userURL, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(userInfo)
-            })
-            .then(response => response.json())
-            .then(data => {
-              console.log('User info registered:', data);
-              // Redirect to login.html after successful registration
-              window.location.href = 'login.html';
-            })
-            .catch(error => console.error('Error registering user info:', error));
-          })
-          .catch(error => console.error('Error registering user:', error));
-        });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    showLoading(); 
+
+    const userData = {
+      "email": document.getElementsByName('email')[0].value,
+      "username": document.getElementsByName('uname')[0].value,
+      "password": document.getElementsByName('psw')[0].value
+    };
+
+    const userInfo = {
+      "user": null,
+      "first_name": document.getElementsByName('fname')[0].value,
+      "last_name": document.getElementsByName('lname')[0].value,
+      "email": document.getElementsByName('email')[0].value,
+      "contact": document.getElementsByName('cnum')[0].value,
+      "profile_picture": "",
+      "user_points": 0
+    };
+
+    fetch(signupURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    })
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json();
+        let errorMessages = '';
+        for (const messages of Object.values(errorData)) {
+          messages.forEach(msg => {
+            errorMessages += `• ${msg}\n`;
+          });
+        }
+        hideLoading();
+        alert(errorMessages || 'An unexpected error occurred.');
+        throw new Error('Validation failed');
+      }
+
+      const data = await response.json();
+      userInfo.user = data.id;
+
+      return fetch(userURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userInfo)
+      });
+    })
+    .then(async (res) => {
+      hideLoading(); // Hide loading before alert
+
+      if (!res.ok) {
+        const responseData = await res.json();
+        console.error("Error from /api/user-info/:", responseData);
+        alert('Failed to create user info');
+        return;
+      }
+
+      alert('User registered successfully');
+      window.location.href = 'login.html';
+    })
+    .catch(error => {
+      hideLoading();
+      console.error('Error:', error);
+      alert('An error occurred during registration.');
+    });
+  });
+
+  // Prevent enter when loading
+form.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && loadingOverlay.style.display === 'flex') {
+    e.preventDefault(); // prevent the form from being submitted
+  }
+});

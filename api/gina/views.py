@@ -5,6 +5,14 @@ from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfo
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
+from django.shortcuts import render
+
+
+def reset_password(request):
+    return render(request, 'reset_password.html')
+
+def activate_page(request):
+    return render(request, 'activate.html') 
 
 @extend_schema_view(
     list=extend_schema(description="Returns a list of all information for all plantable trees")

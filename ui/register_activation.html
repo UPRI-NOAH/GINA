@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>GINA - Activate Your Account</title>
+  </head>
+  <body style="background-color: #bbf7d0; font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px;">
+      <h2 style="color: #14532d;">Welcome to GINA!</h2>
+      <p style="color: #064e3b;">Hi {{ user.get_username }},</p>
+      <p style="color: #065f46;">Thank you for signing up. Click the button below to activate your account:</p>
+
+      <a href="{{ activation_url }}"
+         style="background-color:#22c55e;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;font-weight:bold;">
+         Activate Account
+      </a>
+
+      <p style="color: #065f46; margin-top: 20px;">If the button doesn’t work, copy and paste this link into your browser:</p>
+      <p><a href="{{ activation_url }}" style="color: #065f46;">{{ activation_url }}</a></p>
+    </div>
+  </body>
+</html>
