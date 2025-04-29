@@ -10,6 +10,22 @@
 </head>
 
 <body class="bg-green-200">
+  <div id="loading-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+  ">
+    <img src="./assets/img/gina-loading.gif" alt="Computer man" style="width:500px;height:500px;">
+  </div>
     <form action="" method="post">
         <div class="imgcontainer">
           <img src="./assets/img/gina.png" alt="Avatar" class="h-20 w-30 mr-4 center">
@@ -25,7 +41,11 @@
           <label for="psw"><b>Password</b></label><br>
           <input type="password" placeholder="Enter Password" name="psw" required class="w-50 p-2 rounded-xl"><br>
           <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl mt-4 center">Login</button><br>
-          
+          <div class="container flex">
+            <p class="center">
+              <span class="center text-green-600"><a href="forgot_password.html" class="hover:rounded-full hover:bg-gray-300"><u>Forot Password?</u></a></span>
+            </p>
+          </div>
           <label>
             <input type="checkbox" name="remember"> Remember me
           </label>

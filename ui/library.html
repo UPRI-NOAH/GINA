@@ -19,6 +19,22 @@
 
     </head>
     <body class="bg-teal-100 pt-20 pb-12">
+      <div id="loading-overlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+      ">
+        <img src="./assets/img/gina-loading.gif" alt="Computer man" style="width:500px;height:500px;">
+      </div>
         <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
             <div class="flex justify-between items-center mx-4 h-full">
               <div class="md:hidden">
@@ -34,7 +50,6 @@
                 <nav class="hidden md:flex items-center ml-4">
                   <ul class="flex font-bold">
                       <li><a href="index.html">Home</a></li>
-                      <li><a href="events.html">Events</a></li>
                       <li><a href="library.html" class="bg-gray-200">Library</a></li>
                       <li><a href="leaderboard.html">Leaderboards</a></li>
                       <li><a href="map.html">Map</a></li>
@@ -49,9 +64,9 @@
                 </div>
                 <div id="user-buttons" class="md:flex hidden invis">
                   <!-- Cart -->
-                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                  <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
                     <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button>
+                  </button> -->
                   <!-- user -->
                   <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
                     <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
@@ -77,7 +92,7 @@
           <!-- Drop-down menu for user -->
           <div class="invis" id="user-dropdown">
             <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-              <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
+              <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
               <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
             </div>
           </div>

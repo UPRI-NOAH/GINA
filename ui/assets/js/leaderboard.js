@@ -22,6 +22,19 @@ if (isLoggedIn){
   document.getElementById('user-buttons').classList.remove('mobile-visible');
 }
 
+
+const loadingOverlay = document.getElementById('loading-overlay');
+
+function showLoading() {
+  loadingOverlay.style.display = 'flex';
+}
+
+function hideLoading() {
+  loadingOverlay.style.display = 'none';
+}
+
+
+
 // User Dropdown Toggle
 document.getElementById('user-dropdown-toggle').addEventListener('click', function() {
     var dropdown = document.getElementById('user-dropdown');
@@ -63,14 +76,15 @@ var ph = $.ajax({
         alert(xhr.statusText)
     }
     })
+    showLoading()
     $.when(ph).done(function () {
+      hideLoading()
       bound = ph.responseJSON
       bound.sort((a, b) => b.user_points - a.user_points); // Sort in descending order
       bound.forEach((data, index) => {
         const row = document.createElement("tr");
         row.innerHTML = `
         <td class="px-4 py-2">${index+1}</td>
-        <td class="px-4 py-2"><img src="${data.profile_picture}" alt="${data.user}'s profile picture"></td>
         <td class="px-4 py-2">${data.user}</td>
         <td class="px-4 py-2">${data.user_points}</td>
         `;

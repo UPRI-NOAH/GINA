@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GINA - Grow INdigenous trees in your Area</title>        
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <link href="assets/css/nav.css" rel="stylesheet">
+        <link href="assets/css/library.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <script src="assets/js/nav.js"></script>
+        <style>
+            .invis {
+                    display: none;
+                  }
+          </style>
+
+    </head>
+    <body class="bg-teal-100 pt-20 pb-12">
+      <div id="loading-overlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+      ">
+        <img src="./assets/img/gina-loading.gif" alt="Computer man" style="width:500px;height:500px;">
+      </div>
+        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
+            <div class="flex justify-between items-center mx-4 h-full">
+              <div class="md:hidden">
+                <button onclick="toggleNav()">
+                    <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+                </button>
+              </div>
+        
+        
+              <div id="logo-container" class="md:flex">
+                <a href="learn.html"><img src="assets/img/gina.png" class="w-20"></a>
+        
+                <nav class="hidden md:flex items-center ml-4">
+                  <ul class="flex font-bold">
+                      <li><a href="learn.html">Home</a></li>
+                      <!-- <li><a href="events.html">Events</a></li> -->
+                      <li><a href="library.html">Library</a></li>
+                      <li><a href="leaderboard.html">Leaderboards</a></li>
+                      <li><a href="map.html">Map</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <!-- Sign Up/Login Button, icon for user and cart -->
+              <div class="flex items-center"> 
+                <div id="auth-buttons" class="md:flex hidden invis">
+                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
+                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+                </div>
+                <div id="user-buttons" class="md:flex hidden invis">
+                  <!-- Cart -->
+                  <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+                  </button> -->
+                  <!-- user -->
+                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+                  </button>
+                </div>
+              </div>
+          </header>
+        
+          <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+            <ul class="flex flex-col font-bold p-4">
+                <li><a href="learn.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="library.html" class="bg-gray-200">Library</a></li>
+                <li><a href="leaderboard.html">Leaderboards</a></li>
+                <li><a href="map.html">Map</a></li>
+                <div class="invis" id="mobile-login">
+                    <hr class="border-black border-t-2 mb-4">
+                    <li><a href="login.html">Log in</a></li>
+                    <li><a href="signup.html">Sign up</a></li>
+                </div>
+            </ul>
+          </nav>
+          <!-- Drop-down menu for user -->
+          <div class="invis" id="user-dropdown">
+            <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
+              <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
+              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+            </div>
+          </div>
+          
+        <main>
+            <!-- <div class="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0"> -->
+              <!-- <div class="max-w-4xl flex justify-center items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0"> -->
+                <!-- <div class="max-w-4xl flex justify-center items-start h-auto lg:h-auto flex-wrap mx-auto -my-16/ lg:my-0"> -->
+                  <div class="max-w-4xl flex justify-center items-start h-auto lg:h-auto flex-wrap mx-auto mt-16">
+
+                <!--Main Col-->
+                <div id="profile"
+                    class="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0">
+        
+        
+                    <div class="p-4 md:p-12 text-center lg:text-left">
+                        <!-- Image for mobile view-->
+                        <div class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
+                            style="background-image: url('https://source.unsplash.com/MP0IUfwrn0A')"></div>
+        
+                            <h1 id="profile-name" class="text-3xl font-bold pt-8 lg:pt-0"></h1>
+
+                            <div class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
+                    
+                            <p id="username" class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
+                                
+                            </p>
+                    
+                            <p id="trees-planted" class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
+                                
+                            </p>
+                    
+                            <p id="user-points" class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
+                                
+                            </p>
+                            <br>
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="showEditProfile()">Edit Profile</button>
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="showChangePassword()">Change Password</button>
+        
+                        <!-- Use https://simpleicons.org/ to find the svg for your preferred product -->
+        
+                    </div>
+        
+
+                    <div id="edit-profile-form" class="hidden p-6 bg-white rounded-lg shadow-lg">
+                      <h2 class="text-2xl font-semibold mb-4">Edit Profile</h2>
+                      <div class="mb-4">
+                          <label for="edit-first-name" class="block text-sm font-medium text-gray-700">First Name</label>
+                          <input type="text" id="edit-first-name" class="w-full px-4 py-2 border rounded-md" placeholder="First Name">
+                      </div>
+                      <div class="mb-4">
+                          <label for="edit-last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                          <input type="text" id="edit-last-name" class="w-full px-4 py-2 border rounded-md" placeholder="Last Name">
+                      </div>
+                     
+                      <div class="flex justify-between gap-4">
+                          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="submitEditProfile()">Save Changes</button>
+                          <button class="bg-gray-200 hover:bg-red-300 text-black font-bold py-2 px-4 rounded-xl" onclick="cancelEdit()">Cancel</button>
+                      </div>
+                  </div>
+                  
+                  <!-- Change Password Form -->
+                  <div id="change-password-form" class="hidden p-6 bg-white rounded-lg shadow-lg">
+                      <h2 class="text-2xl font-semibold mb-4">Change Password</h2>
+                      <div class="mb-4">
+                          <label for="current-password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                          <input type="password" id="current-password" class="w-full px-4 py-2 border rounded-md" placeholder="Current Password">
+                      </div>
+                      <div class="mb-4">
+                          <label for="new-password" class="block text-sm font-medium text-gray-700">New Password</label>
+                          <input type="password" id="new-password" class="w-full px-4 py-2 border rounded-md" placeholder="New Password">
+                      </div>
+                      <div class="mb-4">
+                          <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                          <input type="password" id="confirm-password" class="w-full px-4 py-2 border rounded-md" placeholder="Confirm New Password">
+                      </div>
+                      <div class="flex justify-between gap-4">
+                          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="submitEditPassword()">Change Password</button>
+                          <button class="bg-gray-200 hover:bg-red-300 text-black font-bold py-2 px-4 rounded-xl" onclick="cancelEdit()">Cancel</button>
+                      </div>
+                  </div>
+        
+                <!-- Pin to top right corner -->
+                <div class="absolute top-0 right-0 h-12 w-18 p-4">
+                    <button class="js-change-theme focus:outline-none">🌙</button>
+                </div>
+        
+            </div>
+        </main>
+
+        <script src="assets/js/profile.js"></script>
+    </body>
+</html>

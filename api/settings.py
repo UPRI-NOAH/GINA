@@ -74,15 +74,39 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+
+DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'reset_password.html?uid={uid}&token={token}',
+    'ACTIVATION_URL': 'activate.html?uid={uid}&token={token}',
+    'EMAIL': {
+        'activation': 'api.gina.emails.CustomActivationEmail',  # Path to the custom template
+    },
+    'SERIALIZERS': {
+        'user_create': 'api.gina.serializer.CustomUserCreateSerializer',  # your serializer
+    }
+}
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = get_str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = get_str("EMAIL_HOST_PASSWORD")
 
 ROOT_URLCONF = 'api.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'ui')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

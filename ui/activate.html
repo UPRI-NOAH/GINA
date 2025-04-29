@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activate Your Account</title>
+</head>
+<body style="background-color: #bbf7d0; font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+
+  <div id="loading-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;">
+  <h1 style="color: #14532d;">Please wait while your account is being activated</h1>
+</div>
+
+  <h2 id="activate" style="color: #14532d;">Activating your account...</h2>
+<script>
+
+const loadingOverlay = document.getElementById('loading-overlay');
+
+function showLoading() {
+  loadingOverlay.style.display = 'flex';
+}
+
+function hideLoading() {
+  loadingOverlay.style.display = 'none';
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+
+    let url = "punla.up.edu.ph";
+    let activationURL = `https://${url}/auth/users/activation/`
+    const params = new URLSearchParams(window.location.search);
+    const uid = params.get('uid');
+    const token = params.get('token');
+    showLoading(); // Show loading
+  
+    if (!uid || !token) {
+      alert('Invalid activation link.');
+      return;
+    }
+  
+    // Use the Djoser activation endpoint
+    fetch(activationURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid, token })
+    })
+    .then(res => {
+      if (res.ok) {
+        alert('Your account has been activated! You can now log in.');
+        hideLoading();
+        document.getElementById("activate").innerHTML = "Your account has been activated! You can now log in";
+        
+      } else {
+        alert('Activation failed. The link may have expired or is invalid.');
+        hideLoading();
+        document.getElementById("activate").innerHTML =  "Activation failed. The link may have expired or is invalid.";
+
+      }
+    })
+    .catch(err => {
+      console.error('Activation error:', err);
+      hideLoading();
+      alert('An error occurred during activation.');
+    });
+  });
+
+</script>
+
+</body>
+</html>

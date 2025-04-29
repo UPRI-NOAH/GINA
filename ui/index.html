@@ -30,7 +30,6 @@
                 <nav class="hidden md:flex items-center ml-4">
                   <ul class="flex font-bold">
                       <li><a href="index.html" class="bg-gray-200">Home</a></li>
-                      <li><a href="events.html">Events</a></li>
                       <li><a href="library.html">Library</a></li>
                       <li><a href="leaderboard.html">Leaderboards</a></li>
                       <li><a href="map.html">Map</a></li>
@@ -45,9 +44,9 @@
                 </div>
                 <div id="user-buttons" class="md:flex hidden invis">
                   <!-- Cart -->
-                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                  <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
                     <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button>
+                  </button> -->
                   <!-- user -->
                   <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
                     <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
@@ -73,8 +72,8 @@
           <!-- Drop-down menu for user -->
           <div class="invis" id="user-dropdown">
             <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-              <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
-              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+            <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
+            <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
             </div>
           </div>
 
@@ -108,71 +107,15 @@
                 </div>
                 <div class="flex flex-col md:flex-row justify-center content-center pb-8">
                     <div class="flex items-center mx-8 mb-8 md:mb-0">
-                        <p class="sm:text-2xl text-xl md:text-left font-medium text-gray-700 text-justify">The GINA Application lets you access a wide variety of plant species through our seed store.</p>  
+                        <p class="sm:text-2xl text-xl md:text-left font-medium text-gray-700 text-justify">The GINA Application lets you access a wide variety of plant species through our tree library.</p>  
                     </div>
 
                     <div class="flex justify-center items-center">
-                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold text-xl py-2 px-4 rounded-xl md:mx-8 whitespace-no-wrap"><a href="library.html">Buy Seeds</a></button>
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold text-xl py-2 px-4 rounded-xl md:mx-8 whitespace-no-wrap"><a href="library.html">Library</a></button>
                     </div>
                 </div>
             </section>
 
-            <section class="max-w-screen-xl mx-auto my-6 pb-12">
-                <div class="flex flex-col items-center text-center bg-teal-100">
-                    <h1 class="sm:text-5xl text-4xl font-bold mx-auto" style="max-width: fit-content;">Plant Care Tips</h1> 
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 content-center mt-6">
-                    <div class="bg-white bg-opacity-75 rounded-3xl">   
-                        <div class="flex justify-center">
-                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/SJfpnGEMrKM?si=LvDGkm3yqKc8cSyZ&amp;clip=Ugkx6oPWIbmsb33y2hV6oPxGZX0PG5Ch0Goa&amp;clipt=EMnVAhjIqwQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen> 
-                            </iframe>
-                        </div>
-                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
-                            <p>Dig a hole for the tree with enough space for the root ball.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white bg-opacity-75 rounded-3xl">   
-                        <div class="flex justify-center">
-                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/SJfpnGEMrKM?si=osiyjrzOUwC0Bsak&amp;clip=UgkxUvjrmknyRQB_Q0H6V7YiuoyINMGmZchL&amp;clipt=ENC1BBi3oQU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
-                            <p>Water the hole after placing the tree.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white bg-opacity-75 rounded-3xl">   
-                        <div class="flex justify-center">
-                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/SJfpnGEMrKM?si=WPTOl2eDQPPkLuP0&amp;clip=Ugkxd4DP5UzbM8WwTsnWgM8fQAoeRlvd6Svj&amp;clipt=EP7KBRiD2Qc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
-                            <p>Apply fertilizer and mulch after planting.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white bg-opacity-75 rounded-3xl">   
-                        <div class="flex  justify-center">
-                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/fMLSR9rrbzE?si=xQotiJyzBGIRsRk6&amp;clip=Ugkx5MuddyGX0mLu2tl52td2cMyDuKmS2Xta&amp;clipt=EI_XAxjR_gU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
-                            <p>Weed your tree after thoroughly watering it or after rain.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white bg-opacity-75 rounded-3xl">   
-                        <div class="flex justify-center">
-                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/fMLSR9rrbzE?si=SQb-wRpLIcn8x-RN&amp;clip=UgkxvIsDJdxZxBLLtaEPsuo8mfn5wexFNJqb&amp;clipt=EMKCBhjHpQc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
-                            <p>Add mulch to your tree every few months to prevent weeds from growing.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white bg-opacity-75 rounded-3xl">    
-                        <div class="flex justify-center">
-                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/4AV1Kpt7dmg?si=JTuOLIXytlgYJiP7&amp;clip=UgkxSwKHvnbXFakDPbfCiUkzNL2xk22j6454&amp;clipt=EMG4CRjDoQw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                        <div class="flex justify-center text-center text-xl font-medium text-gray-600 mx-6 mb-6 text-green-800">
-                            <p>When watering trees try to get deep into the roots of the tree</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             <!-- Donate -->
             <section class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-12">
