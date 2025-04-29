@@ -25,6 +25,7 @@
 
   <h2 id="activate" style="color: #14532d;">Activating your account...</h2>
 <script>
+console.log('test activation page')
 alert('first load')
 
 const loadingOverlay = document.getElementById('loading-overlay');
@@ -40,6 +41,7 @@ function hideLoading() {
 
 window.addEventListener('DOMContentLoaded', () => {
     alert('window load')
+    console.log('window load')
     let url = "punla.up.edu.ph";
     let activationURL = `https://${url}/auth/users/activation/`
     const params = new URLSearchParams(window.location.search);
