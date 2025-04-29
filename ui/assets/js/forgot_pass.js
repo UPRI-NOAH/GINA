@@ -24,6 +24,8 @@ form.addEventListener('submit', async (e) => {
 
     if (!email) {
         alert("Please enter your email address.");
+          hideLoading()
+
         return;
     }
 

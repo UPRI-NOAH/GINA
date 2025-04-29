@@ -59,7 +59,8 @@ function viewProfile() {
 function logOut() {
   localStorage.setItem('authToken', '');
   sessionStorage.setItem('authToken', '');
-
+  localStorage.setItem('username', '');
+  sessionStorage.setItem('username', '');
   location.reload();
 }
 
