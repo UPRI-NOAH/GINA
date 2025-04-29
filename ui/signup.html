@@ -33,7 +33,7 @@
       <h1 class="text-green-400 text-2xl font-bold">Register for an account</h2>
       <div class="container">
         <label for="uname"><b>Username</b></label><br>
-        <input type="text" placeholder="Enter Username" name="uname" required class="w-50 p-2 rounded-xl"><br>
+        <input type="text" placeholder="Enter Username" name="uname" required class="w-50 p-2 rounded-xl" minlength="5"><br>
 
 
         <label for="fname"><b>First Name</b></label><br>
@@ -50,6 +50,9 @@
     
         <label for="psw"><b>Password</b></label><br>
         <input type="password" placeholder="Enter Password" name="psw" required class="w-50 p-2 rounded-xl"><br>
+
+        <label for="psw_again"><b>Enter Password Again</b></label><br>
+        <input type="password" placeholder="Enter Password Again" name="psw_again" required class="w-50 p-2 rounded-xl"><br>
     
         <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Register</button><br>
       </div>

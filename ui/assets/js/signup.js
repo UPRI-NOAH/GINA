@@ -20,6 +20,15 @@ function hideLoading() {
     e.preventDefault();
     showLoading(); 
 
+    const newPassword = document.querySelector('input[name="psw"]').value;
+    const retypePassword = document.querySelector('input[name="psw_again"]').value;
+
+    if (newPassword !== retypePassword) {
+      alert("Passwords do not match!");
+      hideLoading()
+      return;
+    }
+    
     const userData = {
       "email": document.getElementsByName('email')[0].value,
       "username": document.getElementsByName('uname')[0].value,

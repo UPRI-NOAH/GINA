@@ -25,6 +25,7 @@
 
   <h2 id="activate" style="color: #14532d;">Activating your account...</h2>
 <script>
+alert('first load')
 
 const loadingOverlay = document.getElementById('loading-overlay');
 
@@ -38,16 +39,22 @@ function hideLoading() {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-
+    alert('window load')
     let url = "punla.up.edu.ph";
     let activationURL = `https://${url}/auth/users/activation/`
     const params = new URLSearchParams(window.location.search);
     const uid = params.get('uid');
     const token = params.get('token');
+
+    console.log(activationURL)
+    console.log(uid)
+    console.log(token)
+
     showLoading(); // Show loading
   
     if (!uid || !token) {
       alert('Invalid activation link.');
+      hideLoading()
       return;
     }
   
