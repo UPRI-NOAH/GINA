@@ -262,3 +262,13 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = "public-read"
 AWS_S3_VERIFY = False
 AWS_QUERYSTRING_AUTH = False
+
+CORS_ALLOWED_ORIGINS = ['https://upri-noah.github.io',]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-requested-with",
+    "x-csrf-token",
+    "ngrok-skip-browser-warning",
+]
