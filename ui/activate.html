@@ -25,8 +25,12 @@
 
   <h2 id="activate" style="color: #14532d;">Activating your account...</h2>
 <script>
-console.log('test activation page')
-alert('first load')
+
+let url = "punla.up.edu.ph";
+let activationURL = `https://${url}/auth/users/activation/`
+const params = new URLSearchParams(window.location.search);
+const uid = params.get('uid');
+const token = params.get('token');
 
 const loadingOverlay = document.getElementById('loading-overlay');
 
@@ -39,51 +43,34 @@ function hideLoading() {
 }
 
 
-window.addEventListener('DOMContentLoaded', () => {
-    alert('window load')
-    console.log('window load')
-    let url = "punla.up.edu.ph";
-    let activationURL = `https://${url}/auth/users/activation/`
-    const params = new URLSearchParams(window.location.search);
-    const uid = params.get('uid');
-    const token = params.get('token');
+showLoading(); // Show loading
 
-    console.log(activationURL)
-    console.log(uid)
-    console.log(token)
+if (!uid || !token) {
+  alert('Invalid activation link.');
+  hideLoading()
+}
 
-    showLoading(); // Show loading
-  
-    if (!uid || !token) {
-      alert('Invalid activation link.');
-      hideLoading()
-      return;
-    }
-  
-    // Use the Djoser activation endpoint
-    fetch(activationURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ uid, token })
-    })
-    .then(res => {
-      if (res.ok) {
-        alert('Your account has been activated! You can now log in.');
-        hideLoading();
-        document.getElementById("activate").innerHTML = "Your account has been activated! You can now log in";
-        
-      } else {
-        alert('Activation failed. The link may have expired or is invalid.');
-        hideLoading();
-        document.getElementById("activate").innerHTML =  "Activation failed. The link may have expired or is invalid.";
-
-      }
-    })
-    .catch(err => {
-      console.error('Activation error:', err);
+  fetch(activationURL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ uid, token })
+  })
+  .then(res => {
+    if (res.ok) {
+      alert('Your account has been activated! You can now log in.');
       hideLoading();
-      alert('An error occurred during activation.');
-    });
+      document.getElementById("activate").innerHTML = "Your account has been activated! You can now log in";
+      
+    } else {
+      alert('Activation failed. The link may have expired or is invalid.');
+      hideLoading();
+      document.getElementById("activate").innerHTML =  "Activation failed. The link may have expired or is invalid.";
+    }
+  })
+    .catch(err => {
+    console.error('Activation error:', err);
+    hideLoading();
+    alert('An error occurred during activation.');
   });
 
 </script>
