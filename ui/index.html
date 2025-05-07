@@ -1,192 +1,285 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GINA - Grow INdigenous trees in your Area</title>        
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-        <link href="assets/css/nav.css" rel="stylesheet">
-        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
-        <script src="assets/js/nav.js"></script>
-        <style>
-            .invis {
-                    display: none;
-                  }
-          </style>
-    </head>
-    <body class="bg-teal-100 pt-20 pb-12">
-        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
-            <div class="flex justify-between items-center mx-4 h-full">
-              <div class="md:hidden">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GINA - Grow INdigenous trees in your Area</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="assets/css/nav.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+    <script src="assets/js/nav.js"></script>
+    <style>
+        .invis {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-teal-100 pt-20 pb-12">
+    <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
+        <div class="flex justify-between items-center mx-4 h-full">
+            <div class="md:hidden">
                 <button onclick="toggleNav()">
                     <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
                 </button>
-              </div>
-        
-        
-              <div id="logo-container" class="md:flex">
+            </div>
+
+
+            <div id="logo-container" class="md:flex">
                 <a href="index.html"><img src="assets/img/gina.png" class="w-20"></a>
-        
+
                 <nav class="hidden md:flex items-center ml-4">
-                  <ul class="flex font-bold">
-                      <li><a href="index.html" class="bg-gray-200">Home</a></li>
-                      <li><a href="library.html">Library</a></li>
-                      <li><a href="leaderboard.html">Leaderboards</a></li>
-                      <li><a href="map.html">Map</a></li>
-                  </ul>
+                    <ul class="flex font-bold">
+                        <li><a href="index.html" class="bg-gray-200">Home</a></li>
+                        <li><a href="library.html">Library</a></li>
+                        <li><a href="leaderboard.html">Leaderboards</a></li>
+                        <li><a href="map.html">Map</a></li>
+                    </ul>
                 </nav>
-              </div>
-              <!-- Sign Up/Login Button, icon for user and cart -->
-              <div class="flex items-center"> 
+            </div>
+            <!-- Sign Up/Login Button, icon for user and cart -->
+            <div class="flex items-center">
                 <div id="auth-buttons" class="md:flex hidden invis">
-                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a
+                            href="login.html">Login</a></button>
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a
+                            href="signup.html">Sign Up</a></button>
                 </div>
                 <div id="user-buttons" class="md:flex hidden invis">
-                  <!-- Cart -->
-                  <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <!-- Cart -->
+                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
                     <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
                   </button> -->
-                  <!-- user -->
-                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-                  </button>
+                    <!-- user -->
+                    <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+                        <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+                    </button>
                 </div>
-              </div>
-          </header>
-        
-          <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
-            <ul class="flex flex-col font-bold p-4">
-                <li><a href="index.html" class="bg-gray-200">Home</a></li>
-                <li><a href="events.html">Events</a></li>
-                <li><a href="library.html">Library</a></li>
-                <li><a href="leaderboard.html">Leaderboards</a></li>
-                <li><a href="map.html">Map</a></li>
-                <div class="invis" id="mobile-login">
-                    <hr class="border-black border-t-2 mb-4">
-                    <li><a href="login.html">Log in</a></li>
-                    <li><a href="signup.html">Sign up</a></li>
-                </div>
-            </ul>
-          </nav>
-          <!-- Drop-down menu for user -->
-          <div class="invis" id="user-dropdown">
-            <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-            <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
-            <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
             </div>
-          </div>
+    </header>
 
-        <main>
-            <section class="flex flex-col bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-20">
-                <div class="flex flex-col items-center py-4">
-                    <p class="sm:text-5xl text-4xl font-bold mx-2 text-center" style="max-width: fit-content;">What is <span class="text-green-500">GINA</span>?</p> 
-                    <p class="sm:text-3xl text-2xl font-semibold mx-2 text-center" style="max-width: fit-content;"> <span class="text-green-500">G</span>row <span class="text-green-500">IN</span>digenous trees in your <span class="text-green-500">A</span>rea and Adopt</p>
-                    <br>
-                </div>
-                <div class="flex flex-col md:flex-row flex content-center">
-                    <div class="flex justify-center">
-                        <img src="assets/img/gina.png" alt="Logo" class="w-full md:h-auto max-w-none object-contain pb-8">
+    <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
+        <ul class="flex flex-col font-bold p-4">
+            <li><a href="index.html" class="bg-gray-200">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="library.html">Library</a></li>
+            <li><a href="leaderboard.html">Leaderboards</a></li>
+            <li><a href="map.html">Map</a></li>
+            <div class="invis" id="mobile-login">
+                <hr class="border-black border-t-2 mb-4">
+                <li><a href="login.html">Log in</a></li>
+                <li><a href="signup.html">Sign up</a></li>
+            </div>
+        </ul>
+    </nav>
+    <!-- Drop-down menu for user -->
+    <div class="invis" id="user-dropdown">
+        <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
+            <button
+                class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2"
+                onclick="document.location='profile.html'">User Profile</button>
+            <button
+                class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2"
+                onclick="logOut()">Log Out</button>
+        </div>
+    </div>
+
+    <main>
+        <section
+            class="flex flex-col bg-white bg-opacity-75 p-6 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-20">
+            <div class="flex flex-col items-center py-4">
+                <p class="sm:text-5xl text-3xl font-bold mx-2 text-center" style="max-width: fit-content;">What is <span
+                        class="text-green-500">GINA</span>?</p>
+                <p class="sm:text-4xl md:text-5xl text-2xl font-bold mx-2 text-center tracking-wide"
+                    style="max-width: fit-content;">
+                    <span class="text-green-500">G</span>row and <span class="text-green-500">I</span>dentify
+                    <span class="text-green-500">N</span>ative Trees in your
+                    <span class="text-green-500">A</span>rea
+                </p>
+                <br>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-start gap-6">
+                    <div class="flex-shrink-0" style="align-self: center;">
+                        <img alt="GINA'" style="width: 27rem;" src="assets/img/gina.png" />
                     </div>
-                    <div class="flex items-center text-xl font-medium text-gray-700 mx-6">
-                        <p>According to the Department of Environment and Natural Resources, the Phlippines loses approximately 47,000 hectares of forest cover yearly.
-                            <span class="font-bold text-green-500">GINA</span> revolves around addressing the country's need for tree planters with its key features.
-                            <br><br>
-                            <span class="font-bold text-green-500">GINA</span> gives awareness to the users of the problem and allows its users to assist in solving it. The application enables the 
-                            users to access to a variety of tree species and seeds and provides the users the opportunity to plant and share details about their planted seeds. 
-                            <br><br> 
-                            When using <span class="font-bold text-green-500">GINA</span>, points can be earned for every seed purchase and every yearly documentation. 
-                            These points give users incentives in the future.</p>  
+                    <div class=" text-base sm:text-lg leading-relaxed max-w-xl">
+                        <p class="mb-3">
+                            According to the Department of Environment and Natural Resources, the Philippines loses
+                            approximately 47,000 hectares of forest cover yearly.
+                            <span class="font-bold text-green-700">
+                                GINA
+                            </span>
+                            is an innovative strategy to recover the lost canopy and preserve our biodiversity for a
+                            sustainable future.
+                        </p>
+                        <p>
+                            <span class="font-bold text-green-700">
+                                GINA
+                            </span>
+                            enables users to record and track the growth of both endemic and indigenous native trees. It
+                            also serves as a tool to identify them in one’s neighborhood using Artificial Intelligence
+                            (AI) with contributions made engaging and rewarding through gamification.
+                        </p>
                     </div>
                 </div>
-            </section>
-        
-            <section class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-10">
+                <div class=" text-base w-full sm:text-lg leading-relaxed mt-4 ml-0 sm:ml-[224px]">
+                    <p>
+                        These crowdsourced efforts, facilitated by the GINA platform, promote the dispersal of native
+                        tree species, mimicking nature’s way of expanding their population and distribution.
+                    </p>
+                </div>
+            </div>
+
+
+            <hr class="mt-10">
+
+            <div class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-10">
                 <div class="flex flex-col items-center text-center pt-4">
-                    <h1 class="sm:text-5xl text-4xl font-bold m-8" style="max-width: fit-content;">What <span class="text-green-500">Trees</span> can we <span class="text-green-500">Plant?</span></h1> 
+                    <span class=" sm:text-xl text-lg">The GINA platform is powered by the <br />
+                        University of the Philippines Association of the University Women and the UP Resilience
+                        Institute</span>
                 </div>
-                <div class="flex flex-col md:flex-row justify-center content-center pb-8">
-                    <div class="flex items-center mx-8 mb-8 md:mb-0">
-                        <p class="sm:text-2xl text-xl md:text-left font-medium text-gray-700 text-justify">The GINA Application lets you access a wide variety of plant species through our tree library.</p>  
+                <div class="px-6 flex items-center flex-no-wrap mt-4 justify-center">
+                    <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 bg-cover bg-center rounded-md">
+                        <img src="assets/img/up.png" alt="girl"
+                            class="h-full w-full overflow-hidden object-cover rounded-full" />
+                    </a>
+                    <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 bg-cover rounded-md ml-2">
+                        <img src="assets/img/up-uw.JPG" alt="man"
+                            class="h-full w-full overflow-hidden object-cover rounded-full" />
+                    </a>
+                    <a tabindex="0"
+                        class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 bg-cover rounded-md bg-center ml-2">
+                        <img src="assets/img/upri.png" alt="boy"
+                            class="h-full w-full overflow-hidden object-cover rounded-full" />
+                    </a>
+                </div>
+            </div>
+
+            <hr class="mt-10">
+
+            <div class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-10">
+                <div class="flex flex-col items-center text-center pt-4">
+                    <span class=" sm:text-xl text-lg">in collaboration with the Climate Change Commission (CCC)<br />
+                        Forest Foundation Philippines (FFp) and the Energy Development Corporation (EDC)</span>
+                </div>
+
+                <div class="px-6 flex items-center flex-no-wrap mt-4 justify-center">
+                    <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 bg-cover bg-center rounded-md">
+                        <img src="assets/img/ccc.png" alt="girl"
+                            class="h-full w-full overflow-hidden object-cover rounded-full" />
+                    </a>
+                    <a tabindex="0" class="focus:outline-none  w-36 h-24 sm:w-60 sm:h-32 ml-2">
+                        <img src="assets/img/FFP.png" alt="man" class="h-full w-full" />
+                    </a>
+                    <a tabindex="0"
+                        class="focus:outline-none  w-36 h-24 sm:w-48 sm:h-32 bg-cover rounded-md bg-center ml-2">
+                        <img src="assets/img/edc.png" alt="boy" class="h-full w-full" />
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-10">
+            <div class="flex flex-col items-center text-center pt-4">
+                <h1 class="sm:text-5xl text-4xl font-bold m-8" style="max-width: fit-content;">What <span
+                        class="text-green-500">Trees</span> can we <span class="text-green-500">Plant?</span></h1>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center content-center pb-8">
+                <div class="flex items-center mx-8 mb-8 md:mb-0">
+                    <p class="sm:text-2xl text-xl md:text-left font-medium text-gray-700 text-justify">The GINA
+                        Application lets you access a wide variety of plant species through our tree library.</p>
+                </div>
+
+                <div class="flex justify-center items-center">
+                    <button
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold text-xl py-2 px-4 rounded-xl md:mx-8 whitespace-no-wrap"><a
+                            href="library.html">Library</a></button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Donate -->
+        <section class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-12">
+            <div class="py-4">
+                <h1 class="text-4xl font-bold mx-auto" style="max-width: fit-content;">Donations</h1>
+            </div>
+            <div class="flex flex-col content-center">
+                <div class="flex items-start sm:text-xl font-medium text-gray-700 mx-8 sm:mx-12 flex-col">
+                    <div class="w-full">
+                        <p>Donations are welcome to UP Resilience Institute and NOAH Center. We thank you for your
+                            commitment and support.</p><br><br>
                     </div>
 
-                    <div class="flex justify-center items-center">
-                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold text-xl py-2 px-4 rounded-xl md:mx-8 whitespace-no-wrap"><a href="library.html">Library</a></button>
+                    <div>
+                        You may send your donations via deposit or bank transfer using the account details of the UP
+                        Foundation as shown below.
+                        Please make sure to indicate that the donation is for <b>UP Resilience Institute</b> and/or
+                        <b>UP NOAH Center</b>. <br><br>
                     </div>
-                </div>
-            </section>
 
-
-            <!-- Donate -->
-            <section class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-12">
-                <div class="py-4">
-                    <h1 class="text-4xl font-bold mx-auto" style="max-width: fit-content;">Donations</h1> 
-                </div>
-                <div class="flex flex-col content-center">
-                    <div class="flex items-start sm:text-xl font-medium text-gray-700 mx-8 sm:mx-12 flex-col">
-                        <div class="w-full">
-                            <p>Donations are welcome to UP Resilience Institute and NOAH Center. We thank you for your commitment and support.</p><br><br>
-                        </div>
-
-                        <div>
-                            You may send your donations via deposit or bank transfer using the account details of the UP Foundation as shown below. 
-                            Please make sure to indicate that the donation is for <b>UP Resilience Institute</b> and/or <b>UP NOAH Center</b>. <br><br>
-                        </div>
-                        
-                        <div>
-                            Kindly scan or take a picture of the deposit slip and send it to <b>resilience.institute@up.edu.ph</b> so your donation can be confirmed. 
-                            Please indicate if you wish to receive an official receipt. <br><br>
-                        </div>
-            
-                        <div class="text-base font-medium text-gray-700 mx-4 sm:mx-12 flex-col">
-                            <div class="mt-6">
-                                <b>Account Name:</b> University of the Philippines Foundation, Inc. <br>
-                                <b>Peso Account Number: </b>1022-7001-8964 <br>
-                                <b>Bank:</b> UnionBank of the Philippines <br>
-                                <b>Bank Branch:</b> Unionbank Commonwealth Branch <br>
-                                <b>Swift code:</b> UBPHPHMM <br>
-                            </div>
-            
-                            <div class="mt-6">
-                                <b>Account Name:</b> UP Foundation, Inc. <br>
-                                <b>Peso Account Number:</b> 1086 1002 9829 <br>
-                                <b>Dollar Account Number</b> 1086 6002 9835 <br>
-                                <b>Bank:</b> Philippine National Bank <br>
-                                <b>Bank Branch:</b> UP Campus Branch <br>
-                                <b>Address:</b> 3 Apacible, UP Campus, Diliman, Quezon City, Philippines <br>
-                                <b>Swift Code:</b> PNBMPHMM <br>
-                            </div>
-            
-                            <div class="mt-6">
-                                <b>Account Name:</b> UPS Trust Account <br>
-                                <b>Peso Account Number:</b> 3072-1007-50 <br>
-                                <b>Dollar Account Number</b> 3074-0017-92 <br>
-                                <b>Bank:</b> Landbank of the Philippines <br>
-                                <b>Branch:</b> UP Diliman Branch, Quezon City <br>
-                                <b>Swift Code:</b> TLBPPHMM <br>
-                            </div>
-                        </div>
-            
-                        <div class="mt-6 w-full">
-                            <p>For general inquiries about donating to the University of the Philippines Resilience Institute and/or NOAH Center,  
-                                please contact us through the following channels:<br></p>
-                            
-                            <div class="text-base font-medium text-gray-700 mx-4 sm:mx-12 my-4 flex-col">
-                                <p class="break-all">
-                                    Telephone: (02)8981 8500 loc. 3771 <br>
-                                    Email: resilience.institute@up.edu.ph <br>
-                                    Facebook: https://www.facebook.com/UPResilienceInstitute <br>
-                                </p>
-
-                            </div>
-                        
-                        </div>
-            
+                    <div>
+                        Kindly scan or take a picture of the deposit slip and send it to
+                        <b>resilience.institute@up.edu.ph</b> so your donation can be confirmed.
+                        Please indicate if you wish to receive an official receipt. <br><br>
                     </div>
+
+                    <div class="text-base font-medium text-gray-700 mx-4 sm:mx-12 flex-col">
+                        <div class="mt-6">
+                            <b>Account Name:</b> University of the Philippines Foundation, Inc. <br>
+                            <b>Peso Account Number: </b>1022-7001-8964 <br>
+                            <b>Bank:</b> UnionBank of the Philippines <br>
+                            <b>Bank Branch:</b> Unionbank Commonwealth Branch <br>
+                            <b>Swift code:</b> UBPHPHMM <br>
+                        </div>
+
+                        <div class="mt-6">
+                            <b>Account Name:</b> UP Foundation, Inc. <br>
+                            <b>Peso Account Number:</b> 1086 1002 9829 <br>
+                            <b>Dollar Account Number</b> 1086 6002 9835 <br>
+                            <b>Bank:</b> Philippine National Bank <br>
+                            <b>Bank Branch:</b> UP Campus Branch <br>
+                            <b>Address:</b> 3 Apacible, UP Campus, Diliman, Quezon City, Philippines <br>
+                            <b>Swift Code:</b> PNBMPHMM <br>
+                        </div>
+
+                        <div class="mt-6">
+                            <b>Account Name:</b> UPS Trust Account <br>
+                            <b>Peso Account Number:</b> 3072-1007-50 <br>
+                            <b>Dollar Account Number</b> 3074-0017-92 <br>
+                            <b>Bank:</b> Landbank of the Philippines <br>
+                            <b>Branch:</b> UP Diliman Branch, Quezon City <br>
+                            <b>Swift Code:</b> TLBPPHMM <br>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 w-full">
+                        <p>For general inquiries about donating to the University of the Philippines Resilience
+                            Institute and/or NOAH Center,
+                            please contact us through the following channels:<br></p>
+
+                        <div class="text-base font-medium text-gray-700 mx-4 sm:mx-12 my-4 flex-col">
+                            <p class="break-all">
+                                Telephone: (02)8981 8500 loc. 3771 <br>
+                                Email: resilience.institute@up.edu.ph <br>
+                                Facebook: https://www.facebook.com/UPResilienceInstitute <br>
+                            </p>
+
+                        </div>
+
+                    </div>
+
                 </div>
-                </div>
-            </section>
-        </main>
-        <script src="assets/js/learn.js"></script>
-    </body>
+            </div>
+            </div>
+        </section>
+    </main>
+    <script src="assets/js/learn.js"></script>
+</body>
+
 </html>
