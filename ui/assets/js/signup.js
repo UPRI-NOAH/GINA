@@ -1,22 +1,15 @@
-// change URL    backend
-let url = "punla.up.edu.ph";
-let signupURL = `https://${url}/auth/users/`;
-let userURL = `https://${url}/api/user-info/`;
 
-const form = document.getElementById('register-form');
 
-const loadingOverlay = document.getElementById('loading-overlay');
+const formReg = document.getElementById('register-form');
 
-function showLoading() {
-  loadingOverlay.style.display = 'flex';
-}
+if (isLoggedIn == true) {
 
-function hideLoading() {
-  loadingOverlay.style.display = 'none';
+  window.location.href = 'profile.html';
+
 }
 
 
-  form.addEventListener('submit', (e) => {
+  formReg.addEventListener('submit', (e) => {
     e.preventDefault();
     showLoading(); 
 
@@ -94,7 +87,7 @@ function hideLoading() {
   });
 
   // Prevent enter when loading
-form.addEventListener('keydown', (e) => {
+formReg.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && loadingOverlay.style.display === 'flex') {
     e.preventDefault(); // prevent the form from being submitted
   }

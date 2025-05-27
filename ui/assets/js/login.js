@@ -1,20 +1,18 @@
-// change URL for backend
-let url = "punla.up.edu.ph";
-let loginURL = `https://${url}/auth/token/login/`;
 
-// Check if user has an authToken saved
-const authToken = localStorage.getItem('authToken');
-const rememberMe = localStorage.getItem('rememberMe');
+document.addEventListener('DOMContentLoaded', () => {
+    const element = document.getElementById('some-id');
+    if (element) {
+      element.classList.add('some-class');
+    }
+  });
 
-const loadingOverlay = document.getElementById('loading-overlay');
+if (isLoggedIn == true) {
 
-function showLoading() {
-  loadingOverlay.style.display = 'flex';
+  window.location.href = 'profile.html';
+
 }
 
-function hideLoading() {
-  loadingOverlay.style.display = 'none';
-}
+const form = document.querySelector('form');
 
 
 if (authToken && rememberMe) {
@@ -22,7 +20,6 @@ if (authToken && rememberMe) {
     window.location.href = 'index.html';
 } else {
     // User doesn't have an authToken saved, show the login form
-    const form = document.querySelector('form');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -55,6 +52,8 @@ if (authToken && rememberMe) {
                 localStorage.setItem('username', username);
             } else {
                 // Remember me is not checked, store the auth token in session storage
+                localStorage.setItem('authToken', authToken);
+                localStorage.setItem('username', username);
                 sessionStorage.setItem('authToken', authToken);
                 sessionStorage.setItem('username', username);
             }

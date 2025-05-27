@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from api.gina.views import UserInfoViewset, UserTreeViewset
+from api.gina.views import UserInfoViewset, UserTreeViewset, IdentifyTreeInfoViewset, UserTreeArchiveViewset
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -29,6 +29,8 @@ router.register("user-info", UserInfoViewset, basename="user-info")
 router.register("tree-info", TreeInfoViewset, basename="tree-info")
 router.register("tree-type", TreeTypeViewset, basename="tree-type")
 router.register("user-tree-info", UserTreeViewset, basename="user-tree-info")
+router.register("identify-tree-info", IdentifyTreeInfoViewset, basename="identify-tree-info")
+router.register("archive-tree-info", UserTreeArchiveViewset, basename="archive-tree-info")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +41,8 @@ urlpatterns = [
     path('reset_password.html', reset_password),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    # path('api-auth/', include('rest_framework.urls')), # for local only
+
 ]
 
 # for local
