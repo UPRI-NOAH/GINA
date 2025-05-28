@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets, mixins
-from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo
-from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer
-from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter
+from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive
+from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer
+from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter, IdentifyTreeFilter, UserTreeArchiveTreeFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import render
 
 
@@ -57,3 +58,47 @@ class UserTreeViewset(viewsets.ModelViewSet):
     serializer_class = UserTreeSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = UserTreeFilter
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        # Find the UserInfo object that matches the current logged-in user
+        user_info = UserInfo.objects.get(user=self.request.user)
+        serializer.save(owning_user=user_info)
+
+@extend_schema_view(
+    list=extend_schema(description="Returns a list of all planted trees"),
+    retrieve=extend_schema(description="Returns a planted tree, identified by its reference number"),
+    create=extend_schema(description="Creates a record for a planted tree"),
+    update=extend_schema(description="Updates a planted tree, identified by its reference number"),
+    destroy=extend_schema(description="Deletes a planted tree, identified by its reference number")
+)
+class IdentifyTreeInfoViewset(viewsets.ModelViewSet):
+    queryset = IdentifyTreeInfo.objects.order_by("-id")
+    serializer_class = IdentifyTreeInfoSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = IdentifyTreeFilter
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        user_info = UserInfo.objects.get(user=self.request.user)
+        serializer.save(identified_by=user_info)
+
+
+@extend_schema_view(
+    list=extend_schema(description="Returns a list of all planted trees"),
+    retrieve=extend_schema(description="Returns a planted tree, identified by its reference number"),
+    create=extend_schema(description="Creates a record for a planted tree"),
+    update=extend_schema(description="Updates a planted tree, identified by its reference number"),
+    destroy=extend_schema(description="Deletes a planted tree, identified by its reference number")
+)
+class UserTreeArchiveViewset(viewsets.ModelViewSet):
+    queryset = UserTreeArchive.objects.order_by("-id")
+    serializer_class = UserTreeArchiveInfoSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserTreeArchiveTreeFilter
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    def perform_create(self, serializer):
+        # Find the UserInfo object that matches the current logged-in user
+        user_info = UserInfo.objects.get(user=self.request.user)
+        serializer.save(owning_user=user_info)

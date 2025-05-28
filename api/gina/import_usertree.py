@@ -25,15 +25,17 @@ for index, row in df.iterrows():
         user=user,
         defaults={'last_name': 'N/A'}
     )
-
     userTreeInfo = UserTreeInfo(
         planted_on=row['date_inserted'][:10],
         longitude=row['lng'],
         latitude=row['lat'],
-        model_tree=TreeInfo.objects.get(tree_name=row['name']),
+        # model_tree=TreeInfo.objects.get(tree_name=row['name']),
         owning_user=userInfo,
+        tree_name=row['name'],
+        tree_description=row['details'],
         quantity=row['qty'],
         status='PLT',
+        action='Planted',
         image=row['photo'].replace('/user_upload/', 'gina_trees/').replace('user_upload/', 'gina_trees/'),
     )
 

@@ -1,5 +1,5 @@
 import django_filters
-from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo
+from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive
 
 class TreeInfoFilter(django_filters.FilterSet):
     class Meta:
@@ -38,4 +38,26 @@ class UserTreeFilter(django_filters.FilterSet):
             "owning_user__user": ["exact"],
             "quantity": ["exact"],
             "status": ["exact"],
+        }
+
+class IdentifyTreeFilter(django_filters.FilterSet):
+    class Meta:
+        model = IdentifyTreeInfo
+        fields = {
+            "tree_identifier__reference_id": ["exact"],
+            "tree_comment": ["exact"],
+            "identified_on": ["exact"],
+            "identified_by": ["exact"],
+        }
+
+class UserTreeArchiveTreeFilter(django_filters.FilterSet):
+    class Meta:
+        model = UserTreeArchive
+        fields = {
+            "reference_id__reference_id": ["exact"],
+            "owning_user__user": ["exact"],
+            "tree_name": ["exact"],
+            "tree_type": ["exact"],
+            "tree_description": ["exact"],
+            "planted_on": ["exact"],
         }
