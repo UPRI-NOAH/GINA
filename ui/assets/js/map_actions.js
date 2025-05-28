@@ -235,7 +235,9 @@ function commentIdentify() {
   const referenceId = document.getElementById("identify-ref-id").value; // adjust if stored differently
   const username = localStorage.getItem("username") || sessionStorage.getItem("username");
   if (!commentText || !referenceId || !username) {
-    alert("Comment, reference ID, or user missing.");
+    hideLoading()
+    alert("Please log in first before commenting.");
+    window.location.href = 'login.html';
     return;
   }
   
