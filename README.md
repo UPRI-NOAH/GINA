@@ -133,7 +133,7 @@ python api/gina/populate_archive.py
 
 ### Login Page
 - This is where users can login after registering for an account
-![Login](screenshots/login.png)
+![image](https://github.com/user-attachments/assets/6ff39df5-428c-47e3-8d3e-93ff15baac00)
 
 ### Landing Page
 - This is where users are redirected to after logging in
