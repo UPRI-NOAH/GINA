@@ -133,12 +133,12 @@ python api/gina/populate_archive.py
 
 ### Login Page
 - This is where users can login after registering for an account
-![image](https://github.com/user-attachments/assets/6ff39df5-428c-47e3-8d3e-93ff15baac00)
+![Register](screenshots/Login.png)
 
 ### Landing Page
 - This is where users are redirected to after logging in
 - It contains information regarding GINA and some plant care tips
-![Landing Page](screenshots/landing_page.png)
+![image](https://github.com/user-attachments/assets/842b6794-d3e7-4851-9621-b23bd7bf56f2)
 
 ### Events Page
 - This is where events and articles will be located
