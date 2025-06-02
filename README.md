@@ -1,4 +1,4 @@
-# GINA - **G**row **In**digenous Trees **A**pp
+# GINA - **G**row and **I**dentify Native Trees in your **A**rea
 
 ## Overview
 
@@ -43,17 +43,28 @@ These .js files makes use of certain endpoints to make the system work:
         - used for storing other details (such as name and contact number) from the user to the database
 - login.js
     - `/auth/token/login/` 
-        - used for logging in to the backend and to receive an authentication token
+        - used for logging in to the backend and to receive an authentication token.
 - leaderboard.js
     - `/api/user-info/`  
-        - used to query each user's points to display them on the leaderboard
+        - used to query each user's points to display them on the leaderboard.
 - map.js
     - `/api/user-tree-info/`  
-        - used for querying planted trees and displaying them on the map through pins (blue pin = owned, green pin = not owned)
+        - used for querying planted trees and displaying them on the map through pins (blue pin = owned, green pin = not owned).
         - used for uploading new trees along with the planting details (such as location and date planted)
-    - `/api/user-info/${username}/?format=json`
-        - used for updating the points of the user each time a tree is planted
-
+- map_actions.js
+  - `/api/user-tree-info/`  
+      - used for uploading, editting, new trees along with the planting details (such as location and date planted).
+  - `/api/archive-tree-info/`  
+      - used for uploading archive trees along with the planting details (such as location and date uploaded).
+- forgot_pass.js
+  - `/auth/users/reset_password/`  
+      - used to reset a forgotten password. The user provides their email address, and a password reset link will be sent via email.
+- profle.js
+  - `/auth/users/set_password/`
+      - used for changing password.
+  - `/api/user-info/{username}`
+      - used for viewing and updating user info.
+  
 ### Backend
 
 Before the backend API can be set up, ensure that a PostgreSQL database instance is running and accessible and provide the following in a `.env` file:
@@ -97,13 +108,19 @@ Some data for `TreeInfo` and `UserTree` are availble in `api/gina/treeinfo.csv` 
 Import the `TreeInfo` data via
 
 ```bash
-python manage.py runscript api.gina.import_tree_info.py
+python manage.py runscript api.gina.import_binhi_db.py
 ```
 
 Then import the `UserTree` data via
 
 ```bash
-python manage.py runscript api.gina.import_usertree.py
+python api/gina/import_usertree.py
+```
+
+Then import the `UserTreeArchive` data via
+
+```bash
+python api/gina/populate_archive.py
 ```
 
 <!-- TODO: document usage -->
