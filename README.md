@@ -108,7 +108,7 @@ Some data for `TreeInfo` and `UserTree` are availble in `api/gina/treeinfo.csv` 
 Import the `TreeInfo` data via
 
 ```bash
-python manage.py runscript api.gina.import_binhi_db.py
+python api/gina/import_binhi_db.py
 ```
 
 Then import the `UserTree` data via
