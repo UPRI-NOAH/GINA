@@ -6,9 +6,8 @@ function loadUserProfile() {
       return;
   }
 
-  const userInfoURL = `${userURL}${username}/`;
 
-  fetch(userInfoURL, {
+  fetch(editUserURL, {
       method: 'GET',
       headers: {
           'Authorization': `Token ${authToken}`,
@@ -72,10 +71,9 @@ function submitEditProfile() {
   
   var username = localStorage.getItem('username') || sessionStorage.getItem('username');
   var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-  var userInfoURL = `${userURL}${username}/`;
 
   showLoading()
-  fetch(userInfoURL, {
+  fetch(editUserURL, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
