@@ -53,7 +53,7 @@ These .js files makes use of certain endpoints to make the system work:
         - used for uploading new trees along with the planting details (such as location and date planted)
   - `/api/archive-tree-info/`  
           - used for viewing archive trees along with the planting details (such as location and date uploaded).
-    - `/api/identify-tree-info/tree_identifier__reference_id=${refId}`  
+  - `/api/identify-tree-info/tree_identifier__reference_id=${refId}`  
           - used for viewing discussion on the tree planted
 - map_actions.js
   - `/api/user-tree-info/`  
