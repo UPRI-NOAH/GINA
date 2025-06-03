@@ -2,7 +2,7 @@ let url = "punla.up.edu.ph";
 let http = "https";
 let usertreeURL = `${http}://${url}/api/user-tree-info/`;
 let username = localStorage.getItem('username') || sessionStorage.getItem('username');
-let editUserURL = `${http}://${url}/api/user-info/${username}/?format=json`;
+let editUserURL = `${http}://${url}/api/user-info/${username}/`;
 let treeLibURL = `${http}://${url}/api/tree-info/`;
 let identifyTreeURL = `${http}://${url}/api/identify-tree-info/`;
 let treeArchiveURL = `${http}://${url}/api/archive-tree-info/`;
