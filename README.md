@@ -51,11 +51,19 @@ These .js files makes use of certain endpoints to make the system work:
     - `/api/user-tree-info/`  
         - used for querying planted trees and displaying them on the map through pins (blue pin = owned, green pin = not owned).
         - used for uploading new trees along with the planting details (such as location and date planted)
+  - `/api/archive-tree-info/`  
+          - used for viewing archive trees along with the planting details (such as location and date uploaded).
+    - `/api/identify-tree-info/tree_identifier__reference_id=${refId}`  
+          - used for viewing discussion on the tree planted
 - map_actions.js
   - `/api/user-tree-info/`  
       - used for uploading, editting, new trees along with the planting details (such as location and date planted).
   - `/api/archive-tree-info/`  
       - used for uploading archive trees along with the planting details (such as location and date uploaded).
+  - `/api/identify-tree-info/`
+    - used for posting comment on the discussion thread
+  - `/api/identify-tree-info/${commentId}`  
+    - used for deleting comment on the discussion thread
 - forgot_pass.js
   - `/auth/users/reset_password/`  
       - used to reset a forgotten password. The user provides their email address, and a password reset link will be sent via email.
