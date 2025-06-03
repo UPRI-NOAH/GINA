@@ -88,19 +88,19 @@ DB_HOST
 Then, make the migrations via
 
 ```bash
-python manage.py makemigrations gina
+python manage.py makemigrations
 ```
 
 Afterwards, execute the migrations via
 
 ```bash
-python manage.py migrate gina
+python manage.py migrate
 ```
 
 Finally, run the server using
 
 ```bash
-python manage.py runserver [port]
+python manage.py runserver
 ```
 
 ## API Documentation
