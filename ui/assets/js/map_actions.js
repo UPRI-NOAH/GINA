@@ -234,10 +234,17 @@ function commentIdentify() {
   const commentText = document.querySelector('textarea[name="body"]').value;
   const referenceId = document.getElementById("identify-ref-id").value; // adjust if stored differently
   const username = localStorage.getItem("username") || sessionStorage.getItem("username");
-  if (!commentText || !referenceId || !username) {
+  
+  if (!username) {
     hideLoading()
     alert("Please log in first before commenting.");
     window.location.href = 'login.html';
+    return;
+  }
+
+  if (!commentText) {
+    hideLoading()
+    alert("Please input text");
     return;
   }
   
