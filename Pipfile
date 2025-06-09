@@ -17,6 +17,8 @@ pandas = "*"
 boto3 = "*"
 django-storages = "*"
 beautifulsoup4 = "*"
+pillow = "*"
+pymupdf = "*"
 
 [dev-packages]
 
