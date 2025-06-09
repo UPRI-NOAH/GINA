@@ -9,6 +9,7 @@
   <link href="assets/css/nav.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
@@ -31,10 +32,10 @@
       /* map id */
           #map {
             position: absolute;
-            top: 75px; /* adjust to the height of the navigation bar */
+            top: 90px; /* adjust to the height of the navigation bar */
             left: 0;
             width: 100%;
-            height: calc(100vh - 75px); /* adjust to the height of the navigation bar */
+            height: calc(100vh - 90px); /* adjust to the height of the navigation bar */
             z-index: 0; /* make sure the map is behind the overlay */
           }
           .overlay {
@@ -110,7 +111,7 @@
     </style>
 
 </head>
-<body class="bg-teal-100 pt-20 pb-12"> 
+<body class="bg-teal-100 pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">>
   <div id="loading-overlay" style="
     display: none;
     position: fixed;
@@ -127,55 +128,67 @@
   ">
   <img src="./assets/img/gina-loading.gif" alt="Computer man" style="width:500px;height:500px;">
 </div>
-  <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
-    <div class="flex justify-between items-center mx-4 h-full">
-      <div class="md:hidden">
-        <button onclick="toggleNav()">
-            <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
-        </button>
-      </div>
+ 
 
-      <div id="logo-container" class="md:flex">
-        <a href="index.html"><img src="assets/img/gina.png" class="w-20"></a>
+    <!-- main nav  -->
+    <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
 
-        <nav class="hidden md:flex items-center ml-4">
-          <ul class="flex font-bold">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="library.html">Library</a></li>
-              <li><a href="leaderboard.html" >Leaderboards</a></li>
-              <li><a href="map.html" class="bg-gray-200">Map</a></li>
-          </ul>
+        <nav class="max-w-6xl mx-auto flex justify-between px-10">
+            <!--  logo     -->
+            <div class="flex items-center">
+                <div class="font-bold flex items-center uppercase">
+                    <img src="assets/img/gina.png" class="w-20">
+
+                </div>
+
+                <!--  primary navigation  -->
+                <div class="hidden md:flex ml-10 items-center ">
+                    <a class="px-5" href="index.html">Home</a>
+                    <a class="px-5" href="library.html">Library</a>
+                    <a class="px-5" href="leaderboard.html">Leaderboards</a>
+                    <a class="px-5" href="#">Map</a>
+                </div>
+            </div>
+
+            <!--  Secund navigation   -->
+            <div class="hidden md:flex  items-center">
+                <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+                hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
+                <!-- Code block for button with indigo outline ends -->
+                <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                    hover:bg-green-600 rounded-2xl
+            text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
+             focus:ring-green-600"><a href="login.html">Login</a></button>
+
+            </div>
+
+            <!--  Mobile Menu    -->
+            <div class="md:hidden flex items-center">
+                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 rounded-full transition duration-500  p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
         </nav>
-      </div>
 
-      <div class="flex items-center"> <!-- Sign Up/Login Button, icon for user and cart -->
-        <div id="auth-buttons" class="md:flex hidden invis">
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
-        </div>
-        <div id="user-buttons" class="md:flex hidden invis">
-          <!-- user -->
-          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-            <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-          </button>
-        </div>
-      </div>
-  </header>
+        <!-- Mobile menu -->
+        <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Map</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
 
-  <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
-    <ul class="flex flex-col font-bold p-4">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="library.html">Library</a></li>
-        <li><a href="leaderboard.html">Leaderboards</a></li>
-        <li><a href="map.html" class="bg-gray-200">Map</a></li>
-        <div class="invis" id="mobile-login">
-          <hr class="border-black border-t-2 mb-4">
-          <li><a href="login.html">Log in</a></li>
-          <li><a href="signup.html">Sign up</a></li>
-      </div>
-    </ul>
-  </nav>
+        </div>
+    </div>
+    <!-- // end main nav  -->
+
 
   <!-- Map Controls -->
    <div>
@@ -212,9 +225,34 @@
       <h2 class="text-2xl font-bold mb-4">Add Your Tree</h2>
       <p class="text-lg mb-4">Please fill in the details of your tree.</p>
       <!-- Plant Name -->
-      <input type="text" id="plant-name" class="w-full p-1 mb-4" placeholder="Plant Name"><br>
+      <!-- <input type="text" id="plant-name" class="w-full p-1 mb-4 border-black" placeholder="Plant Name"><br> -->
+
+     <div class="w-full max-w-xl mx-auto  rounded-md mt-4 p-2">
+        <input placeholder="Plant Name" class="rounded-md w-full h-16 bg-transparent py-2 pl-8 pr-32 outline-none border-2 
+        border-gray-100 shadow-md hover:outline-none focus:ring-teal-200 focus:border-teal-200 p-2 bg-white" type="text" name="query"
+          id="plant-name">
+
+      </div>
+
+
+
+      
       <!-- Description -->
-      <textarea id="description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
+      <!-- <textarea id="description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea> -->
+
+
+     <div class="w-full max-w-xl mx-auto  rounded-md mt-4 p-2">
+        <textarea id="description" class="resize-none rounded-md w-full h-16 bg-transparent py-2 pl-8 pr-32 outline-none border-2 
+        border-gray-100 shadow-md hover:outline-none focus:ring-teal-200 focus:border-teal-200 p-2 bg-white" 
+        placeholder="Description"
+          id="description"></textarea>
+      </textarea>
+      </div>
+
+
+      
+      
+      <br>
       <p class="text-lg mb-4">Input Date:</p>
       <input type="date" id="planted-on" class="w-full p-1 mb-6" placeholder="Planted On" max="">
       <!-- Image -->
@@ -230,7 +268,22 @@
     </div>
   </div>
 
-  <button class="fixed mb-4 mr-4 bottom-0 right-0 bg-green-500 hover:bg-green-700 p-1 rounded-full z-0" id="addTree" onclick="addTreeClick()"><img class="rounded-full w-10 h-10" src="./assets/img/addtree.png" ></button>
+  <button class="fixed mb-10 mr-4 bottom-0 right-0 p-1 rounded-full z-0 bg-white" id="addTree" 
+  onclick="addTreeClick()">
+
+<li class="relative bg-white rounded-full m-2 text-lg flex justify-center items-center shadow-lg cursor-pointer 
+transition-transform hover:scale-110">
+  <span class="absolute left-1/2 -translate-x-1/2 -top-12 text-white bg-black text-sm py-1 px-2 rounded shadow opacity-0 
+  pointer-events-none transition-all group-hover:opacity-100 group-hover:pointer-events-auto tooltip">
+    Plant a tree
+  </span>
+ 
+<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="none">
+  <path fill="#16923D" d="M16.5 0C7.392 0 0 7.392 0 16.5S7.392 33 16.5 33 33 25.608 33 16.5 25.608 0 16.5 0Zm6.625 18.1H18.1v5.025c0 .887-.714 1.6-1.601 1.6s-1.6-.713-1.6-1.6V18.1H9.874c-.887 0-1.6-.714-1.6-1.601s.713-1.6 1.6-1.6H14.9V9.874c0-.887.714-1.6 1.601-1.6s1.6.713 1.6 1.6V14.9h5.025c.887 0 1.6.714 1.6 1.601a1.6 1.6 0 0 1-1.6 1.6Z"/></svg>
+</li>
+</button>
+
+
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="assets/js/map.js"></script>
 

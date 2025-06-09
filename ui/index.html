@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GINA - Grow INdigenous trees in your Area</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="assets/css/nav.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
     <script src="assets/js/nav.js"></script>
@@ -16,63 +17,68 @@
     </style>
 </head>
 
-<body class="bg-teal-100 pt-20 pb-12">
-    <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
-        <div class="flex justify-between items-center mx-4 h-full">
-            <div class="md:hidden">
-                <button onclick="toggleNav()">
-                    <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
+<body class="bg-teal-100 pb-12" style="font-family: 'Poppins', sans-serif;">
+
+    <!-- main nav  -->
+    <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
+
+        <nav class="max-w-6xl mx-auto flex justify-between px-10">
+            <!--  logo     -->
+            <div class="flex items-center">
+                <div class="font-bold flex items-center uppercase">
+                    <img src="assets/img/gina.png" class="w-20">
+
+                </div>
+
+                <!--  primary navigation  -->
+                <div class="hidden md:flex ml-10 items-center ">
+                    <a class="px-5" href="#">Home</a>
+                    <a class="px-5" href="library.html">Library</a>
+                    <a class="px-5" href="leaderboard.html">Leaderboards</a>
+                    <a class="px-5" href="map.html">Map</a>
+                </div>
+            </div>
+
+            <!--  Secund navigation   -->
+            <div class="hidden md:flex  items-center">
+                <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+                hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
+                <!-- Code block for button with indigo outline ends -->
+                <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                    hover:bg-green-600 rounded-2xl
+            text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
+             focus:ring-green-600"><a href="login.html">Login</a></button>
+
+            </div>
+
+            <!--  Mobile Menu    -->
+            <div class="md:hidden flex items-center">
+                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 rounded-full transition duration-500  p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
                 </button>
             </div>
 
+        </nav>
 
-            <div id="logo-container" class="md:flex">
-                <a href="index.html"><img src="assets/img/gina.png" class="w-20"></a>
+        <!-- Mobile menu -->
+        <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Home</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
 
-                <nav class="hidden md:flex items-center ml-4">
-                    <ul class="flex font-bold">
-                        <li><a href="index.html" class="bg-gray-200">Home</a></li>
-                        <li><a href="library.html">Library</a></li>
-                        <li><a href="leaderboard.html">Leaderboards</a></li>
-                        <li><a href="map.html">Map</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <!-- Sign Up/Login Button, icon for user and cart -->
-            <div class="flex items-center">
-                <div id="auth-buttons" class="md:flex hidden invis">
-                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a
-                            href="login.html">Login</a></button>
-                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a
-                            href="signup.html">Sign Up</a></button>
-                </div>
-                <div id="user-buttons" class="md:flex hidden invis">
-                    <!-- Cart -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button> -->
-                    <!-- user -->
-                    <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-                        <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-                    </button>
-                </div>
-            </div>
-    </header>
+        </div>
+    </div>
+    <!-- // end main nav  -->
 
-    <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
-        <ul class="flex flex-col font-bold p-4">
-            <li><a href="index.html" class="bg-gray-200">Home</a></li>
-            <li><a href="events.html">Events</a></li>
-            <li><a href="library.html">Library</a></li>
-            <li><a href="leaderboard.html">Leaderboards</a></li>
-            <li><a href="map.html">Map</a></li>
-            <div class="invis" id="mobile-login">
-                <hr class="border-black border-t-2 mb-4">
-                <li><a href="login.html">Log in</a></li>
-                <li><a href="signup.html">Sign up</a></li>
-            </div>
-        </ul>
-    </nav>
+
     <!-- Drop-down menu for user -->
     <div class="invis" id="user-dropdown">
         <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
@@ -85,11 +91,12 @@
         </div>
     </div>
 
-    <main>
+    <main class="pt-24">
         <section
-            class="flex flex-col bg-white bg-opacity-75 p-6 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-20">
-            <div class="flex flex-col items-center py-4">
-                <p class="sm:text-5xl text-3xl font-bold mx-2 text-center" style="max-width: fit-content;">What is <span
+            class="flex  flex-col bg-white bg-opacity-75 p-6 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-20">
+            <div class="flex flex-col items-center py-4 font-poppins">
+                <p class="sm:text-5xl text-3xl font-bold mx-2 text-center"
+                    style="max-width: fit-content; font-family: 'Poppins', sans-serif;">What is <span
                         class="text-green-500">GINA</span>?</p>
                 <p class="sm:text-4xl md:text-5xl text-2xl font-bold mx-2 text-center tracking-wide"
                     style="max-width: fit-content;">
@@ -144,17 +151,13 @@
                 </div>
                 <div class="px-6 flex items-center flex-no-wrap mt-4 justify-center">
                     <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 bg-center">
-                        <img src="assets/img/up.png" alt="up"
-                            class="h-full w-full overflow-hidden object-cover" />
+                        <img src="assets/img/up.png" alt="up" class="h-full w-full overflow-hidden object-cover" />
                     </a>
                     <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 ml-2">
-                        <img src="assets/img/up-uw.JPG" alt="upuw"
-                            class="h-full w-full overflow-hidden object-cover" />
+                        <img src="assets/img/up-uw.JPG" alt="upuw" class="h-full w-full overflow-hidden object-cover" />
                     </a>
-                    <a tabindex="0"
-                        class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32  bg-center ml-2">
-                        <img src="assets/img/upri.png" alt="upri"
-                            class="h-full w-full overflow-hidden object-cover" />
+                    <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32  bg-center ml-2">
+                        <img src="assets/img/upri.png" alt="upri" class="h-full w-full overflow-hidden object-cover" />
                     </a>
                 </div>
             </div>
@@ -173,10 +176,9 @@
                             class="w-24 h-24 sm:w-32 sm:h-32 overflow-hidden object-cover" />
                     </a>
                     <a tabindex="0" class="focus:outline-none object-cover w-36 h-24 sm:w-60 sm:h-32 ml-2">
-                        <img src="assets/img/FFP.png" alt="ffp" class="w-36 h-24 sm:w-60 sm:h-32" />
+                        <img src="assets/img/pnte.JPG" alt="ffp" class="w-36 h-24 sm:w-60 sm:h-40" />
                     </a>
-                    <a tabindex="0"
-                        class="focus:outline-none  w-36 h-24 object-cover sm:w-48 sm:h-32 bg-center ml-2">
+                    <a tabindex="0" class="focus:outline-none  w-36 h-24 object-cover sm:w-48 sm:h-32 bg-center ml-2">
                         <img src="assets/img/edc.png" alt="ecd" class=" w-36 h-24 sm:w-48 sm:h-32" />
                     </a>
                 </div>
@@ -189,20 +191,18 @@
                 <h1 class="sm:text-5xl text-4xl font-bold m-8" style="max-width: fit-content;">What <span
                         class="text-green-500">Trees</span> can we <span class="text-green-500">Plant?</span></h1>
             </div>
-            <div class="flex flex-col md:flex-row justify-center content-center pb-8">
-                <div class="flex items-center mx-8 mb-8 md:mb-0">
-                    <p class="sm:text-2xl text-xl md:text-left font-medium text-gray-700 text-justify">The GINA
-                        Application lets you access a wide variety of plant species through our tree library.</p>
-                </div>
-
-                <div class="flex justify-center items-center">
-                    <button
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold text-xl py-2 px-4 rounded-xl md:mx-8 whitespace-no-wrap"><a
-                            href="library.html">Library</a></button>
-                </div>
+            <div class="flex flex-col items-center text-center pt-4">
+                <span class=" sm:text-xl text-lg">
+                    The GINA Application lets you access a wide variety of plant species through our tree library.
+                </span>
             </div>
-        </section>
+            <div class="flex flex-col items-center text-center pt-4">
+                <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out hover:bg-green-600 rounded 
+                text-white px-8 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 
+                 focus:ring-green-600">Library</button>
+            </div>
 
+        </section>
 
         <!-- Donate -->
         <section class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-12">
@@ -213,7 +213,7 @@
                 <div class="flex items-start sm:text-xl font-medium text-gray-700 mx-8 sm:mx-12 flex-col">
                     <div class="w-full">
                         <p>Donations are welcome to UP Resilience Institute and NOAH Center. We thank you for your
-                            commitment and support.</p><br><br>
+                            commitment and support.</p><br>
                     </div>
 
                     <div>
@@ -226,37 +226,78 @@
                     <div>
                         Kindly scan or take a picture of the deposit slip and send it to
                         <b>resilience.institute@up.edu.ph</b> so your donation can be confirmed.
-                        Please indicate if you wish to receive an official receipt. <br><br>
+                        Please indicate if you wish to receive an official receipt.
                     </div>
 
-                    <div class="text-base font-medium text-gray-700 mx-4 sm:mx-12 flex-col">
-                        <div class="mt-6">
-                            <b>Account Name:</b> University of the Philippines Foundation, Inc. <br>
-                            <b>Peso Account Number: </b>1022-7001-8964 <br>
-                            <b>Bank:</b> UnionBank of the Philippines <br>
-                            <b>Bank Branch:</b> Unionbank Commonwealth Branch <br>
-                            <b>Swift code:</b> UBPHPHMM <br>
-                        </div>
+                    <ul class="grid gap-5 mt-6 md:gap-2 md:grid-cols-3 p-4">
+                        <li class="p-4 shadow-xl rounded-xl ring-1 text-sm ring-black/5 shadow-black/10">
+                            <p class="mt-3  text-black/60">
+                                <b>Account Name:</b> University of the Philippines Foundation, Inc.
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Peso Account Number:</b> 1022-7001-8964
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Bank:</b> UnionBank of the Philippines
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Bank Branch:</b> Unionbank Commonwealth Branch
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Swift code:</b> UBPHPHMM
+                            </p>
+                        </li>
 
-                        <div class="mt-6">
-                            <b>Account Name:</b> UP Foundation, Inc. <br>
-                            <b>Peso Account Number:</b> 1086 1002 9829 <br>
-                            <b>Dollar Account Number</b> 1086 6002 9835 <br>
-                            <b>Bank:</b> Philippine National Bank <br>
-                            <b>Bank Branch:</b> UP Campus Branch <br>
-                            <b>Address:</b> 3 Apacible, UP Campus, Diliman, Quezon City, Philippines <br>
-                            <b>Swift Code:</b> PNBMPHMM <br>
-                        </div>
+                        <li class="p-4 shadow-xl rounded-xl ring-1 text-sm ring-black/5 shadow-black/10">
+                            <p class="mt-3  text-black/60">
+                                <b>Account Name:</b> UP Foundation, Inc.
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Peso Account Number:</b> 1086 1002 9829
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Dollar Account Number</b> 1086 6002 9835
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Bank:</b> Philippine National Bank
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Bank Branch:</b> UP Campus Branch
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Address:</b> 3 Apacible, UP Campus, Diliman, Quezon City, Philippinesh
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Swift code:</b> PNBMPHMM
+                            </p>
 
-                        <div class="mt-6">
-                            <b>Account Name:</b> UPS Trust Account <br>
-                            <b>Peso Account Number:</b> 3072-1007-50 <br>
-                            <b>Dollar Account Number</b> 3074-0017-92 <br>
-                            <b>Bank:</b> Landbank of the Philippines <br>
-                            <b>Branch:</b> UP Diliman Branch, Quezon City <br>
-                            <b>Swift Code:</b> TLBPPHMM <br>
-                        </div>
-                    </div>
+
+                        </li>
+                        <li class="p-4 shadow-xl rounded-xl ring-1 text-sm ring-black/5 shadow-black/10">
+                            <p class="mt-3  text-black/60">
+                                <b>Account Name:</b> UPS Trust Account
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Peso Account Number:</b> 3072-1007-50
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Dollar Account Number</b> 3074-0017-92
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Bank:</b> Landbank of the Philippines
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Branch:</b> UP Diliman Branch, Quezon City
+                            </p>
+                            <p class="mt-3 text-black/60">
+                                <b>Swift code:</b> TLBPPHMM
+                            </p>
+
+                        </li>
+
+
+
+                    </ul>
 
                     <div class="mt-6 w-full">
                         <p>For general inquiries about donating to the University of the Philippines Resilience

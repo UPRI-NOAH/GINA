@@ -1,3 +1,7 @@
+.bg-nav{
+  background-color: #c6f6d5;
+}
+
 nav > ul > li > a,
 #md-nav > ul > li > a{
     border-radius: 0.75rem;
@@ -48,5 +52,6 @@ nav > ul > li > a:hover,
   #auth-buttons.mobile-visible {
     display: flex;
   }
+  
 }
 }

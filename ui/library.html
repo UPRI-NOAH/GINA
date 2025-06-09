@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GINA - Grow INdigenous trees in your Area</title>        
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-        <link href="assets/css/nav.css" rel="stylesheet">
-        <link href="assets/css/library.css" rel="stylesheet">
-        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-        <script src="assets/js/nav.js"></script>
-        <style>
-            .invis {
-                    display: none;
-                  }
-          </style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GINA - Grow INdigenous trees in your Area</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/nav.css" rel="stylesheet">
+  <link href="assets/css/library.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-    </head>
-    <body class="bg-teal-100 pt-20 pb-12">
-      <div id="loading-overlay" style="
+  <script src="assets/js/nav.js"></script>
+  <style>
+    .invis {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body class="bg-teal-100 pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">
+  <div id="loading-overlay" style="
         display: none;
         position: fixed;
         top: 0;
@@ -33,94 +36,93 @@
         color: white;
         font-size: 1.5rem;
       ">
-        <img src="./assets/img/gina-loading.gif" alt="Computer man" style="width:500px;height:500px;">
+    <img src="./assets/img/gina-loading(1).gif" alt="GINA Loading" class="object-cover w-96 h-96">
+  </div>
+
+  <!-- main nav  -->
+  <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
+
+    <nav class="max-w-6xl mx-auto flex justify-between px-10">
+      <!--  logo     -->
+      <div class="flex items-center">
+        <div class="font-bold flex items-center uppercase">
+          <img src="assets/img/gina.png" class="w-20">
+
+        </div>
+
+        <!--  primary navigation  -->
+        <div class="hidden md:flex ml-10 items-center ">
+          <a class="px-5" href="index.html">Home</a>
+          <a class="px-5" href="#">Library</a>
+          <a class="px-5" href="leaderboard.html">Leaderboards</a>
+          <a class="px-5" href="map.html">Map</a>
+        </div>
       </div>
-        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
-            <div class="flex justify-between items-center mx-4 h-full">
-              <div class="md:hidden">
-                <button onclick="toggleNav()">
-                    <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
-                </button>
-              </div>
-        
-        
-              <div id="logo-container" class="md:flex">
-                <a href="index.html"><img src="assets/img/gina.png" class="w-20"></a>
-        
-                <nav class="hidden md:flex items-center ml-4">
-                  <ul class="flex font-bold">
-                      <li><a href="index.html">Home</a></li>
-                      <li><a href="library.html" class="bg-gray-200">Library</a></li>
-                      <li><a href="leaderboard.html">Leaderboards</a></li>
-                      <li><a href="map.html">Map</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <!-- Sign Up/Login Button, icon for user and cart -->
-              <div class="flex items-center"> 
-                <div id="auth-buttons" class="md:flex hidden invis">
-                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
-                </div>
-                <div id="user-buttons" class="md:flex hidden invis">
-                  <!-- Cart -->
-                  <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button> -->
-                  <!-- user -->
-                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-                  </button>
-                </div>
-              </div>
-          </header>
-        
-          <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
-            <ul class="flex flex-col font-bold p-4">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="events.html">Events</a></li>
-                <li><a href="library.html" class="bg-gray-200">Library</a></li>
-                <li><a href="leaderboard.html">Leaderboards</a></li>
-                <li><a href="map.html">Map</a></li>
-                <div class="invis" id="mobile-login">
-                    <hr class="border-black border-t-2 mb-4">
-                    <li><a href="login.html">Log in</a></li>
-                    <li><a href="signup.html">Sign up</a></li>
-                </div>
-            </ul>
-          </nav>
-          <!-- Drop-down menu for user -->
-          <div class="invis" id="user-dropdown">
-            <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-              <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
-              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
-            </div>
-          </div>
+
+      <!--  Secund navigation   -->
+      <div class="hidden md:flex  items-center">
+        <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+                hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
+        <!-- Code block for button with indigo outline ends -->
+        <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                    hover:bg-green-600 rounded-2xl
+            text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
+             focus:ring-green-600"><a href="login.html">Login</a></button>
+
+      </div>
+
+      <!--  Mobile Menu    -->
+      <div class="md:hidden flex items-center">
+        <button
+          class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 rounded-full transition duration-500  p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Library</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
+
+    </div>
+  </div>
+  <!-- // end main nav  -->
+
+  <main>
+
+    <div class="pt-4 max-w-screen-xl mx-auto" id="tree-library-container">
+      <h1 class="text-3xl font-bold text-center mx-auto">Tree Library</h1>
+
+      <div class="w-full max-w-xl mx-auto  rounded-full mt-4 p-4">
+        <input placeholder="Search Tree" class="rounded-full w-full h-16 bg-transparent py-2 pl-8 pr-32 outline-none border-2 
+        border-gray-100 shadow-md hover:outline-none focus:ring-teal-200 focus:border-teal-200 p-2 bg-white"
+          type="text" name="query" id="searchInput">
+
+      </div>
 
 
-        <main>
-          
-            <div class="mx-4 pt-4 max-w-screen-xl mx-auto" id="tree-library-container">
-                <h1 class="text-3xl font-bold text-center mx-auto">Tree Library</h1>
-                <!-- <div class="flex start-0 mb-4">
-                  <input type="text" id="searchInput" placeholder="Search by tree name..." 
-                         class="px-4 py-2 border rounded w-1/2">
-                </div> -->
+      <div class="relative h-12 w-full">
+      </div>
+      <div class="p-4 grid m-4 mx-auto lg:max-w-5xl md:max-w-4xl md:grid-cols-3 
+      lg:grid-cols-4 gap-12" id="tree-grid">
+      </div>
+    </div>
 
-                <div class="relative h-12 w-full">
-                  <div class="absolute inset-y-0 md:right-0 md:w-1/4">
-                    <input type="text" id="searchInput" placeholder="Search Tree" 
-                    class="px-4 py-2 border rounded w-1/2"></div>
-                </div>
-                <div class="grid m-4 mx-auto lg:max-w-5xl md:max-w-3xl md:grid-cols-3 lg:grid-cols-4 gap-2" id="tree-grid">
-                    
-                </div>
+    <div id="pagination" class="flex justify-center mt-4 gap-4"></div>
 
 
-            </div>
 
-            <div id="pagination" class="flex justify-center mt-4"></div>
-        </main>
-        <script src="assets/js/library.js"></script>
-    </body>
+  </main>
+  <script src="assets/js/library.js"></script>
+</body>
+
 </html>
