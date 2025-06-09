@@ -1,131 +1,46 @@
-// change URL for backend
-let url = "punla.up.edu.ph";
-let userURL = `https://${url}/api/user-info/`;
-let userTreeURL  = `https://${url}/api/user-tree-info/`;
-let passwordChangeURL = `https://${url}/auth/users/set_password/`;
-
-const loadingOverlay = document.getElementById('loading-overlay');
-
-function showLoading() {
-  loadingOverlay.style.display = 'flex';
-}
-
-function hideLoading() {
-  loadingOverlay.style.display = 'none';
-}
-
-
-
-// authentication token
-var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-
-var isLoggedIn = true;
-// authentication checking
-if (authToken){
-  isLoggedIn = true;
-} else {
-  isLoggedIn = false;
-}
-// User buttons checking if user is logged in (logged in = icon, else = login/signup buttons)
-if (isLoggedIn){
-  document.getElementById('user-buttons').classList.remove('invis');
-  document.getElementById('mobile-login').classList.add('invis');
-  document.getElementById('user-buttons').classList.add('mobile-visible');
-} else {
-  document.getElementById('auth-buttons').classList.remove('invis');
-  document.getElementById('mobile-login').classList.remove('invis');
-  document.getElementById('user-buttons').classList.remove('mobile-visible');
-}
-
-// User Dropdown Toggle
-document.getElementById('user-dropdown-toggle').addEventListener('click', function() {
-    var dropdown = document.getElementById('user-dropdown');
-    dropdown.classList.toggle('invis');
-  });
-
-// Toggle dropdown when clicking outside
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('#user-dropdown') && !event.target.closest('#user-dropdown-toggle')) {
-    document.getElementById("user-dropdown").classList.add("invis");
-  }
-});
-
-// View Profile Function
-function viewProfile() {
-  document.getElementById("user-dropdown").classList.add("hidden");
-}
-
-// Log Out Function
-function logOut() {
-  localStorage.setItem('authToken', '');
-  sessionStorage.setItem('authToken', '');
-  localStorage.setItem('username', '');
-  sessionStorage.setItem('username', '');
-  location.reload();
-}
-
-
 function loadUserProfile() {
-    showLoading()
-    var username = localStorage.getItem('username') || sessionStorage.getItem('username');
-    console.log(sessionStorage.getItem('username'))
-
-    if (!username) {
-      
-        window.location.href = 'login.html';
-
-        return;
-    }
-
-    if (username == 'undefined') {
-      
+  showLoading();
+  // If no username or authToken, redirect to login
+  if (!username || username === 'undefined' || !authToken) {
       window.location.href = 'login.html';
-
       return;
-    }
+  }
 
 
-    let userInfoURL = `${userURL}${username}/`; // URL to fetch user info
-    let userTreeInfoURL = `${userTreeURL}?owning_user__user=${username}`; // URL to fetch user's trees
+  fetch(editUserURL, {
+      method: 'GET',
+      headers: {
+          'Authorization': `Token ${authToken}`,
+      }
+  })
+  .then(response => {
+      if (!response.ok) {
+          // If not authorized, redirect
+          if (response.status === 401 || response.status === 403) {
+              window.location.href = 'login.html';
+              throw new Error('Unauthorized');
+          }
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(userData => {
+      document.getElementById('profile-name').innerText = `${userData.first_name} ${userData.last_name}`;
+      document.getElementById('username').innerText = `@${userData.user}`;
+      document.getElementById('user-points').innerText = `Points: ${userData.user_points}`;
+      document.getElementById('trees-planted').innerText = `Trees Planted: ${userData.tree_count}`;
 
-    fetch(userInfoURL, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${authToken}`,
-        }
-    })
-    .then(response => response.json())
-    .then(userData => {
-        
-        document.getElementById('profile-name').innerText = `${userData.first_name} ${userData.last_name}`;
-        document.getElementById('username').innerText = `@${userData.user}`;
-        document.getElementById('user-points').innerText = `Points: ${userData.user_points}`;
-
-        document.getElementById('edit-first-name').value = userData.first_name;
-        document.getElementById('edit-last-name').value = userData.last_name;
-
-        // fetch user's trees count
-        fetch(userTreeInfoURL, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Token ${authToken}`,
-            }
-        })
-        .then(response => response.json())
-        .then(treesData => {
-            hideLoading()
-
-            const treesPlanted = treesData.length;
-            document.getElementById('trees-planted').innerText = `Trees Planted: ${treesPlanted}`;
-        })
-        .catch(error => console.error('Error fetching user trees:', error));
-        hideLoading()
-
-    })
-    .catch(error => console.error('Error fetching user info:', error));
-        hideLoading()
-
+      document.getElementById('edit-first-name').value = userData.first_name;
+      document.getElementById('edit-last-name').value = userData.last_name;
+  })
+  .catch(error => {
+      console.error('Error fetching user info:', error);
+  })
+  .finally(() => {
+      hideLoading();
+  });
 }
+
 
 // load user profile when page is ready
 document.addEventListener('DOMContentLoaded', loadUserProfile);
@@ -156,10 +71,9 @@ function submitEditProfile() {
   
   var username = localStorage.getItem('username') || sessionStorage.getItem('username');
   var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-  var userInfoURL = `${userURL}${username}/`;
 
   showLoading()
-  fetch(userInfoURL, {
+  fetch(editUserURL, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

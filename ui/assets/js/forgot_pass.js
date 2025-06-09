@@ -1,21 +1,4 @@
-// change URL    backend
-
-let url = "punla.up.edu.ph";
-let resetPassUrl = `https://${url}/auth/users/reset_password/`;
-
-
 const form = document.querySelector('form');
-
-const loadingOverlay = document.getElementById('loading-overlay');
-
-function showLoading() {
-  loadingOverlay.style.display = 'flex';
-}
-
-function hideLoading() {
-  loadingOverlay.style.display = 'none';
-}
-
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
