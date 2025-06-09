@@ -21,6 +21,7 @@ torch = "*"
 torchvision = "*"
 scikit-learn = "*"
 pillow = "*"
+pymupdf = "*"
 
 [dev-packages]
 
