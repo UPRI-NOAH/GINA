@@ -10,6 +10,11 @@ import re
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 
+# TO USE:
+# Execute this command on your sunix shell:
+# python api/gina/extract_pdf.py > api/gina/treeinfo-partial.csv
+# the result is saved at api/gina/treeinfo-partial.csv
+
 doc = pymupdf.open("native-trees.pdf")
 
 #get PDF metadata
@@ -17,7 +22,9 @@ doc = pymupdf.open("native-trees.pdf")
 
 # get page 42 of the PDF file
 
-for page_num in range(25,31,2):
+print("tree_name,scientific_name,family_name")
+
+for page_num in range(25,125,2):
     plant = doc[page_num]
 
     find = plant.get_text("blocks")
@@ -26,7 +33,7 @@ for page_num in range(25,31,2):
     words = str(find[4][4])
 
     # debug commands
-    print(find[4])
+    # print(find[4])
 
     # remove space and line separators
     # for given name , scientific name,
@@ -35,22 +42,28 @@ for page_num in range(25,31,2):
 
     words = words.split("\n")
     words = [w for w in words if w != ""]
-    print(words)
+    # print(words)
 
-    # for i, word in enumerate(words):
+    for i, word in enumerate(words):
         #  only extract the scientific name
         #  and family name. Exclude the
         #  name of person who discovered
         #  the plant
-        # if i == 1:
-            # w1,w2,w3 = word.split(" ")
-            # temp = w1 + " " + w2
-        # else:
-            # temp = word
-        # temp = re.sub("\s+$","",temp)
-        # if i < len(words) - 1:
-            # print(temp,end=",")
-        # else:
-            # print(temp)
+        if i == 0:
+            temp = word
+        if i == 1:
+            genus,species, *rest = word.split(" ")
+            temp = genus + " " + species
+        if i == 2:
+            family, * rest = word.split(" ")
+            temp = family
+        
+        temp = re.sub("^\s+","",temp)
+        temp = re.sub("\s+$","",temp)
+
+        if i < len(words) - 1:
+            print(temp,end=",")
+        else:
+            print(temp)
 
 
