@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive
+from api.gina.tree_image_utils import check_image_similarity_against_embeddings, get_image_embedding
 from PIL import Image
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
@@ -12,6 +13,7 @@ from pytz import timezone as pytz_timezone
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import F
+from rest_framework.response import Response
 
 import io
 
@@ -69,6 +71,9 @@ class TreeInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TreeInfo
         fields = '__all__'
+        extra_kwargs = {
+            'image_embedding': {'write_only': True},  # hides in output but can accept input
+        }
         
 class TreeTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,13 +91,32 @@ class IdentifyTreeInfoSerializer(serializers.ModelSerializer):
     def get_identified_on(self, obj):
         manila = pytz_timezone('Asia/Manila')
         return obj.identified_on.astimezone(manila).strftime('%b %d, %Y %I:%M %p')
-
+    
+    def update(self, instance, validated_data):
+        instance.tree_comment = validated_data.get('tree_comment', instance.tree_comment)
+        instance.edited_on = timezone.now()
+        instance.save()
+        return instance
+    
+    def partial_update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial, context={'request': request})
+        if not serializer.is_valid():
+            print(serializer.errors)  # Log errors to console/server logs
+            return Response(serializer.errors, status=400)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+    
 class UserTreeArchiveInfoSerializer(serializers.ModelSerializer):
     planted_on = serializers.SerializerMethodField()
 
     class Meta:
         model = UserTreeArchive
         fields = '__all__'
+        extra_kwargs = {
+            'image_embedding': {'write_only': True},  # hides in output but can accept input
+        }
 
     def get_planted_on(self, obj):
         manila = pytz_timezone('Asia/Manila')
@@ -107,6 +131,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTreeInfo
         fields = '__all__'
+
 
     def get_planted_on(self, obj):
         manila = pytz_timezone('Asia/Manila')
@@ -153,9 +178,16 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        if 'image' in validated_data:
-            validated_data['image'] = self.compress_image(validated_data['image'])
+        new_image = validated_data.get('image')
 
+        if new_image:
+            # Compress the image before saving
+            validated_data['image'] = self.compress_image(new_image)
+
+            # Validate similarity and get the embedding
+            embedding_list = self._validate_and_embed_image(new_image)
+            
+        # Create the instance
         instance = super().create(validated_data)
 
         # Archive the created tree in UserTreeArchive
@@ -166,68 +198,107 @@ class UserTreeSerializer(serializers.ModelSerializer):
             tree_type=instance.tree_type,
             tree_description=instance.tree_description,
             planted_on=instance.planted_on,
-            image=instance.image, 
+            image=instance.image,
+            image_embedding=embedding_list,
         )
 
+        # Increment user points
         if instance.owning_user:
-            # Increment points atomically
             instance.owning_user.user_points = F('user_points') + 10
             instance.owning_user.save(update_fields=['user_points'])
             instance.owning_user.refresh_from_db()
 
         return instance
-    
+
     
     def update(self, instance, validated_data):
-        
-        # Pull new planted_on (for archive only), and prevent update of it in main model
-        new_planted_on = validated_data.get('planted_on') or instance.planted_on
+        now = timezone.now()
+
+        # Original planting date
+        planted_on = instance.planted_on
+
+        # Calculate one hour after planting
+        one_hour_after_planting = planted_on + timedelta(hours=1)
+
+        # Find latest archive for this tree to get last edit time
+        latest_archive = (
+            UserTreeArchive.objects.filter(reference_id=instance)
+            .order_by('-planted_on')
+            .first()
+        )
+
+        last_edit_time = latest_archive.planted_on if latest_archive else planted_on
+        one_hour_after_last_edit = last_edit_time + timedelta(hours=1)
+
+        # Determine if we are within the free edit window
+        in_free_edit_window = now <= one_hour_after_planting or now <= one_hour_after_last_edit
+
+        # Handle image compression and embedding if image provided
+        new_image = validated_data.get('image')
+        if new_image:
+            validated_data['image'] = self.compress_image(new_image)  # Compress early
+            validated_data['image_embedding'] = self._validate_and_embed_image(new_image)
+
+        # Use current time as planted_on for archive records
+        new_planted_on = now
+
+        # Remove planted_on from validated_data so main model planting date doesn't get overwritten
         validated_data.pop('planted_on', None)
 
-        # Update instance
+        # Update the main model instance
         updated_instance = super().update(instance, validated_data)
 
-        now = timezone.now()
-        one_hour_after_planting = instance.planted_on + timedelta(hours=1)
+        # Action field (might be from validated_data or from instance)
         action = validated_data.get('action') or instance.action
 
-        if now <= one_hour_after_planting:
-        #  Within 1 hour: update or create archive
-            archive, created = UserTreeArchive.objects.get_or_create(
-                reference_id=updated_instance,
-                defaults={
-                    'owning_user': updated_instance.owning_user,
-                    'tree_name': updated_instance.tree_name,
-                    'tree_type': updated_instance.tree_type,
-                    'tree_description': updated_instance.tree_description,
-                    'planted_on': new_planted_on,
-                    'image': updated_instance.image,
-                }
-            )
+        if in_free_edit_window:
+            try:
+                archive = UserTreeArchive.objects.filter(reference_id=updated_instance).latest('planted_on')
+                created = False
+            except UserTreeArchive.DoesNotExist:
+                archive = UserTreeArchive.objects.create(
+                    reference_id=updated_instance,
+                    owning_user=updated_instance.owning_user,
+                    tree_name=updated_instance.tree_name,
+                    tree_type=updated_instance.tree_type,
+                    tree_description=updated_instance.tree_description,
+                    planted_on=new_planted_on,
+                    image=updated_instance.image,
+                    image_embedding=validated_data.get('image_embedding'),
+                )
+                created = True
 
             if not created:
-                # Update existing archive
                 archive.tree_name = updated_instance.tree_name
                 archive.tree_type = updated_instance.tree_type
                 archive.tree_description = updated_instance.tree_description
                 archive.planted_on = new_planted_on
                 archive.image = updated_instance.image
+                if 'image_embedding' in validated_data:
+                    archive.image_embedding = validated_data['image_embedding']
                 archive.save()
+
         else:
+            # Outside free edit window: create a new archive entry only if unique
+            # Award points if applicable
             if action != "Identified":
                 user_info = updated_instance.owning_user
                 if user_info:
-                    user_info.user_points += 5
-                    user_info.save()
-            # Archive the new state (after save, to get correct image name/url)
-            if not UserTreeArchive.objects.filter(
+                    user_info.user_points = F('user_points') + 5
+                    user_info.save(update_fields=['user_points'])
+                    user_info.refresh_from_db()
+
+            # Check if identical archive entry already exists
+            exists = UserTreeArchive.objects.filter(
                 reference_id=updated_instance,
                 tree_name=updated_instance.tree_name,
                 tree_type=updated_instance.tree_type,
                 tree_description=updated_instance.tree_description,
                 planted_on=new_planted_on,
                 image=updated_instance.image
-            ).exists():
+            ).exists()
+
+            if not exists:
                 UserTreeArchive.objects.create(
                     reference_id=updated_instance,
                     owning_user=updated_instance.owning_user,
@@ -236,6 +307,33 @@ class UserTreeSerializer(serializers.ModelSerializer):
                     tree_description=updated_instance.tree_description,
                     planted_on=new_planted_on,
                     image=updated_instance.image,
+                    image_embedding=validated_data.get('image_embedding'),
                 )
 
         return updated_instance
+    
+    
+    def _validate_and_embed_image(self, image):
+        user_tree_images = UserTreeArchive.objects.exclude(image='').exclude(image_embedding__isnull=True)
+        reference_tree_images = TreeInfo.objects.exclude(tree_image='').exclude(image_embedding__isnull=True)
+        combined_entries = list(user_tree_images) + list(reference_tree_images)
+        print(f"Checking similarity against {len(combined_entries)} images")
+
+        try:
+            new_embedding = get_image_embedding(image)
+            print(f"Uploaded image embedding sample: {new_embedding[:5]}")
+
+            is_similar, score, match_id = check_image_similarity_against_embeddings(new_embedding, combined_entries)
+            print(f"Similarity result: {is_similar} with score {score} and match id {match_id}")
+        except Exception as e:
+            print(f"Error during similarity check: {e}")
+            raise serializers.ValidationError(f"Image similarity check failed: {e}")
+
+        if not is_similar:
+            print("Image not similar, raising validation error")
+            raise serializers.ValidationError(
+                "Uploaded image does not match any known tree or seedling. Please upload a clearer or valid tree photo."
+            )
+
+        return new_embedding.tolist()
+
