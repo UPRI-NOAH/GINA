@@ -11,7 +11,7 @@ sys.path.append(str(PROJECT_ROOT))
 
 # TO USE:
 # Execute this command on your sunix shell:
-# python api/gina/extract_pdf.py > api/gina/treeinfo-partial.csv
+# python api/gina/extract_pdf_text.py > api/gina/treeinfo-partial.csv
 # the result is saved at api/gina/treeinfo-partial.csv
 
 doc = pymupdf.open("native-trees.pdf")
