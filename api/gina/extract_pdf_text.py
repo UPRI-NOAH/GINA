@@ -23,7 +23,7 @@ doc = pymupdf.open("native-trees.pdf")
 
 print("tree_name,scientific_name,family_name")
 
-for page_num in range(25,125,2):
+for page_num in range(25,127,2):
     plant = doc[page_num]
 
     find = plant.get_text("blocks")
@@ -60,8 +60,10 @@ for page_num in range(25,125,2):
         temp = re.sub("^\s+","",temp)
         temp = re.sub("\s+$","",temp)
 
-        if i < len(words) - 1:
+        if i < len(words) - 1 and temp != "":
             print(temp,end=",")
+        elif page_num == 125:
+            print(temp,end="")
         else:
             print(temp)
 
