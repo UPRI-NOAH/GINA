@@ -10,16 +10,15 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 
 # TO USE:
-# Execute this command on your sunix shell:
+# Execute this command on your shell:
 # python api/gina/extract_pdf_text.py > api/gina/treeinfo-partial.csv
 # the result is saved at api/gina/treeinfo-partial.csv
 
+# Pymupdf is the library used for text extraction
+# Tutorial video: https://www.youtube.com/watch?v=DSsqzKA_hPg&t=41s
+# Dcoumentation link: https://pymupdf.readthedocs.io/en/latest/recipes-text.html
+
 doc = pymupdf.open("native-trees.pdf")
-
-#get PDF metadata
-#print(doc.metadata)
-
-# get page 42 of the PDF file
 
 print("tree_name,scientific_name,family_name")
 
