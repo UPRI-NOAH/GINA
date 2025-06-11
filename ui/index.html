@@ -39,22 +39,34 @@
                 </div>
             </div>
 
-            <!--  Secund navigation   -->
-            <div class="hidden md:flex  items-center">
-                <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+     <!-- Sign Up/Login Button, icon for user and cart -->
+            <div class="flex items-center">
+                <div id="auth-buttons" class="md:flex hidden invis">
+                                   <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
                 hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
               focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
-                <!-- Code block for button with indigo outline ends -->
-                <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                 <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
                     hover:bg-green-600 rounded-2xl
             text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
              focus:ring-green-600"><a href="login.html">Login</a></button>
-
+                </div>
+                <div id="user-buttons" class="md:flex hidden invis">
+                    <!-- Cart -->
+                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+                  </button> -->
+                    <!-- user -->
+                    <button class="" id="user-dropdown-toggle">
+                        <img class="w-16 h-16" src="./assets/img/profile.svg">
+                    </button>
+                </div>
             </div>
 
-            <!--  Mobile Menu    -->
+    <!--  Mobile Menu    -->
             <div class="md:hidden flex items-center">
-                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 rounded-full transition duration-500  p-2">
+                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 
+                rounded-full transition duration-500  p-2"
+                onclick="toggleNav()">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -63,18 +75,42 @@
                 </button>
             </div>
 
+                   <div id="user-buttons" class="md:flex hidden invis">
+                    <!-- Cart -->
+                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+                  </button> -->
+                    <!-- user -->
+                    <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
+                        <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
+                    </button>
+                </div>
+
         </nav>
 
         <!-- Mobile menu -->
-        <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
+         <div class="mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600" 
+        class="invis" id="mobile-menu">
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Home</a>
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
-
+            <div class="invis" id="mobile-login">
+                <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+                <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
+            </div>
+                   
+            <div id="user-buttons" class="md:flex hidden invis">
+                    <!-- user -->
+            <button class="mt-2" id="user-dropdown-toggle">
+            <img class="w-10 h-10" src="./assets/img/profile.svg">
+            </button>
+            </div>
+            
         </div>
+
+
+
     </div>
     <!-- // end main nav  -->
 

@@ -22,12 +22,12 @@ if (isLoggedIn) {
 } else {
   addtree_button.classList.add('invis');
   identify_button.classList.add('invis');
-  document.getElementById('auth-buttons').classList.remove('invis');
+  //document.getElementById('auth-buttons').classList.remove('invis');
   document.getElementById("overlay").classList.add("invis");
   document.getElementById("uploadoverlay").classList.add("invis");
   document.getElementById("map").classList.remove("map-blurred");
   document.getElementById('mobile-login').classList.remove('invis');
-  document.getElementById('user-buttons').classList.remove('mobile-visible');
+ // document.getElementById('user-buttons').classList.remove('mobile-visible');
 }
 
 

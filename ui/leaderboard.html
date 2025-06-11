@@ -57,17 +57,27 @@
                 </div>
             </div>
 
-            <!--  Secund navigation   -->
-            <div class="hidden md:flex  items-center">
-                <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+     <!-- Sign Up/Login Button, icon for user and cart -->
+            <div class="flex items-center">
+                <div id="auth-buttons" class="md:flex hidden invis">
+                                   <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
                 hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
               focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
-                <!-- Code block for button with indigo outline ends -->
-                <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                             <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
                     hover:bg-green-600 rounded-2xl
             text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
              focus:ring-green-600"><a href="login.html">Login</a></button>
-
+                </div>
+                <div id="user-buttons" class="md:flex hidden invis">
+                    <!-- Cart -->
+                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
+                  </button> -->
+                    <!-- user -->
+                      <button class="" id="user-dropdown-toggle">
+                        <img class="w-16 h-16" src="./assets/img/profile.svg">
+                    </button>
+                </div>
             </div>
 
             <!--  Mobile Menu    -->
@@ -89,8 +99,10 @@
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Leaderboards</a>
             <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
+           <div class="invis" id="mobile-login">
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
+      </div>
 
         </div>
     </div>

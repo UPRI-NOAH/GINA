@@ -31,14 +31,3 @@
     display: flex;
     justify-content: center;
 }
-
-.library-footer {
-    position: fixed;
-    bottom: 0rem;
-    right: 0rem;
-    background-color: #c6f6d5;
-    color: black;
-    padding: 0.1rem 0.3rem;
-    border-radius: 0.5rem;
-  }
-  
