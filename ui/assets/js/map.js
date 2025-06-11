@@ -170,21 +170,30 @@ function renderComment(comment) {
   const commentCard = document.createElement('div');
   commentCard.className = 'comment-card border rounded-md p-3 ml-3 my-3';
   const date = new Date(comment.identified_on);
-  const formattedDate = date.toLocaleString(); 
+  const formattedDate = date.toLocaleString();
   const currentUser = localStorage.getItem('username') || sessionStorage.getItem('username');
-
   const canDelete = currentUser === comment.identified_by;
-  commentCard.innerHTML = `
-    <div class="flex gap-3 items-center">
-      <h3 class="font-bold">${comment.identified_by || 'Anonymous'}</h3>
-      <span class="text-sm text-gray-500">${formattedDate}</span>
-      ${canDelete ? `<button onclick="deleteComment(${comment.id}, '${comment.tree_identifier}')" class="text-red-500 font-bold hover:text-red-700">&times;</button>` : ''}
+  const edited = comment.edited_on !== null; 
 
+  commentCard.innerHTML = `
+    <div class="flex gap-3 items-center justify-between">
+      <div class="flex gap-3 items-center">
+        <h3 class="font-bold">${comment.identified_by || 'Anonymous'}</h3>
+        <span class="text-sm text-gray-500">${formattedDate}</span>
+        ${edited ? `<span class="text-xs italic text-gray-400">(Edited)</span>` : ''}
+      </div>
+      ${canDelete ? `
+        <div class="flex gap-2">
+          <button onclick="editComment(${comment.id}, '${comment.tree_identifier}', this)" class="text-green-500 text-sm hover:underline">Edit</button>  
+          <button onclick="deleteComment(${comment.id}, '${comment.tree_identifier}')" class="text-red-500 font-bold hover:text-red-700">&times;</button>
+        </div>
+      ` : ''}
     </div>
     <p class="text-gray-600 mt-2">${comment.tree_comment}</p>
   `;
 
   document.getElementById('comment-section').appendChild(commentCard);
+
 }
 
 
@@ -267,6 +276,7 @@ $.when(ph).done(function () {
       const now = new Date();
 
       const oneHourAfterPlanting = new Date(plantedOnDate.getTime() + 60 * 60 * 1000); // 1 hour in ms
+      const oneHourAfterLastUpdate = new Date(latestPlantedOnDate.getTime() + 60 * 60 * 1000);
 
       const oneMonthLater = new Date(latestPlantedOnDate);
       oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
@@ -276,11 +286,12 @@ $.when(ph).done(function () {
 
       const sixMonthsAfterLastUpdate = new Date(latestPlantedOnDate);
       sixMonthsAfterLastUpdate.setMonth(latestPlantedOnDate.getMonth() + 6);
-      
-      if (now > oneHourAfterPlanting) {
-        editIconUrl = "https://cdn-icons-png.flaticon.com/128/992/992651.png"; // <== set your "locked" or alternate icon here
+
+      if (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate) {
+        editIconUrl = "https://cdn-icons-png.flaticon.com/128/481/481874.png"; // unlocked/edit icon
+      } else {
+        editIconUrl = "https://cdn-icons-png.flaticon.com/128/992/992651.png"; // locked icon
       }
-    
       // var editIconUrl = (username === user)
       //   ? "https://cdn-icons-png.flaticon.com/128/481/481874.png"
       //   : "https://cdn-icons-png.flaticon.com/512/149/149852.png";
@@ -319,7 +330,7 @@ $.when(ph).done(function () {
         //   return;
         // }
         if (action != "Identified"){
-        if (now <= oneHourAfterPlanting) {
+        if (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate) {
           editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
           return;
         }
@@ -423,7 +434,6 @@ function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, 
     modalTitle.innerHTML = "Edit the tree you planted"
     if(action == "Identified"){
       modalTitle.innerHTML = "Edit the tree you identified"
-
     }
     modalDesc.innerHTML = "Please fill in the details of the tree you want to edit"
     document.getElementById("editoverlay").classList.remove("invis");
@@ -438,7 +448,6 @@ function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, 
 
   }
   
-
 }
 
 

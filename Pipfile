@@ -17,6 +17,10 @@ pandas = "*"
 boto3 = "*"
 django-storages = "*"
 beautifulsoup4 = "*"
+torch = "*"
+torchvision = "*"
+scikit-learn = "*"
+pillow = "*"
 
 [dev-packages]
 
