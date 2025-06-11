@@ -65,7 +65,7 @@ These .js files makes use of certain endpoints to make the system work:
       - `/api/identify-tree-info/`
         - used for posting comment on the discussion thread
       - `/api/identify-tree-info/${commentId}`  
-        - used for deleting comment on the discussion thread
+        - used for editting and deleting comment on the discussion thread
     - forgot_pass.js
       - `/auth/users/reset_password/`  
           - used to reset a forgotten password. The user provides their email address, and a password reset link will be sent via email.
@@ -131,6 +131,11 @@ Then import the `UserTreeArchive` data via
 
 ```bash
 python api/gina/populate_archive.py
+```
+Then precompute embeddings for `TreeInfo` and `UserTreeArchive` data via
+
+```bash
+python api/gina/precompute_embeddings.py
 ```
 
 <!-- TODO: document usage -->
