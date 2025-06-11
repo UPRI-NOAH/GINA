@@ -61,8 +61,11 @@ if (toggleBtn) {
 
 // Toggle dropdown when clicking outside
 document.addEventListener('click', function(event) {
+  const dropdown = document.getElementById("user-dropdown");
   if (!event.target.closest('#user-dropdown') && !event.target.closest('#user-dropdown-toggle')) {
-    document.getElementById("user-dropdown").classList.add("invis");
+    if (dropdown) {
+      dropdown.classList.add("invis");
+    }
   }
 });
 

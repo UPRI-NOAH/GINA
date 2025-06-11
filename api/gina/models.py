@@ -5,6 +5,8 @@ from django.core.files.storage import FileSystemStorage
 import os
 import uuid
 from django.utils.deconstruct import deconstructible
+from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 tree_images = FileSystemStorage(location="tree_library/")
 usertree_images = FileSystemStorage(location="gina_trees/")
@@ -37,6 +39,7 @@ class TreeInfo(models.Model):
     tree_image = models.ImageField(upload_to='tree_library/', null=True, blank=True)
     scientific_name = models.CharField(max_length=100, unique=True)
     family_name = models.CharField(max_length=100)
+    image_embedding = ArrayField(models.FloatField(), null=True, blank=True)
 
 class UserInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, to_field="username")
@@ -56,7 +59,7 @@ TREE_STATUS = [
 
 class UserTreeInfo(models.Model):
     reference_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    planted_on = models.DateTimeField(auto_now_add=True)
+    planted_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     model_tree = models.ForeignKey("TreeInfo", on_delete=models.SET_NULL, null=True, to_field="tree_name")
@@ -73,8 +76,9 @@ class UserTreeInfo(models.Model):
 class IdentifyTreeInfo(models.Model):
     tree_identifier = models.ForeignKey("UserTreeInfo", on_delete=models.SET_NULL, null=True, to_field="reference_id")
     tree_comment = models.TextField(null=False, blank=False)
-    identified_on = models.DateTimeField(auto_now_add=True)
+    identified_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
     identified_by = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
+    edited_on = models.DateTimeField(null=True, blank=True)
 
 
 class UserTreeArchive(models.Model):
@@ -83,6 +87,7 @@ class UserTreeArchive(models.Model):
     tree_name = models.CharField(max_length=100, null=False, blank=False)
     tree_type = models.CharField(max_length=100, null=True, blank=True)
     tree_description = models.TextField(null=False, blank=False)
-    planted_on = models.DateTimeField(auto_now_add=True)
+    planted_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
     image = models.ImageField(upload_to=PathAndRename('gina_trees/'), null=True, blank=True,)
+    image_embedding = ArrayField(models.FloatField(), null=True, blank=True)
     
