@@ -89,37 +89,26 @@ for page_num in range(25,127,2):
 
     for i, image in enumerate(tree_images):
         # snippet modified from 
-        # # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
+        # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
         il = doc.get_page_images(page_num)
         imglist.extend([x[0] for x in il])
 
         for img in il:
 
-            xref = img[0]
-
-            if xref in xreflist:
-                continue
-
             width = img[2]
             height = img[3]
 
-            if min(width, height) <= dimlimit:
-                continue
-                
             image = recoverpix(doc, img)
             n = image["colorspace"]
             imgdata = image["image"]
 
-            if len(imgdata) <= abssize:
-                continue
-            if len(imgdata) / (width * height * n) <= relsize:
-                continue
-
-            imgfile = os.path.join(imgdir, "img%s.%s" % (name+"-"+str(i), image["ext"]))
-            fout = open(imgfile, "wb")
-            fout.write(imgdata)
-            fout.close()
-            xreflist.append(xref)
+            # filter the first image with no plant
+            if i > 0:
+                # save the image to the folder
+                imgfile = os.path.join(imgdir, "img%s.%s" % (name+"-"+str(i), image["ext"]))
+                fout = open(imgfile, "wb")
+                fout.write(imgdata)
+                fout.close()
 
     # optional debug message
     print(f"Image for {name} saved.")
