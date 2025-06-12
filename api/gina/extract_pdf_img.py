@@ -33,15 +33,15 @@ def recoverpix(doc, item):
 
     # special case: /SMask or /Mask exists
     if smask > 0:
-        pix0 = fitz.Pixmap(doc.extract_image(xref)["image"])
+        pix0 = pymupdf.Pixmap(doc.extract_image(xref)["image"])
         if pix0.alpha:  # catch irregular situation
-            pix0 = fitz.Pixmap(pix0, 0)  # remove alpha channel
-        mask = fitz.Pixmap(doc.extract_image(smask)["image"])
+            pix0 = pymupdf.Pixmap(pix0, 0)  # remove alpha channel
+        mask = pymupdf.Pixmap(doc.extract_image(smask)["image"])
 
         try:
-            pix = fitz.Pixmap(pix0, mask)
+            pix = pymupdf.Pixmap(pix0, mask)
         except:  # fallback to original base image in case of problems
-            pix = fitz.Pixmap(doc.extract_image(xref)["image"])
+            pix = pymupdf.Pixmap(doc.extract_image(xref)["image"])
 
         if pix0.n > 3:
             ext = "pam"
@@ -57,8 +57,8 @@ def recoverpix(doc, item):
     # special case: /ColorSpace definition exists
     # to be sure, we convert these cases to RGB PNG images
     if "/ColorSpace" in doc.xref_object(xref, compressed=True):
-        pix = fitz.Pixmap(doc, xref)
-        pix = fitz.Pixmap(fitz.csRGB, pix)
+        pix = pymupdf.Pixmap(doc, xref)
+        pix = pymupdf.Pixmap(pymupdf.csRGB, pix)
         return {  # create dictionary expected by caller
             "ext": "png",
             "colorspace": 3,
@@ -88,16 +88,24 @@ for page_num in range(25,127,2):
     name = names[name_index]
 
     for i, image in enumerate(tree_images):
+        # snippet modified from 
+        # # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
         il = doc.get_page_images(page_num)
         imglist.extend([x[0] for x in il])
+
         for img in il:
+
             xref = img[0]
+
             if xref in xreflist:
                 continue
+
             width = img[2]
             height = img[3]
+
             if min(width, height) <= dimlimit:
                 continue
+                
             image = recoverpix(doc, img)
             n = image["colorspace"]
             imgdata = image["image"]
@@ -107,12 +115,13 @@ for page_num in range(25,127,2):
             if len(imgdata) / (width * height * n) <= relsize:
                 continue
 
-            imgfile = os.path.join(imgdir, "img%s.%s" % (name+"-"+i, image["ext"]))
+            imgfile = os.path.join(imgdir, "img%s.%s" % (name+"-"+str(i), image["ext"]))
             fout = open(imgfile, "wb")
             fout.write(imgdata)
             fout.close()
             xreflist.append(xref)
 
+    # optional debug message
     print(f"Image for {name} saved.")
 
 print("Extracting images in native_trees.pdf done.")
