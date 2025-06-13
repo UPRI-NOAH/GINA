@@ -43,7 +43,8 @@ for page_num in pages:
     words = str(find[4][4])
 
     # debug commands
-    # print(find[4])
+    print(find[4])
+    print("==================")
 
     # remove space and line separators
     # for given name , scientific name,
