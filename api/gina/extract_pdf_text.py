@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from enum import Enum
 import django
 import requests
 import os
@@ -17,6 +18,12 @@ sys.path.append(str(PROJECT_ROOT))
 # Pymupdf is the library used for text extraction
 # Tutorial video: https://www.youtube.com/watch?v=DSsqzKA_hPg&t=41s
 # Dcoumentation link: https://pymupdf.readthedocs.io/en/latest/recipes-text.html
+
+class TreeInfoEnum(Enum):
+    GIVEN_NAME = 0
+    SCIENTIFIC_NAME = 1
+    FAMILY_NAME = 2
+    DESCRIPTION = 3
 
 doc = pymupdf.open("native-trees.pdf")
 
@@ -47,12 +54,12 @@ for page_num in range(25,127,2):
         #  and family name. Exclude the
         #  name of person who discovered
         #  the plant
-        if i == 0:
+        if i == TreeInfoEnum.GIVEN_NAME.value:
             temp = word
-        if i == 1:
+        if i == TreeInfoEnum.SCIENTIFIC_NAME.value:
             genus,species, *rest = word.split(" ")
             temp = genus + " " + species
-        if i == 2:
+        if i == TreeInfoEnum.FAMILY_NAME.value:
             family, * rest = word.split(" ")
             temp = family
         
