@@ -25,11 +25,16 @@ class TreeInfoEnum(Enum):
     FAMILY_NAME = 2
     DESCRIPTION = 3
 
-doc = pymupdf.open("native-trees.pdf")
+# variables for extracting text from pdf
+pages = range(25,127,2)
+file = "native-trees.pdf"
+csv_header = "tree_name,scientific_name,family_name,tree_description"
 
-print("tree_name,scientific_name,family_name,tree_description")
+doc = pymupdf.open(file)
 
-for page_num in range(25,127,2):
+print(csv_header)
+
+for page_num in pages:
     plant = doc[page_num]
 
     find = plant.get_text("blocks")
@@ -66,7 +71,7 @@ for page_num in range(25,127,2):
         temp = re.sub("^\s+","",temp)
         temp = re.sub("\s+$","",temp)
 
-        if i < len(words) - 1 and temp != "":
+        if i < len(words) - 1:
             print(temp,end=",")
         elif page_num == 125:
             print(temp,end="")
