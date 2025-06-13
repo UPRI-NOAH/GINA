@@ -20,7 +20,7 @@ sys.path.append(str(PROJECT_ROOT))
 
 doc = pymupdf.open("native-trees.pdf")
 
-print("tree_name,scientific_name,family_name")
+print("tree_name,scientific_name,family_name,tree_description")
 
 for page_num in range(25,127,2):
     plant = doc[page_num]
