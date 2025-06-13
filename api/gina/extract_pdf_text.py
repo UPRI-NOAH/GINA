@@ -43,7 +43,8 @@ for page_num in pages:
     words = str(find[4][4])
 
     # debug commands
-    print(find[4])
+    # print(find[4])
+    print(words)
     print("==================")
 
     # remove space and line separators
@@ -54,6 +55,7 @@ for page_num in pages:
     words = words.split("\n")
     words = [w for w in words if w != ""]
     # print(words)
+    
 
     for i, word in enumerate(words):
         #  only extract the scientific name
