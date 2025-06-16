@@ -28,7 +28,7 @@ class TreeInfoEnum(Enum):
 # variables for extracting text from pdf
 pages = range(25,127,2)
 file = "api/gina/pdf/native-trees.pdf"
-csv_header = "tree_name,scientific_name,family_name,tree_description"
+csv_header = "tree_name,image,scientific_name,family_name,tree_description"
 
 doc = pymupdf.open(file)
 
@@ -58,16 +58,6 @@ for page_num in pages:
     words = [w for w in words if w != ""]
     # print(words)
 
-    # text description
-    description = ""
-    for entry in range(5,len(find)):
-        text = find[entry][4]
-        description += text
-        if re.match("Propagation",text):
-            break
-    print(description)
-    print("==================")
-
     for i, word in enumerate(words):
         #  only extract the scientific name
         #  and family name. Exclude the
@@ -91,3 +81,12 @@ for page_num in pages:
             print(temp,end="")
         else:
             print(temp)
+    
+    # text description
+    description = ""
+    for entry in range(5,len(find)):
+        text = find[entry][4]
+        description += text
+        if re.match("Propagation",text):
+            break
+    print(','+description.encode("unicode_escape").decode("utf-8"))
