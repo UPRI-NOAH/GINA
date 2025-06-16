@@ -14,3 +14,8 @@ sys.path.append(str(PROJECT_ROOT))
 # filter all unique ones
 # append the unique ones to a new csv file
 # for testing 
+
+csv_header = input()
+
+#print the header for new csv
+print("tree_name,image,scientific_name,family_name")
