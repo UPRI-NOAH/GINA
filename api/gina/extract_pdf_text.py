@@ -26,7 +26,10 @@ class TreeInfoEnum(Enum):
     DESCRIPTION = 3
 
 # variables for extracting text from pdf
-pages = range(25,127,2)
+page_start = 25
+page_end = 125
+step = 2
+pages = range(page_start,page_end+step,step)
 file = "api/gina/pdf/native-trees.pdf"
 csv_header = "tree_name,image,scientific_name,family_name,tree_description"
 
@@ -75,12 +78,11 @@ for page_num in pages:
         temp = re.sub("^\s+","",temp)
         temp = re.sub("\s+$","",temp)
 
-        if i < len(words) - 1:
-            print(temp,end=",")
-        elif page_num == 125:
-            print(temp,end="")
+        # include empty image row comma
+        if i == TreeInfoEnum.GIVEN_NAME.value:
+            print(temp,end=",,")
         else:
-            print(temp)
+            print(temp,end=",")
     
     # text description
     description = ""
@@ -89,4 +91,8 @@ for page_num in pages:
         description += text
         if re.match("Propagation",text):
             break
-    print(','+description.encode("unicode_escape").decode("utf-8"))
+    # escape special characters in tree description
+    description = description.encode("unicode_escape").decode("utf-8")
+    print(f"\"{description}\"",end="")
+    if page_num != page_end:
+        print("\n",end="")
