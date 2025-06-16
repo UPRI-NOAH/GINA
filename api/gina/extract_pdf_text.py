@@ -27,7 +27,7 @@ class TreeInfoEnum(Enum):
 
 # variables for extracting text from pdf
 pages = range(25,127,2)
-file = "native-trees.pdf"
+file = "api/gina/pdf/native-trees.pdf"
 csv_header = "tree_name,scientific_name,family_name,tree_description"
 
 doc = pymupdf.open(file)
