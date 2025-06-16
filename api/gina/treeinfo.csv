@@ -1,13 +1,13 @@
-tree_name,image,scientific_name,family_name
-Bagoadlau,bagoadlau.jpg,Xanthostemon philippinensis,Myrtaceae
-Bakhaw,bahkaw.jpg,"RHIZOPHORA APICULATA, RHIZOPHORA MUCRONATA, RHIZOPHORA STYLOSA",Rhizophoraceae
-Bungalon,bungalon.jpg,"Avicennia alba, Avicennia marina, Avicennia officinalis, Avicennia rumphiana",Avicenniaceae
-Dao,dao.jpg,Dracontomelon dao,Anacardiaceae
-Kamagong,kamagong.jpg,Diospyros blancoi,Ebenaceae
-Katmon," ",Dillenia philippinensis,Dilleniaceae
-Malakatmon,malakatmon.jpg,Dillenia luzoniensis,Dilleniaceae
-Manggis,manggis.jpg,Koompassia excelsa,Fabaceae
-Mindnarek,mindnarek.jpg,Hopea brachyptera,Dipterocarpaceae
-Molave,molave.jpg,Vitex parviflora,Lamiaceae
-Narra,narra-binhi.jpg,Pterocarpus indicus,Fabaceae
-Pagatpat,pagatpat.jpg,"SONNERATIA ALBA, SONNERATIA CASEOLARIS",Sonneratiaceae
+tree_name,image,scientific_name,family_name,tree_description
+Bagoadlau,bagoadlau.jpg,Xanthostemon philippinensis,Myrtaceae,
+Bakhaw,bahkaw.jpg,"RHIZOPHORA APICULATA, RHIZOPHORA MUCRONATA, RHIZOPHORA STYLOSA",Rhizophoraceae,
+Bungalon,bungalon.jpg,"Avicennia alba, Avicennia marina, Avicennia officinalis, Avicennia rumphiana",Avicenniaceae,
+Dao,dao.jpg,Dracontomelon dao,Anacardiaceae,
+Kamagong,kamagong.jpg,Diospyros blancoi,Ebenaceae,
+Katmon," ",Dillenia philippinensis,Dilleniaceae,
+Malakatmon,malakatmon.jpg,Dillenia luzoniensis,Dilleniaceae,
+Manggis,manggis.jpg,Koompassia excelsa,Fabaceae,
+Mindnarek,mindnarek.jpg,Hopea brachyptera,Dipterocarpaceae,
+Molave,molave.jpg,Vitex parviflora,Lamiaceae,
+Narra,narra-binhi.jpg,Pterocarpus indicus,Fabaceae,
+Pagatpat,pagatpat.jpg,"SONNERATIA ALBA, SONNERATIA CASEOLARIS",Sonneratiaceae,
