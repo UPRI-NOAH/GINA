@@ -24,12 +24,12 @@ print("tree_name,image,scientific_name,family_name,tree_description")
 scientific_names = [str(row['scientific_name']).upper() for index, row in df2.iterrows()]
 
 def print_treeinfo(row):
-
-    tree_name = "" if pd.isnull(row['tree_name']) else row['tree_name']
-    image = "" if pd.isnull(row['image']) else row['image']
-    scientific_name = "" if pd.isnull(row['scientific_name']) else row['scientific_name']
-    family_name = "" if pd.isnull(row['family_name']) else row['family_name']
-    description = "" if pd.isnull(row['tree_description']) else row['tree_description']
+    empty_info = "\" \""
+    tree_name = empty_info if pd.isnull(row['tree_name']) else row['tree_name']
+    image = empty_info if pd.isnull(row['image']) else row['image']
+    scientific_name = empty_info if pd.isnull(row['scientific_name']) else row['scientific_name']
+    family_name = empty_info if pd.isnull(row['family_name']) else row['family_name']
+    description = empty_info if pd.isnull(row['tree_description']) else row['tree_description']
 
     if scientific_name.count(',') > 0:
         scientific_name = "\"" + scientific_name + "\""
