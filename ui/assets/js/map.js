@@ -298,7 +298,7 @@ $.when(ph).done(function () {
 
       // Create popup DOM elements
       const popupContent = document.createElement("div");
-      popupContent.style.position = "relative";
+      popupContent.className = "relative bg-white p-3 rounded-xl text-xs w-full";
     
       const button = document.createElement("button");
 
@@ -378,18 +378,40 @@ $.when(ph).done(function () {
       const photoId = `tree-photo-${refId}`;
 
       infoDiv.innerHTML = `
-        <img id="${photoId}" src="${photoUrl}" class="w-full h-56 object-cover" />
-        <b>Name:</b> ${name}<br>
-        <b>Description:</b> ${treeDescription}<br>
-        <b>Tree Type:</b> ${treeType}<br>
-        <b>Date Planted:</b> ${plantDate}<br>
-        <b>${action} by:</b> ${user}<br>
-        <b>Version:</b> ${version}<br>
-        <hr style="height: 1px; background-color: #0095ff; border: none;">
-        <button onclick="showComments('${refId}')" class="text-blue-600 text-sm hover:underline mt-2">View Discussion 💬</button>
-
+        <div class="flex flex-col md:flex-row gap-3 h-full p-2 box-border">
+          <div class="w-full md:w-[40%]">
+            <div class="w-full md:h-[220px]">
+              <img 
+                id="${photoId}" 
+                src="${photoUrl}" 
+                alt="Tree photo" 
+                class="h-full w-full object-cover rounded-md"
+              />
+            </div>
+          </div>
+          <div class="w-full md:w-[70%] text-xs text-gray-800 leading-none flex flex-col justify-between">
+            <div>
+              <p><span class="font-semibold">Name:</span> ${name.trim()}</p>
+              <p><span class="font-semibold">Description:</span> ${treeDescription}</p>
+              <p><span class="font-semibold">Tree Type:</span> ${treeType}</p>
+              <p><span class="font-semibold">Date Planted:</span> ${plantDate}</p>
+              <p><span class="font-semibold">Planted by:</span> ${user}</p>
+              <p><span class="font-semibold">Version:</span> ${version}</p>
+            </div>
+            <div class="mt-2 text-right">
+              <button onclick="showComments('${refId}')" 
+                class="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition-all text-xs shadow-sm">
+                View Discussion
+              </button>
+            </div>
+          </div>
+        </div>
       `;
-    
+
+
+popupContent.className = "relative bg-white p-3 rounded-xl text-xs w-full max-w-[52rem] min-h-[12rem]";
+
+ 
       // Add button and info to popup
       popupContent.appendChild(button);
       popupContent.appendChild(infoDiv);
@@ -413,6 +435,31 @@ $.when(ph).done(function () {
         .setLatLng(e.latlng)
         .setContent(popupContent) // not a string — a DOM node!
         .openOn(map);
+
+      setTimeout(() => {
+        const wrapper = document.querySelector(".leaflet-popup-content-wrapper");
+        const content = document.querySelector(".leaflet-popup-content");
+
+        // Mobile: < 768px
+        const isMobile = window.innerWidth < 768;
+
+        const width = isMobile ? "140px" : "420px";
+        const height = isMobile ? "80px" : "240px";
+
+        if (wrapper) {
+          wrapper.style.setProperty("max-width", "none", "important");
+          wrapper.style.setProperty("width", "420px", "important");
+          wrapper.style.setProperty("height", "240px", "important");
+        }
+
+        if (content) {
+          content.style.setProperty("width", "100%", "important");
+          content.style.setProperty("height", "100%", "important");
+          content.style.setProperty("margin", "0", "important");
+          content.style.setProperty("padding", "0", "important");
+        }
+      }, 0);
+
     });
 
     markers.addLayer(marker);
