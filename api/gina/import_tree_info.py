@@ -1,3 +1,4 @@
+from django.db import models
 import pandas as pd
 import sys
 from pathlib import Path
@@ -18,15 +19,29 @@ for index, row in df.iterrows():
     treeType, created = TreeType.objects.get_or_create(
         type_name='default',
     )
-
-    treeInfo = TreeInfo(
-        tree_name=row['tree_name'],
-        tree_image="static_trees/" + row['image'],
-        scientific_name=row['scientific_name'],
-        family_name=row['family_name'],
-        tree_type=treeType,
-    )
-
-    treeInfo.save()
+    
+    defaults = {"tree_description" : row['tree_description']}
+    create_defaults = {
+        "family_name": row['family_name'], 
+        "tree_image": "static_tress/" + row['image'],
+        "tree_description" : row['tree_description'],
+        "tree_type" : treeType
+    }
+    
+    try:
+        treeinfo = TreeInfo.objects.get( 
+            scientific_name=row['scientific_name'])
+        for key, value in defaults.items():
+            setattr(treeinfo, key, value)
+        treeinfo.save()
+        
+    except TreeInfo.DoesNotExist:
+        new_values = {
+            "tree_name": row['tree_name'], 
+            "scientific_name": row['scientific_name']
+        }
+        new_values.update(create_defaults)
+        treeinfo = TreeInfo(**new_values)
+        treeinfo.save()
 
 print("CSV data has been loaded into the Django database.")
