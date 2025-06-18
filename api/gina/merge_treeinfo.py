@@ -31,6 +31,9 @@ def print_treeinfo(row):
     family_name = empty_info if pd.isnull(row['family_name']) else row['family_name']
     description = empty_info if pd.isnull(row['tree_description']) else row['tree_description']
 
+    scientific_name = "".join(name.lower().title() + "," for name in scientific_name.split(","))
+    scientific_name = re.sub(",$","",scientific_name)
+
     if scientific_name.count(',') > 0:
         scientific_name = "\"" + scientific_name + "\""
 
