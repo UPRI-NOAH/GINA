@@ -91,10 +91,10 @@ for page_num in pages:
         description += text
         if re.match("Propagation",text):
             break
-    # remove newlines at start of description
-    description = re.sub("[ \n]+Notable","Notable",description)
-    # escape special characters in tree description
-    description = description.encode("unicode_escape").decode("utf-8")
+    
+    description = re.sub("[\s\n]+"," ",description)
+    description = re.sub("^\s","",description)
     print(f"\"{description}\"",end="")
+
     if page_num != page_end:
         print("\n",end="")
