@@ -2,6 +2,7 @@ let currentPage = 1;
 const itemsPerPage = 7;
 let bound = [];
 
+
 var ph = $.ajax({
     url: userURL,
     dataType: "json",
@@ -21,59 +22,51 @@ var ph = $.ajax({
         renderLeaderboard();  
     });
 
+
 function renderPodium() {
     const podiumSection = document.getElementById('podium-section');
-    
+
     if (bound.length < 3) {
         podiumSection.innerHTML = '<p class="text-gray-500 text-center">Loading podium...</p>';
         return;
     }
 
-    // Get top 3 
     const top3 = bound.slice(0, 3);
-    
-    // Get the medal icons and colors for each position
+
     const medalData = [
-        { 
-            icon: 'assets/img/gold-medal.png', 
-            alt: 'Gold Medal',
-            fallback: '🥇' 
-        },
-        { 
-            icon: 'assets/img/silver-medal.png', 
-            alt: 'Silver Medal',
-            fallback: '🥈' 
-        },
-        { 
-            icon: 'assets/img/bronze-medal.png', 
-            alt: 'Bronze Medal',
-            fallback: '🥉' 
-        }
+        { icon: 'assets/img/gold-medal.png', alt: 'Gold Medal', fallback: '🥇', size: 'w-20 h-20' },
+        { icon: 'assets/img/silver-medal.png', alt: 'Silver Medal', fallback: '🥈', size: 'w-16 h-16' },
+        { icon: 'assets/img/bronze-medal.png', alt: 'Bronze Medal', fallback: '🥉', size: 'w-16 h-16' }
     ];
-    
-    // Order for podium display: 2nd, 1st, 3rd
-    const podiumOrder = [1, 0, 2]; // indices for 2nd, 1st, 3rd place
-    
-    podiumSection.innerHTML = '';
-    
+
+    const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd
+
+    podiumSection.innerHTML = '<div class="flex justify-center items-end gap-4 w-full max-w-4xl mx-auto">';
+
     podiumOrder.forEach(orderIndex => {
         const player = top3[orderIndex];
         const medal = medalData[orderIndex];
-    
+
+        // Adjust vertical alignment
+        let extraMargin = '';
+        if (orderIndex === 0) extraMargin = 'mt-0';   // Gold - highest
+        if (orderIndex === 1 || orderIndex === 2) extraMargin = 'mt-4'; // Silver and Bronze - lower
+
         const podiumCard = document.createElement('div');
-        podiumCard.className = `w-full p-4 bg-nav rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform`;
-        
+        podiumCard.className = `${extraMargin} w-40 bg-nav rounded-lg shadow-lg text-center p-4 transform hover:scale-105 transition-transform`;
+
         podiumCard.innerHTML = `
-            <div class="w-16 h-16 mx-auto mb-3">
-                <img src="${medal.icon}" alt="${orderIndex === 0 ? 'Gold' : orderIndex === 1 ? 'Silver' : 'Bronze'} Medal" class="w-full h-full object-contain">
+            <div class="${medal.size} mx-auto mb-3">
+                <img src="${medal.icon}" alt="${medal.alt}" class="w-full h-full object-contain">
             </div>
             <h3 class="font-semibold text-gray-800">${player.user}</h3>
             <p class="text-gray-600 text-sm">${player.user_points}</p>
         `;
-        
-        podiumSection.appendChild(podiumCard);
+
+        podiumSection.querySelector('div').appendChild(podiumCard);
     });
 }
+
 
 function renderLeaderboard() {
     const leaderboardBody = document.getElementById('leaderboard-body');
@@ -97,12 +90,12 @@ function renderLeaderboard() {
         const usernameClass = isHighlighted ? 'font-semibold' : '';
         
         const row = document.createElement('div');
-        row.className = `px-6 py-4 transition-colors w-full flex justify-center`;
+        row.className = `px-5 py-3 w-full flex `;
         row.innerHTML = `
-            <div class="bg-white flex items-center text-center p-5 rounded-lg shadow-sm w-full max-w-2xl">
-                <span class="font-medium text-gray-800 w-16 text-center">${actualRank}</span>
-                <span class="text-gray-700 flex-1 text-center ${usernameClass}">${data.user}</span>
-                <span class="font-semibold text-gray-800 w-20 text-center">${data.user_points}</span>
+            <div class="flex items-center justify-between w-full p-3 max-w-2xl mx-auto bg-white rounded-lg shadow-md">
+                <span class="font-medium text-gray-800 w-20 text-left">${actualRank}</span>
+                <span class=" text-gray-700 text-center ${usernameClass}">${data.user}</span>
+                <span class="font-semibold text-gray-800 w-20 text-right">${data.user_points}</span>
             </div>
         `;
         leaderboardBody.appendChild(row);
