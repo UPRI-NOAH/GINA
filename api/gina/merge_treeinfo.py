@@ -42,7 +42,8 @@ def print_treeinfo(row):
 for index, row in df2.iterrows():
 
     for index_2, row_2 in df1.iterrows():
-        if row_2['scientific_name'] == row['scientific_name']:
+        key = 'scientific_name'
+        if row_2[key] in row[key] or row[key] in row_2[key]:
             if not pd.isnull(row_2['image']):
                 row['image'] = row_2['image']
             if not pd.isnull(row_2['tree_description']):
