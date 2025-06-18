@@ -17,7 +17,7 @@ sys.path.append(str(PROJECT_ROOT))
 
 # Pymupdf is the library used for text extraction
 # Tutorial video: https://www.youtube.com/watch?v=DSsqzKA_hPg&t=41s
-# Dcoumentation link: https://pymupdf.readthedocs.io/en/latest/recipes-text.html
+# Documentation link: https://pymupdf.readthedocs.io/en/latest/recipes-text.html
 
 class TreeInfoEnum(Enum):
     GIVEN_NAME = 0
@@ -63,9 +63,7 @@ for page_num in pages:
 
     for i, word in enumerate(words):
         #  only extract the scientific name
-        #  and family name. Exclude the
-        #  name of person who discovered
-        #  the plant
+        #  and family name.
         if i == TreeInfoEnum.GIVEN_NAME.value:
             temp = word
         if i == TreeInfoEnum.SCIENTIFIC_NAME.value:
@@ -84,17 +82,16 @@ for page_num in pages:
         else:
             print(temp,end=",")
     
-    # text description
-    description = ""
+    tree_description = ""
     for entry in range(5,len(find)):
         text = find[entry][4]
-        description += text
+        tree_description += text
         if re.match("Propagation",text):
             break
     
-    description = re.sub("[\s\n]+"," ",description)
-    description = re.sub("^\s","",description)
-    print(f"\"{description}\"",end="")
+    tree_description = re.sub("[\s\n]+"," ",tree_description)
+    tree_description = re.sub("^\s","",tree_description)
+    print(f"\"{tree_description}\"",end="")
 
     if page_num != page_end:
         print("\n",end="")
