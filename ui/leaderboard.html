@@ -118,7 +118,7 @@
 
   <main>
     <!-- Leaderboard Container -->
-    <div class="container h-full mx-auto mt-10 p-4 rounded-lg shadow-lg max-w-3xl"> 
+    <div class="container h-full mx-auto mt-10 p-4 max-w-3xl"> 
 
         <h2 class="text-2xl font-bold mb-4 text-center">Leaderboard</h2>
 
@@ -146,18 +146,8 @@
 
             <!-- Pagination -->
             <div class="flex justify-center m-6">
-                <div class="flex items-center space-x-2 bg-white rounded-lg shadow-md px-4 py-2">
-                    <button id="prev-btn" class="p-1 hover:bg-gray-100 rounded transition-colors" onclick="changePage(-1)">
-                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
-                    <span id="page-number" class="px-3 py-1 bg-green-100 text-green-800 rounded font-medium">1</span>
-                    <button id="next-btn" class="p-1 hover:bg-gray-100 rounded transition-colors" onclick="changePage(1)">
-                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
+                <div id="pagination-controls" class="bg-white rounded-lg shadow-md px-4 py-3 max-w-2xl w-full">
+                    <!-- Pagination buttons will be dynamically generated here -->
                 </div>
             </div>
         </div>
