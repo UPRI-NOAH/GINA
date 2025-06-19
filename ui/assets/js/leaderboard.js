@@ -1,112 +1,7 @@
 let currentPage = 1;
 const itemsPerPage = 7;
+let bound = [];
 
-
-// Static user data for testing
-let bound = [
-    { user: "Alice", user_points: 250 },
-    { user: "Bob", user_points: 230 },
-    { user: "Charlie", user_points: 220 },
-    { user: "Diana", user_points: 210 },
-    { user: "Eve", user_points: 200 },
-    { user: "Frank", user_points: 190 },
-    { user: "Grace", user_points: 180 },
-    { user: "Heidi", user_points: 170 },
-    { user: "Ivan", user_points: 160 },
-    { user: "Judy", user_points: 150 },
-    { user: "Karl", user_points: 140 },
-    { user: "Laura", user_points: 130 },
-    { user: "Mallory", user_points: 120 },
-    { user: "Niaj", user_points: 110 },
-    { user: "Olivia", user_points: 100 },
-    { user: "Peggy", user_points: 90 },
-    { user: "Quentin", user_points: 80 },
-    { user: "Rupert", user_points: 70 },
-    { user: "Sybil", user_points: 60 },
-    { user: "Trent", user_points: 50 },
-        { user: "Frank", user_points: 190 },
-    { user: "Grace", user_points: 180 },
-    { user: "Heidi", user_points: 170 },
-    { user: "Ivan", user_points: 160 },
-    { user: "Judy", user_points: 150 },
-    { user: "Karl", user_points: 140 },
-    { user: "Laura", user_points: 130 },
-    { user: "Mallory", user_points: 120 },
-    { user: "Niaj", user_points: 110 },
-    { user: "Olivia", user_points: 100 },
-    { user: "Peggy", user_points: 90 },
-    { user: "Quentin", user_points: 80 },
-    { user: "Rupert", user_points: 70 },
-    { user: "Sybil", user_points: 60 },
-    { user: "Trent", user_points: 50 },
-        { user: "Frank", user_points: 190 },
-    { user: "Grace", user_points: 180 },
-    { user: "Heidi", user_points: 170 },
-    { user: "Ivan", user_points: 160 },
-    { user: "Judy", user_points: 150 },
-    { user: "Karl", user_points: 140 },
-    { user: "Laura", user_points: 130 },
-    { user: "Mallory", user_points: 120 },
-    { user: "Niaj", user_points: 110 },
-    { user: "Olivia", user_points: 100 },
-    { user: "Peggy", user_points: 90 },
-    { user: "Quentin", user_points: 80 },
-    { user: "Rupert", user_points: 70 },
-    { user: "Sybil", user_points: 60 },
-    { user: "Trent", user_points: 50 },
-        { user: "Frank", user_points: 190 },
-    { user: "Grace", user_points: 180 },
-    { user: "Heidi", user_points: 170 },
-    { user: "Ivan", user_points: 160 },
-    { user: "Judy", user_points: 150 },
-    { user: "Karl", user_points: 140 },
-    { user: "Laura", user_points: 130 },
-    { user: "Mallory", user_points: 120 },
-    { user: "Niaj", user_points: 110 },
-    { user: "Olivia", user_points: 100 },
-    { user: "Peggy", user_points: 90 },
-    { user: "Quentin", user_points: 80 },
-    { user: "Rupert", user_points: 70 },
-    { user: "Sybil", user_points: 60 },
-    { user: "Trent", user_points: 50 },
-      { user: "Grace", user_points: 180 },
-    { user: "Heidi", user_points: 170 },
-    { user: "Ivan", user_points: 160 },
-    { user: "Judy", user_points: 150 },
-    { user: "Karl", user_points: 140 },
-    { user: "Laura", user_points: 130 },
-    { user: "Mallory", user_points: 120 },
-    { user: "Niaj", user_points: 110 },
-    { user: "Olivia", user_points: 100 },
-    { user: "Peggy", user_points: 90 },
-    { user: "Quentin", user_points: 80 },
-    { user: "Rupert", user_points: 70 },
-    { user: "Sybil", user_points: 60 },
-    { user: "Trent", user_points: 50 },
-      { user: "Grace", user_points: 180 },
-    { user: "Heidi", user_points: 170 },
-    { user: "Ivan", user_points: 160 },
-    { user: "Judy", user_points: 150 },
-    { user: "Karl", user_points: 140 },
-    { user: "Laura", user_points: 130 },
-    { user: "Mallory", user_points: 120 },
-    { user: "Niaj", user_points: 110 },
-    { user: "Olivia", user_points: 100 },
-    { user: "Peggy", user_points: 90 },
-    { user: "Quentin", user_points: 80 },
-    { user: "Rupert", user_points: 70 },
-    { user: "Sybil", user_points: 60 },
-    { user: "Trent", user_points: 50 },
-    
-];
-
-// Sort and render immediately for static data
-bound.sort((a, b) => b.user_points - a.user_points);
-renderPodium();
-renderLeaderboard();
-
-// Comment out or remove the AJAX code below when using static data
-/*
 var ph = $.ajax({
     url: userURL,
     dataType: "json",
@@ -125,8 +20,6 @@ $.when(ph).done(function () {
     renderPodium();
     renderLeaderboard();  
 });
-*/
-// ...existing code...
 
 function renderPodium() {
     const podiumSection = document.getElementById('podium-section');
