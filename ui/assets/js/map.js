@@ -298,7 +298,7 @@ $.when(ph).done(function () {
 
       // Create popup DOM elements
       const popupContent = document.createElement("div");
-      popupContent.className = "relative bg-white p-3 rounded-xl text-xs w-full";
+      popupContent.className = "relative bg-white p-4 rounded-xl text-sm w-full md:max-w-[700px] md:min-w-[640px] min-w-[300px] min-h-[12rem]";
     
       const button = document.createElement("button");
 
@@ -379,17 +379,15 @@ $.when(ph).done(function () {
 
       infoDiv.innerHTML = `
         <div class="flex flex-col md:flex-row gap-3 h-full p-2 box-border">
-          <div class="w-full md:w-[40%]">
-            <div class="w-full md:h-[220px]">
-              <img 
-                id="${photoId}" 
-                src="${photoUrl}" 
-                alt="Tree photo" 
-                class="h-full w-full object-cover rounded-md"
-              />
-            </div>
+          <div class="w-full md:w-[40%] flex justify-center">
+            <img 
+              id="${photoId}" 
+              src="${photoUrl}" 
+              alt="Tree photo" 
+              class="w-full md:w-auto max-h-[250px] object-cover rounded-md"
+            />
           </div>
-          <div class="w-full md:w-[70%] text-xs text-gray-800 leading-none flex flex-col justify-between">
+          <div class="w-full md:w-[60%] text-sm text-gray-800 leading-snug flex flex-col justify-between">
             <div>
               <p><span class="font-semibold">Name:</span> ${name.trim()}</p>
               <p><span class="font-semibold">Description:</span> ${treeDescription}</p>
@@ -398,8 +396,8 @@ $.when(ph).done(function () {
               <p><span class="font-semibold">Planted by:</span> ${user}</p>
               <p><span class="font-semibold">Version:</span> ${version}</p>
             </div>
-            <div class="mt-2 text-right">
-              <button onclick="showComments('${refId}')" 
+            <div class="mt-3 text-right">
+              <button onclick="showComments('${refId}')"
                 class="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition-all text-xs shadow-sm">
                 View Discussion
               </button>
@@ -437,29 +435,36 @@ popupContent.className = "relative bg-white p-3 rounded-xl text-xs w-full max-w-
         .openOn(map);
 
       setTimeout(() => {
-        const wrapper = document.querySelector(".leaflet-popup-content-wrapper");
-        const content = document.querySelector(".leaflet-popup-content");
+        const popup = document.querySelector('.leaflet-popup');
+        const wrapper = document.querySelector('.leaflet-popup-content-wrapper');
+        const content = document.querySelector('.leaflet-popup-content');
 
-        // Mobile: < 768px
-        const isMobile = window.innerWidth < 768;
-
-        const width = isMobile ? "140px" : "420px";
-        const height = isMobile ? "80px" : "240px";
+        if (popup) {
+          popup.style.setProperty('z-index', '999999', 'important');
+          popup.style.setProperty('position', 'relative', 'important');
+        }
 
         if (wrapper) {
-          wrapper.style.setProperty("max-width", "none", "important");
-          wrapper.style.setProperty("width", "420px", "important");
-          wrapper.style.setProperty("height", "240px", "important");
+          const isDesktop = window.innerWidth >= 768;
+          wrapper.style.setProperty('width', '100%', 'important');
+          wrapper.style.setProperty('max-height', 'unset', 'important');
+          wrapper.style.setProperty('overflow', 'visible', 'important');
+          
+          if (isDesktop) {
+            wrapper.style.setProperty('min-width', '500px', 'important');
+          } else {
+            wrapper.style.setProperty('min-width', '300px', 'important');
+            wrapper.style.setProperty('max-width', '90vw', 'important');
+          }
         }
 
         if (content) {
-          content.style.setProperty("width", "100%", "important");
-          content.style.setProperty("height", "100%", "important");
-          content.style.setProperty("margin", "0", "important");
-          content.style.setProperty("padding", "0", "important");
+          content.style.setProperty('padding', '0', 'important');
+          content.style.setProperty('margin', '0', 'important');
+          content.style.setProperty('width', '100%', 'important');
+          content.style.setProperty('overflow', 'visible', 'important');
         }
       }, 0);
-
     });
 
     markers.addLayer(marker);
