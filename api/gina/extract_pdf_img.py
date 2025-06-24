@@ -11,10 +11,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 
 # TO USE:
-# 1. Create the folder api/gina/images
+# 1. Create the folder api/gina/output-images
 # 2. Execute this command on your shell:
 #    python api/gina/extract_pdf_img.py < api/gina/treeinfo-partial.csv
-#    the result is saved at api/gina/images
+#    the result is saved at api/gina/<img_folder>
 
 # pymupdf is used for image extraction
 # Video tutorial: https://www.youtube.com/watch?v=C7U1BZV5SjM&t=160s
@@ -23,7 +23,8 @@ sys.path.append(str(PROJECT_ROOT))
 dimlimit = 0  # 100  # each image side must be greater than this
 relsize = 0  # 0.05  # image : image size ratio must be larger than this (5%)
 abssize = 0  # 2048  # absolute image size limit 2 KB: ignore if smaller
-imgdir = "api/gina/images"  # found images are stored in this subfolder
+img_folder = "output-images"  # found images are stored in this folder
+IMG_DIR_PATH = "api/gina/" + img_folder
 
 # function snippet taken from 
 # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
@@ -67,6 +68,9 @@ def recoverpix(doc, item):
     return doc.extract_image(xref)
 
 doc = pymupdf.open("native-trees.pdf")
+
+if not os.path.exists(IMG_DIR_PATH):
+    os.mkdir(IMG_DIR_PATH)
 
 headers = input()
 #print(headers)
