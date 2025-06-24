@@ -11,7 +11,10 @@ sys.path.append(str(PROJECT_ROOT))
 
 # HOW TO USE 
 # Run the command below on your command shell:
-# python api/gina/merge_treeinfo.py > api/gina/treeinfo-new.csv
+# python api/gina/merge_tree_info.py > api/gina/treeinfo-new.csv
+# Once the CSV file looks good, only then replace 
+# the old CSV file into treeinfo-old.csv
+# and the current output as treeinfo.csv
 
 csv_1_file_path = 'api/gina/treeinfo-old.csv'
 df1 = pd.read_csv(csv_1_file_path)
