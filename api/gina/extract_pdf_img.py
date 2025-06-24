@@ -114,4 +114,4 @@ for page_num in range(25,127,2):
     # optional debug message
     print(f"Image for {name} saved.")
 
-print("Extracting images in native_trees.pdf done.")
+print("Extracting images in pdf done.")
