@@ -133,30 +133,6 @@ Then import the `UserTreeArchive` data via
 python api/gina/populate_archive.py
 ```
 
-<!--> TODO: PDF extraction scripts usage -->
-## PDF extraction scripts
-
-These scripts assume the PDF is not a scanned copy. The
-extracted data are saved in a new CSV file for text
-and the images are stored in a separate output folder.
-
-Extract the PDF text via
-```
-python extract_pdf_text.py > treeinfo-partial.csv
-```
-
-By editing the parameters inside `merge_tree_info.py`, 
-combine the current CSV file and the new CSV file via
-```
-python merge_tree_info.py
-```
-
-Extract the PDF images via
-
-```
-python extract_pdf_img.py
-```
-
 <!-- TODO: document usage -->
 
 # Screenshots
