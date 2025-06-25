@@ -298,7 +298,7 @@ $.when(ph).done(function () {
 
       // Create popup DOM elements
       const popupContent = document.createElement("div");
-      popupContent.className = "relative bg-white p-4 rounded-xl text-sm w-full md:max-w-[700px] md:min-w-[640px] min-w-[300px] min-h-[12rem]";
+      popupContent.className = "relative bg-white p-4 rounded-xl text-sm w-full md:max-w-[750px] min-w-[280px]";
     
       const button = document.createElement("button");
 
@@ -378,17 +378,17 @@ $.when(ph).done(function () {
       const photoId = `tree-photo-${refId}`;
 
       infoDiv.innerHTML = `
-        <div class="flex flex-col md:flex-row gap-3 h-full p-2 box-border">
-          <div class="w-full md:w-[40%] flex justify-center">
+        <div class="flex flex-col md:flex-row gap-4 h-full p-2 box-border">
+          <div class="tree-image-container">
             <img 
               id="${photoId}" 
               src="${photoUrl}" 
               alt="Tree photo" 
-              class="w-full md:w-auto max-h-[250px] object-cover rounded-md"
+              class="w-full h-full object-cover"
             />
           </div>
-          <div class="w-full md:w-[60%] text-sm text-gray-800 leading-snug flex flex-col justify-between">
-            <div>
+          <div class="w-full md:w-[60%] text-xs text-gray-800 flex flex-col justify-between">
+            <div class="space-y-1">
               <p><span class="font-semibold">Name:</span> ${name.trim()}</p>
               <p><span class="font-semibold">Description:</span> ${treeDescription}</p>
               <p><span class="font-semibold">Tree Type:</span> ${treeType}</p>
@@ -439,22 +439,34 @@ popupContent.className = "relative bg-white p-3 rounded-xl text-xs w-full max-w-
         const wrapper = document.querySelector('.leaflet-popup-content-wrapper');
         const content = document.querySelector('.leaflet-popup-content');
 
+        const img = document.getElementById(`${photoId}`);
+        if (img) {
+          img.style.width = "200px";
+          img.style.height = "200px";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "8px";
+
+          const imgwrapper = img.parentElement;
+          if (imgwrapper) {
+            imgwrapper.style.width = "200px";
+            imgwrapper.style.height = "200px";
+            imgwrapper.style.overflow = "hidden";
+          }
+        }
+
         if (popup) {
           popup.style.setProperty('z-index', '999999', 'important');
           popup.style.setProperty('position', 'relative', 'important');
         }
 
         if (wrapper) {
-          const isDesktop = window.innerWidth >= 768;
           wrapper.style.setProperty('width', '100%', 'important');
+          wrapper.style.setProperty('max-width', '90vw', 'important');  // Mobile
           wrapper.style.setProperty('max-height', 'unset', 'important');
-          wrapper.style.setProperty('overflow', 'visible', 'important');
-          
-          if (isDesktop) {
-            wrapper.style.setProperty('min-width', '500px', 'important');
-          } else {
-            wrapper.style.setProperty('min-width', '300px', 'important');
-            wrapper.style.setProperty('max-width', '90vw', 'important');
+
+          if (window.innerWidth >= 768) {
+            wrapper.style.setProperty('min-width', '400px', 'important');
+            wrapper.style.setProperty('max-width', '450px', 'important');
           }
         }
 
