@@ -29,15 +29,15 @@ class TreeInfoEnum(Enum):
 page_start = 25
 page_end = 125
 step = 2
-pages = range(page_start,page_end+step,step)
-file = "api/gina/pdf/native-trees.pdf"
-csv_header = "tree_name,image,scientific_name,family_name,tree_description"
+PAGES = range(page_start,page_end+step,step)
+PDF_FILE = "api/gina/pdf/native-trees.pdf"
+CSV_HEADER = "tree_name,image,scientific_name,family_name,tree_description"
 
-doc = pymupdf.open(file)
+doc = pymupdf.open(PDF_FILE)
 
-print(csv_header)
+print(CSV_HEADER)
 
-for page_num in pages:
+for page_num in PAGES:
     plant = doc[page_num]
 
     find = plant.get_text("blocks")
