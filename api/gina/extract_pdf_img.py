@@ -25,6 +25,7 @@ relsize = 0  # 0.05  # image : image size ratio must be larger than this (5%)
 abssize = 0  # 2048  # absolute image size limit 2 KB: ignore if smaller
 img_folder = "output-images"  # found images are stored in this folder
 IMG_DIR_PATH = "api/gina/" + img_folder
+PDF_FILE = "native-trees.pdf" # filename of PDF to be extracted
 
 # function snippet taken from 
 # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
@@ -67,7 +68,7 @@ def recoverpix(doc, item):
         }
     return doc.extract_image(xref)
 
-doc = pymupdf.open("native-trees.pdf")
+doc = pymupdf.open(PDF_FILE)
 
 if not os.path.exists(IMG_DIR_PATH):
     os.mkdir(IMG_DIR_PATH)
