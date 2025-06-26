@@ -16,10 +16,10 @@ sys.path.append(str(PROJECT_ROOT))
 # the old CSV file into treeinfo-old.csv
 # and the current output as treeinfo.csv
 
-csv_1_file_path = 'api/gina/treeinfo-old.csv'
-df1 = pd.read_csv(csv_1_file_path)
-csv_2_file_path = 'api/gina/treeinfo-partial.csv'
-df2 = pd.read_csv(csv_2_file_path)
+csv_old_file_path = 'api/gina/treeinfo-old.csv'
+df1 = pd.read_csv(csv_old_file_path)
+csv_new_file_path = 'api/gina/treeinfo-partial.csv'
+df2 = pd.read_csv(csv_new_file_path)
 
 #print the header for new csv
 print("tree_name,image,scientific_name,family_name,tree_description")
