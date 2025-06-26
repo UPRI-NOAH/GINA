@@ -4,6 +4,7 @@ from PIL import Image
 import io
 import requests
 import os
+import pandas as pd
 import pymupdf
 import re
 
@@ -13,7 +14,7 @@ sys.path.append(str(PROJECT_ROOT))
 # TO USE:
 # 1. Create the folder api/gina/output-images
 # 2. Execute this command on your shell:
-#    python api/gina/extract_pdf_img.py < api/gina/treeinfo-partial.csv
+#    python api/gina/extract_pdf_img.py
 #    the result is saved at api/gina/<img_folder>
 
 # pymupdf is used for image extraction
@@ -25,7 +26,8 @@ relsize = 0  # 0.05  # image : image size ratio must be larger than this (5%)
 abssize = 0  # 2048  # absolute image size limit 2 KB: ignore if smaller
 img_folder = "output-images"  # found images are stored in this folder
 IMG_DIR_PATH = "api/gina/" + img_folder
-PDF_FILE = "native-trees.pdf" # filename of PDF to be extracted
+PDF_FILE = "api/gina/pdf/native-trees.pdf" # filename of PDF to be extracted
+CSV_FILE = "api/gina/treeinfo-partial.csv" # for scientific names
 
 # function snippet taken from 
 # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
@@ -73,15 +75,13 @@ doc = pymupdf.open(PDF_FILE)
 if not os.path.exists(IMG_DIR_PATH):
     os.mkdir(IMG_DIR_PATH)
 
-headers = input()
-
 names = []
 
-for tree in range(25,127,2):
+df = pd.read_csv(CSV_FILE)
 
-    given_name,scientific_name,family_name = input().split(",")
-    scientific_name = re.sub("\s","-",scientific_name)
-    names.append(scientific_name)
+for index, row in df.iterrows():
+
+    names.append(row['scientific_name'])
 
 xreflist = []
 imglist = []
@@ -106,7 +106,7 @@ for page_num in range(25,127,2):
             imgdata = image["image"]
 
             # save the image to the folder
-            imgfile = os.path.join(imgdir, "%s.%s" % (name+"-"+str(i), image["ext"]))
+            imgfile = os.path.join(IMG_DIR_PATH, "%s.%s" % (name+"-"+str(i), image["ext"]))
             fout = open(imgfile, "wb")
             fout.write(imgdata)
             fout.close()
