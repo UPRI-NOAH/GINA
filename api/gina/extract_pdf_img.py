@@ -74,7 +74,6 @@ if not os.path.exists(IMG_DIR_PATH):
     os.mkdir(IMG_DIR_PATH)
 
 headers = input()
-#print(headers)
 
 names = []
 

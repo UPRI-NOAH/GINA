@@ -45,13 +45,6 @@ for page_num in PAGES:
     # extract the text from the block
     words = str(find[4][4])
 
-    # debug commands
-    # print(find)
-    # find[4] is the text block 
-    # with given name, scientific name,
-    # and family name
-    # print(find[4])
-
     # remove space and line separators
     # for given name , scientific name,
     # and family name in that order
@@ -59,7 +52,6 @@ for page_num in PAGES:
 
     words = words.split("\n")
     words = [w for w in words if w != ""]
-    # print(words)
 
     for i, word in enumerate(words):
         #  only extract the scientific name
