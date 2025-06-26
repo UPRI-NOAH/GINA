@@ -298,7 +298,7 @@ $.when(ph).done(function () {
 
       // Create popup DOM elements
       const popupContent = document.createElement("div");
-      popupContent.style.position = "relative";
+      popupContent.className = "relative bg-white p-4 rounded-xl text-sm w-full md:max-w-[750px] min-w-[280px]";
     
       const button = document.createElement("button");
 
@@ -378,18 +378,38 @@ $.when(ph).done(function () {
       const photoId = `tree-photo-${refId}`;
 
       infoDiv.innerHTML = `
-        <img id="${photoId}" src="${photoUrl}" class="w-full h-56 object-cover" />
-        <b>Name:</b> ${name}<br>
-        <b>Description:</b> ${treeDescription}<br>
-        <b>Tree Type:</b> ${treeType}<br>
-        <b>Date Planted:</b> ${plantDate}<br>
-        <b>${action} by:</b> ${user}<br>
-        <b>Version:</b> ${version}<br>
-        <hr style="height: 1px; background-color: #0095ff; border: none;">
-        <button onclick="showComments('${refId}')" class="text-blue-600 text-sm hover:underline mt-2">View Discussion 💬</button>
-
+        <div class="flex flex-col md:flex-row gap-4 h-full p-2 box-border">
+          <div class="tree-image-container">
+            <img 
+              id="${photoId}" 
+              src="${photoUrl}" 
+              alt="Tree photo" 
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="w-full md:w-[60%] text-xs text-gray-800 flex flex-col justify-between">
+            <div class="space-y-1">
+              <p><span class="font-semibold">Name:</span> ${name.trim()}</p>
+              <p><span class="font-semibold">Description:</span> ${treeDescription}</p>
+              <p><span class="font-semibold">Tree Type:</span> ${treeType}</p>
+              <p><span class="font-semibold">Date Planted:</span> ${plantDate}</p>
+              <p><span class="font-semibold">Planted by:</span> ${user}</p>
+              <p><span class="font-semibold">Version:</span> ${version}</p>
+            </div>
+            <div class="mt-3 text-right">
+              <button onclick="showComments('${refId}')"
+                class="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition-all text-xs shadow-sm">
+                View Discussion
+              </button>
+            </div>
+          </div>
+        </div>
       `;
-    
+
+
+popupContent.className = "relative bg-white p-3 rounded-xl text-xs w-full max-w-[52rem] min-h-[12rem]";
+
+ 
       // Add button and info to popup
       popupContent.appendChild(button);
       popupContent.appendChild(infoDiv);
@@ -413,6 +433,50 @@ $.when(ph).done(function () {
         .setLatLng(e.latlng)
         .setContent(popupContent) // not a string — a DOM node!
         .openOn(map);
+
+      setTimeout(() => {
+        const popup = document.querySelector('.leaflet-popup');
+        const wrapper = document.querySelector('.leaflet-popup-content-wrapper');
+        const content = document.querySelector('.leaflet-popup-content');
+
+        const img = document.getElementById(`${photoId}`);
+        if (img) {
+          img.style.width = "200px";
+          img.style.height = "200px";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "8px";
+
+          const imgwrapper = img.parentElement;
+          if (imgwrapper) {
+            imgwrapper.style.width = "200px";
+            imgwrapper.style.height = "200px";
+            imgwrapper.style.overflow = "hidden";
+          }
+        }
+
+        if (popup) {
+          popup.style.setProperty('z-index', '999999', 'important');
+          popup.style.setProperty('position', 'relative', 'important');
+        }
+
+        if (wrapper) {
+          wrapper.style.setProperty('width', '100%', 'important');
+          wrapper.style.setProperty('max-width', '90vw', 'important');  // Mobile
+          wrapper.style.setProperty('max-height', 'unset', 'important');
+
+          if (window.innerWidth >= 768) {
+            wrapper.style.setProperty('min-width', '400px', 'important');
+            wrapper.style.setProperty('max-width', '450px', 'important');
+          }
+        }
+
+        if (content) {
+          content.style.setProperty('padding', '0', 'important');
+          content.style.setProperty('margin', '0', 'important');
+          content.style.setProperty('width', '100%', 'important');
+          content.style.setProperty('overflow', 'visible', 'important');
+        }
+      }, 0);
     });
 
     markers.addLayer(marker);
