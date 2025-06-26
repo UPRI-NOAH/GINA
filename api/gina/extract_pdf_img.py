@@ -28,6 +28,7 @@ img_folder = "output-images"  # found images are stored in this folder
 IMG_DIR_PATH = "api/gina/" + img_folder
 PDF_FILE = "api/gina/pdf/native-trees.pdf" # filename of PDF to be extracted
 CSV_FILE = "api/gina/treeinfo-partial.csv" # for scientific names
+PAGES = range(page_start,page_end+step,step)
 
 # function snippet taken from 
 # https://github.com/pymupdf/PyMuPDF-Utilities/blob/master/examples/extract-images/extract-from-pages.py
@@ -85,7 +86,7 @@ for index, row in df.iterrows():
 
 xreflist = []
 imglist = []
-for page_num in range(25,127,2):
+for page_num in PAGE_NUMS:
 
     tree_images = doc.get_page_images(page_num)
     name_index = (page_num - 25) // 2
