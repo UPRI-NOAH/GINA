@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,115 +11,24 @@
   <link href="assets/css/nav.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/map.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 
-	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <!-- ajax library for fetching json/geojson files-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="assets/js/nav.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tw-elements@1.0.0-beta.5/dist/js/index.min.js"></script>
 
-    <!-- put style here -->
-    <style>
-      html, body {
-        height: 100vh;
-        margin: 0;
-      }
-
-      .leaflet-popup-tip {
-        display: none !important;
-      }
-
-      /* map id */
-          #map {
-            position: absolute;
-            top: 86px; /* adjust to the height of the navigation bar */
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 86px); /* adjust to the height of the navigation bar */
-            z-index: 0; /* make sure the map is behind the overlay */
-          }
-          .overlay {
-            position: absolute;
-            top: 75px; /* adjust to the height of the navigation bar */
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 75px); /* adjust to the height of the navigation bar */
-            background-color: rgba(179, 176, 176, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1; /* make sure the overlay is on top of the map */
-          }
-          .invis {
-            display: none;
-          }
-          .map-blurred {
-            filter: blur(5px);
-            pointer-events: none;
-          }
-          /* responsive tweaks */
-          @media (max-width: 768px) {
-            #map {
-              top: 50px;
-              height: calc(100vh - 50px);
-            }
-          .overlay {
-              top: 50px;
-              height: calc(100vh - 50px);
-            }
-            nav {
-              padding: 10px;
-            }
-            nav ul {
-              flex-direction: column;
-              display: none;
-            }
-            nav li {
-              margin-bottom: 10px;
-            }
-          }
-          @media (max-width: 480px) {
-            #map {
-              top: 30px;
-              height: calc(100vh - 30px);
-            }
-          .overlay {
-              top: 30px;
-              height: calc(100vh - 30px);
-            }
-            nav {
-              padding: 5px;
-            }
-            nav ul {
-              flex-direction: column;
-              display: none;
-            }
-            nav li {
-              margin-bottom: 5px;
-            }
-          }
-          /* Extra small devices (phones, 600px and down) */
-          @media only screen and (max-width: 600px) {
-            .example {background: red;}
-          }
-
-
-          /* Small devices (portrait tablets and large phones, 600px and up) */
-          @media only screen and (min-width: 600px) {
-            .example {background: green;}
-          }
-    </style>
-
 </head>
-<body class="bg-teal-100 pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">>
+
+<body class="bg-teal-100" style="font-family: 'Poppins', sans-serif;">
   <div id="loading-overlay" style="
     display: none;
     position: fixed;
@@ -133,79 +43,209 @@
     color: white;
     font-size: 1.5rem;
   ">
-  <img src="./assets/img/gina-loading(1).gif" alt="Computer man" style="width:100px;height:100px;">
-</div>
- 
+    <img src="./assets/img/gina-loading(1).gif" alt="Computer man" style="width:100px;height:100px;">
+  </div>
 
     <!-- main nav  -->
     <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-40 transition duration-300">
 
-        <nav class="max-w-6xl mx-auto flex justify-between px-10">
-            <!--  logo     -->
-            <div class="flex items-center">
-                <div class="font-bold flex items-center uppercase">
-                    <img src="assets/img/gina.png" class="w-20">
 
-                </div>
+  <!-- main nav  -->
+  <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300 hidden md:block">
 
-                <!--  primary navigation  -->
-                <div class="hidden md:flex ml-10 items-center ">
-                    <a class="px-5" href="index.html">Home</a>
-                    <a class="px-5" href="library.html">Library</a>
-                    <a class="px-5" href="leaderboard.html">Leaderboards</a>
-                    <a class="px-5" href="#">Map</a>
-                </div>
-            </div>
+    <nav class="max-w-6xl mx-auto flex justify-between px-2">
+      <!--  logo     -->
+      <div class="flex items-center">
+        <div class="font-bold flex items-center uppercase">
+          <img src="assets/img/gina.png" class="w-20">
 
-     <!-- Sign Up/Login Button, icon for user and cart -->
-            <div class="flex items-center">
-                <div id="auth-buttons" class="md:flex hidden invis">
-                                   <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+        </div>
+
+        <!--  primary navigation  -->
+        <div class="hidden md:flex ml-10 items-center ">
+          <a class="px-5" href="index.html">Home</a>
+          <a class="px-5" href="library.html">Library</a>
+          <a class="px-5" href="leaderboard.html">Leaderboards</a>
+          <a class="px-5" href="#">Map</a>
+        </div>
+      </div>
+
+      <!-- Sign Up/Login Button, icon for user and cart -->
+      <div class="flex items-center">
+        <div id="auth-buttons" class="md:flex hidden invis">
+          <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
                 hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
-              focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
-                             <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+              focus:ring-green-700"><a href="signup.html" class="md:text-sm">Sign Up</a></button>
+          <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
                     hover:bg-green-600 rounded-2xl
             text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
              focus:ring-green-600"><a href="login.html">Login</a></button>
-                </div>
-                <div id="user-buttons" class="md:flex hidden invis">
-                    <!-- Cart -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+        </div>
+        <div id="user-buttons" class="md:flex hidden invis">
+          <!-- Cart -->
+          <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
                     <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
                   </button> -->
-                    <!-- user -->
-                    <button class="" id="user-dropdown-toggle">
-                        <img class="w-14 h-14" src="./assets/img/profile.svg">
-                    </button>
-                </div>
+          <!-- user -->
+          <!-- <button class="" id="user-dropdown-toggle">
+                        <img class="w-16 h-16" src="./assets/img/profile.svg">
+                    </button> -->
+
+          <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
+                        focus:border-green-700 focus:text-green-700 text-gray-600
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(this)">
+            <ul class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
+                                             focus:text-green-700 focus:outline-none" role="button"
+                onclick="document.location='profile.html'">
+                <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20"
+                    height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <circle cx="12" cy="7" r="4" />
+                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                  </svg>
+                  <span class="ml-2">My Profile</span>
+                </a>
+              </li>
+              <li
+                class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+                role="button" onclick="logOut()">
+                <a href="javascript:void(0)"
+                  class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                  <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+                  <span class="ml-2">Log Out</span>
+                </a>
+              </li>
+            </ul>
+            <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
+                                        focus:border-white transition duration-150 ease-in-out">
+              <img class="rounded-full h-10 w-10 object-cover" src="./assets/img/profile.svg" alt="logo" />
             </div>
-
-            <!--  Mobile Menu    -->
-            <div class="md:hidden flex items-center">
-                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 rounded-full transition duration-500  p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+            <div class="ml-2 ">
+              <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer"
+                src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
             </div>
-
-        </nav>
-
-        <!-- Mobile menu -->
-        <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Map</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
-
+          </button>
         </div>
       </div>
+
+
+      <!--  Mobile Menu    -->
+      <div class="md:hidden sm:flex items-center hidden">
+        <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 
+                rounded-full transition duration-500  p-2" onclick="toggleNav()">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600" class="invis" id="mobile-menu">
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Home</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
+      <div class="invis" id="mobile-login">
+        <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+        <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
+      </div>
+
+      <div id="user-buttons" class="md:flex hidden invis">
+        <!-- user -->
+        <button class="mt-2" id="user-dropdown-toggle">
+          <img class="w-10 h-10" src="./assets/img/profile.svg">
+        </button>
+      </div>
+    </div>
+  </div>
   </header>
 
+
+<!-- Mobile Footer Menu -->
+  <div class=" fixed z-50 w-full h-16 max-w-full -translate-x-1/2 bg-white border border-gray-200
+  dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30" style="justify-self: anchor-center;">
+    <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
+     
+      <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center
+         justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group"
+        onclick="document.location='index.html'">
+        <i class="ri-home-5-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Home</span>
+      </button>
+
+      <button data-tooltip-target="tooltip-wallet" type="button" class="inline-flex flex-col items-center justify-center 
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='library.html'">
+       <i class="ri-book-2-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Library</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='leaderboard.html'">
+           <i class="ri-trophy-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Leaderboards</span>
+      </button>
+
+         <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group">
+           <i class="ri-map-pin-line ri-lg text-green-700"></i>
+        <span class="text-xs text-green-700 mt-1">Map</span>
+      </button>
+
+           <!-- not logged in show profile -->
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="pleaseLogin()" id="notLoggedIn">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(this)" id="profileMenu">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+
+        <ul class=" w-28 border-r bg-white absolute rounded right-2 shadow bottom-16 mt-16 hidden pl-2"
+          style="justify-content: center;">
+          <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700 
+          focus:text-green-700 focus:outline-none" role="button" onclick="document.location='profile.html'">
+            <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="12" cy="7" r="4" />
+                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              </svg>
+              <span class="text-xs">My Profile</span>
+            </a>
+          </li>
+          <li
+            class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+            role="button" onclick="logOut()">
+            <a href="javascript:void(0)"
+              class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+              <span class="text-xs">Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </button>
+
+    </div>
+  </div>
+
+
+ 
+
+  <!-- 
   <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
     <ul class="flex flex-col font-bold p-4">
         <li><a href="index.html">Home</a></li>
@@ -219,39 +259,91 @@
       </div>
     </ul>
       <div id="user-buttons" class="md:flex hidden invis">
-          <!-- user -->
+
           <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
             <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
           </button>
         </div>
-  </nav>
+  </nav> -->
 
   <!-- Map Controls -->
-   <div>
+  <div>
+      <!-- Legend -->
+        <div class="md:hidden block absolute top-6 right-0 z-50 bg-white rounded-lg p-3 shadow-md mr-2">
+            <div class="text-sm font-medium text-gray-700 mb-2">Legend</div>
+            <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 flex items-center justify-center rounded-full">
+                        
+                        <img src="./assets/img/marker2.png" alt="Seedling Icon" class="w-10 h-8">
+                    </div>
+                    <span class="text-sm text-gray-600">My Trees</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 flex items-center justify-center rounded-full">
+                        <img src="./assets/img/marker.png" alt="Seedling Icon" class="w-10 h-8">
+                    </div>
+                    <span class="text-sm text-gray-600">Community Trees</span>
+                </div>
+            </div>
+        </div>
+
     <div id="map">
     </div>
-    <div class="invis" id="user-dropdown">
-      <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-        <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
-        <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
-      </div>
-    </div>
-   </div>
-  
+    <div class="md:hidden block bottom-sheet absolute bottom-16 md:bottom-4 left-0 md:left-24 w-full md:w-auto px-4 pb-0">
+            <div class=" rounded-t-xl md:rounded-xl p-4 md:shadow-lg">
+                <div class="flex justify-between gap-4">
+                    <button
+                        class="flex-1 bg-green-700 text-white py-3 px-4 rounded-md shadow-md flex items-center justify-center gap-2
+                         cursor-pointer hover:bg-primary/90 transition-colors focus:border-green-500"  id="mobile-addTree" onclick="addTreeClick()">
+                        <i class="ri-seedling-line ri-lg w-6 h-6 flex items-center justify-center"></i>
+                        <span class="font-medium">Plant Tree</span>
+                    </button>
+                   <!-- Not logged in -->
+                    <button
+                        class="flex-1 bg-green-700 text-white py-3 px-4 rounded-md shadow-md flex items-center justify-center gap-2
+                         cursor-pointer hover:bg-primary/90 transition-colors focus:border-green-500"  id="notLoggedInAdd" onclick="pleaseLoginAddtree()">
+                        <i class="ri-seedling-line ri-lg w-6 h-6 flex items-center justify-center"></i>
+                        <span class="font-medium">Plant Tree</span>
+                    </button>
+
+                  <!-- Not logged in -->
+
+                    <button
+                        class="flex-1 bg-green-400 text-white py-3 px-4 rounded-md shadow-md flex items-center justify-center gap-2 
+                        cursor-pointer hover:bg-secondary/90 transition-colors focus:border-green-500"  id="mobile-idenTree" onclick="identifyTreeClick()" >
+                        <i class="ri-search-line ri-lg w-6 h-6 flex items-center justify-center"></i>
+                        <span class="font-medium">Identify Tree</span>
+                    </button>
+
+                      <!-- Not logged in -->
+                    <button
+                        class="flex-1 bg-green-400 text-white py-3 px-4 rounded-md shadow-md flex items-center justify-center gap-2 
+                        cursor-pointer hover:bg-secondary/90 transition-colors focus:border-green-500" id="notLoggedInIden" onclick="pleaseLoginAddtree()" >
+                        <i class="ri-search-line ri-lg w-6 h-6 flex items-center justify-center"></i>
+                        <span class="font-medium">Identify Tree</span>
+                    </button>
+                     <!-- Not logged in -->
+                </div>
+            </div>
+        </div>
+  </div>
+
   <!-- Instruction Overlay -->
-  <div class="overlay " id = "overlay">
+  <div class="overlay " id="overlay">
     <div class="bg-white p-5 md:p-4 rounded-xl shadow-xl shadow-indigo-500/50" id="instructions">
       <h2 class="text-2xl font-bold mb-4">Welcome to GINA!</h2>
       <p class="text-lg mb-4">Planting Instructions:</p>
 
-          <p>1. Plant your seed at your desired location.</p>
-          <p>2. Take a photo of your planted seed</p>
-          <p>3. Upload the photo using the upload plant this page.</p>
-          <p class="mb-4">4. Specify the location of the plant after uploading the photo of the plant.</p>
+      <p>1. Plant your seed at your desired location.</p>
+      <p>2. Take a photo of your planted seed</p>
+      <p>3. Upload the photo using the upload plant this page.</p>
+      <p class="mb-4">4. Specify the location of the plant after uploading the photo of the plant.</p>
 
-        <input type="checkbox" id="remember-me" />
-        <label for="remember-me">Don't show this again</label>
-      <button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-xl float-right" onclick="nextStep()">Next</button>
+      <input type="checkbox" id="remember-me" />
+      <label for="remember-me">Don't show this again</label>
+      <button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-xl float-right"
+        onclick="nextStep()">Next</button>
 
     </div>
   </div>
@@ -264,69 +356,94 @@
     <div class="bg-white p-4 rounded-xl">
       <h2 id="modalTitle" class="text-2xl font-bold mb-4">Plant Your Tree</h2>
       <p id="modalDesc" class="text-lg mb-4">Please fill in the details of the tree you want to plant.</p>
-      Specie:
-      <select class="w-full p-1 mb-4" id="plant-name" name="plant-name">
-        <option value="">Select a specie</option>
+
+      <label class="block text-md">Species:</label>
+      <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="plant-name" name="plant-name">
+        <option value="">Select a species</option>
       </select>
-      Description:
-      <textarea id="description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
-      Tree Type:
-      <select class="w-full p-1 mb-4" id="tree-type" name="tree-type">
+
+      <label class="block text-md">Description:</label>
+      <textarea id="description" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500" placeholder="Description"></textarea>
+      <br>
+
+      <label class="block text-md">Tree Type:</label>
+      <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="tree-type" name="tree-type">
         <option value="">Select tree type</option>
         <option value="Indigenous Tree">Indigenous Tree</option>
         <option value="Endemic Tree">Endemic Tree</option>
         <option value="Invasive Tree">Invasive Tree Type</option>
       </select>
       <!-- Image -->
-      <p class="text-lg mb-4">Add a photo:</p>
-      <input type="file" id="tree-photo" accept="image/*"><br> <br>
+      <div class="mb-6">
+        <label class="block text-md">Add a photo:</label>
+        <div
+          class="relative border-2 rounded-md px-4 py-3 bg-white flex items-center justify-between hover:border-green-500 transition duration-150 ease-in-out">
+          <input type="file" id="tree-photo" name="tree-photo"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+              </path>
+            </svg>
+            <span class="ml-2 text-sm text-gray-600">Choose a file</span>
+          </div>
+          <span class="text-sm text-gray-500">Max file size: 5MB</span>
+        </div>
+      </div>
+
       <!-- Add hidden input fields for latitude and longitude -->
       <input type="hidden" id="latitude" name="latitude">
       <input type="hidden" id="longitude" name="longitude">
       <div class="float-right">
         <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
-        <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl" onclick="uploadTree()">Upload</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl"
+          onclick="uploadTree()">Upload</button>
       </div>
     </div>
   </div>
-  
 
-  <div class="overlay fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 invis" id="identifyoverlay">
+
+  <div class="overlay fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 invis"
+    id="identifyoverlay">
     <div id="identify-modal" class="w-3/4 h-3/4 bg-white rounded-lg border p-4 flex flex-col overflow-hidden">
       <input type="hidden" id="identify-ref-id" name="identify-ref-id">
-      
+
       <!-- Modal Header -->
       <h3 class="font-bold text-xl mb-2">Discussion</h3>
-  
-      <!-- Scrollable comment section -->
+
+      <!-- Scrollable Communityent section -->
       <div id="comment-section" class="flex-1 overflow-y-auto pr-2">
         <!-- Comments will be injected here dynamically -->
       </div>
-  
+
       <!-- Fixed input and buttons at the bottom -->
       <div class="mt-3">
         <div class="w-full px-3 mb-2">
-          <textarea
-            class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 
-            py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
-            name="body" placeholder="Type Your Comment" required></textarea>
+          <textarea class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 
+            py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white" name="body"
+            placeholder="Type Your Comment" required></textarea>
         </div>
         <div class="flex justify-end gap-2">
           <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
-          <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl" onclick="commentIdentify()">Comment</button>
+          <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl"
+            onclick="commentIdentify()">Comment</button>
         </div>
       </div>
-  
+
     </div>
   </div>
-  
+
   <div class="overlay invis" id="editoverlay">
     <div class="bg-white p-4 rounded-xl">
       <h2 id="modalEditTitle" class="text-2xl font-bold mb-4">Edit Your Tree</h2>
       <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
-      Specie:
+      Species:
       <select class="w-full p-1 mb-4" id="edit-plant-name" name="edit-plant-name">
-        <option value="">Select a specie</option>
+        <option value="">Select a species</option>
       </select>
       Description:
       <textarea id="edit-description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
@@ -337,7 +454,7 @@
         <option value="Endemic Tree">Endemic Tree</option>
         <option value="Invasive Tree">Invasive Tree Type</option>
       </select>
-     
+
       <!-- Image -->
       <p class="text-lg mb-4">Add a photo:</p>
       <input type="file" id="edit-tree-photo" accept="image/*"><br> <br>
@@ -348,8 +465,10 @@
       <input type="hidden" id="edit-longitude" name="edit-longitude">
       <input type="hidden" id="edit-date" name="edit-date">
       <div class="float-right">
-        <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="editTree()">Edit</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl"
+          onclick="skip()">Skip</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
+          onclick="editTree()">Edit</button>
       </div>
     </div>
   </div>
@@ -357,55 +476,62 @@
 
   <div class="overlay invis" id="treeArchiveTitleOverlay">
     <!-- <div class="bg-white p-4 rounded-xl relative"> -->
-      <div class="bg-white p-4 rounded-xl relative">
+    <div class="bg-white p-4 rounded-xl relative">
       <!-- <h2 id="treeArchiveTitle" class="text-xl font-bold mb-4">Tree Gallery</h2> -->
       <h3 id="treeTitle" class="text-2xl font-bold mb-4"></h3>
-      <button 
-      class="absolute top-2 right-2 text-gray-500 hover:text-black font-bold text-xl"
-      onclick="skip()"
-      aria-label="Close"
-    >
-      X
-    </button>
+      <button class="absolute top-2 right-2 text-gray-500 hover:text-black font-bold text-xl" onclick="skip()"
+        aria-label="Close">
+        X
+      </button>
       <div id="carouselExampleCaptions" class="relative" data-twe-carousel-init data-twe-ride="carousel">
         <!--Carousel indicators-->
-        <div id="carouselIndicators" class="absolute bottom-0 left-0 right-0 z-[2] mx-[15%] mb-4 flex list-none justify-center p-0">
+        <div id="carouselIndicators"
+          class="absolute bottom-0 left-0 right-0 z-[2] mx-[15%] mb-4 flex list-none justify-center p-0">
           <!-- Indicators will be injected dynamically -->
         </div>
-        
+
         <div id="carouselItems" class="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
           <!-- Items will be injected dynamically -->
         </div>
-    
+
         <!--Carousel controls-->
-        <button class="absolute bottom-0 left-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none" type="button" data-twe-target="#carouselExampleCaptions" data-twe-slide="prev">
+        <button
+          class="absolute bottom-0 left-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
+          type="button" data-twe-target="#carouselExampleCaptions" data-twe-slide="prev">
           <span class="inline-block h-8 w-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-6 w-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </span>
         </button>
-        <button class="absolute bottom-0 right-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none" type="button" data-twe-target="#carouselExampleCaptions" data-twe-slide="next">
+        <button
+          class="absolute bottom-0 right-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
+          type="button" data-twe-target="#carouselExampleCaptions" data-twe-slide="next">
           <span class="inline-block h-8 w-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-6 w-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </span>
         </button>
       </div>
-      
+
       <!-- <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl mt-4" onclick="skip()">Close</button> -->
     </div>
   </div>
-  
+
+  <button class="hidden md:block  fixed mb-4 mr-4 bottom-4 right-0 bg-white hover:bg-green-700  p-1 rounded-full z-0"
+    id="addTree" onclick="addTreeClick()">
+    <img class="rounded-full w-10 h-10" src="./assets/img/addtree.svg">
+  </button>
+
+  <button class="hidden md:block fixed mb-16 mr-4 bottom-6 right-0 bg-green-500 hover:bg-green-700 p-1 rounded-full z-0"
+    id="idenTree" onclick="identifyTreeClick()">
+    <img class="rounded-full w-10 h-10" src="./assets/img/indentify-tree.png">
+  </button>
 
 
-
-  <button class="fixed mb-4 mr-4 bottom-4 right-0 bg-white hover:bg-green-700  p-1 rounded-full z-0" id="addTree" onclick="addTreeClick()">
-    <img class="rounded-full w-10 h-10" src="./assets/img/addtree.svg" ></button>
-
-  <button class="fixed mb-16 mr-4 bottom-6 right-0 bg-green-500 hover:bg-green-700 p-1 rounded-full z-0" id="idenTree" onclick="identifyTreeClick()">
-    <img class="rounded-full w-10 h-10" src="./assets/img/indentify-tree.png" ></button>
 
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tw-elements@1.0.0/dist/js/index.min.js"></script>
@@ -414,4 +540,5 @@
   <script src="assets/js/map_actions.js"></script>
 
 </body>
+
 </html>

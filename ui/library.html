@@ -11,6 +11,7 @@
   <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 
   <script src="assets/js/nav.js"></script>
   <style>
@@ -21,7 +22,7 @@
 
 </head>
 
-<body class="bg-teal-100 pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">
+<body class="bg-teal-100 md:pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">
   <div id="loading-overlay" style="
         display: none;
         position: fixed;
@@ -40,9 +41,9 @@
   </div>
 
   <!-- main nav  -->
-  <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
+  <div class="hidden md:block bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
 
-    <nav class="max-w-6xl mx-auto flex justify-between px-10">
+    <nav class="hidden max-w-6xl mx-auto md:flex justify-between px-10">
       <!--  logo     -->
       <div class="flex items-center">
         <div class="font-bold flex items-center uppercase">
@@ -59,28 +60,67 @@
         </div>
       </div>
 
-     <!-- Sign Up/Login Button, icon for user and cart -->
-            <div class="flex items-center">
-                <div id="auth-buttons" class="md:flex hidden invis">
-                                   <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+      <!-- Sign Up/Login Button, icon for user and cart -->
+      <div class="flex items-center">
+        <div id="auth-buttons" class="md:flex hidden invis">
+          <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
                 hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
               focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
-                             <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+          <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
                     hover:bg-green-600 rounded-2xl
             text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
              focus:ring-green-600"><a href="login.html">Login</a></button>
-                </div>
-                <div id="user-buttons" class="md:flex hidden invis">
-                    <!-- Cart -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
+        </div>
+        <div id="user-buttons" class="md:flex hidden invis">
+          <!-- Cart -->
+          <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
                     <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
                   </button> -->
-                    <!-- user -->
-                       <button class="" id="user-dropdown-toggle">
+          <!-- user -->
+          <!-- <button class="" id="user-dropdown-toggle">
                         <img class="w-16 h-16" src="./assets/img/profile.svg">
-                    </button>
-                </div>
+                    </button> -->
+          <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
+                        focus:border-green-700 focus:text-green-700 text-gray-600
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(this)">
+            <ul class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
+                                             focus:text-green-700 focus:outline-none" role="button"
+                onclick="document.location='profile.html'">
+                <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20"
+                    height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <circle cx="12" cy="7" r="4" />
+                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                  </svg>
+                  <span class="ml-2">My Profile</span>
+                </a>
+              </li>
+              <li
+                class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+                role="button" onclick="logOut()">
+                <a href="javascript:void(0)"
+                  class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                  <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+                  <span class="ml-2">Log Out</span>
+                </a>
+              </li>
+            </ul>
+            <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
+                                        focus:border-white transition duration-150 ease-in-out">
+              <img class="rounded-full h-10 w-10 object-cover" src="./assets/img/profile.svg" alt="logo" />
             </div>
+            <div class="ml-2 ">
+              <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer"
+                src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
+            </div>
+          </button>
+
+        </div>
+      </div>
 
       <!--  Mobile Menu    -->
       <div class="md:hidden flex items-center">
@@ -94,26 +134,101 @@
 
     </nav>
 
-    <!-- Mobile menu -->
+    <!-- Mobile menu do not remove/comment -->
     <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Library</a>
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
       <div class="invis" id="mobile-login">
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
+        <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+        <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
       </div>
     </div>
   </div>
-  <!-- // end main nav  -->
+
+<!-- // end main nav  -->
+<div class=" fixed z-50 w-full h-16 max-w-full -translate-x-1/2 overflow-hidden bg-white border border-gray-200
+  dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30" style="justify-self: anchor-center;">
+    <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
+     
+      <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center
+         justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group"
+        onclick="document.location='index.html'">
+        <i class="ri-home-5-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Home</span>
+      </button>
+
+      <button data-tooltip-target="tooltip-wallet" type="button" class="inline-flex flex-col items-center justify-center 
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='library.html'">
+       <i class="ri-book-2-line ri-lg text-green-700"></i>
+        <span class="text-xs text-green-700 mt-1">Library</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='leaderboard.html'">
+           <i class="ri-trophy-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Leaderboards</span>
+      </button>
+
+         <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='map.html'">
+           <i class="ri-map-pin-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Map</span>
+      </button>
+
+
+      <!-- not logged in show profile -->
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="pleaseLogin()" id="notLoggedIn">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+      </button>
+
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(this)" id="profileMenu">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+           <ul class=" w-28 border-r bg-white fixed rounded right-2 pr-2 shadow bottom-0 hidden pl-2"
+          style="justify-content: center; bottom: 63px;">
+          <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700 
+          focus:text-green-700 focus:outline-none" role="button" onclick="document.location='profile.html'">
+            <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="12" cy="7" r="4" />
+                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              </svg>
+              <span class="text-xs">My Profile</span>
+            </a>
+          </li>
+          <li
+            class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+            role="button" onclick="logOut()">
+            <a href="javascript:void(0)"
+              class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+              <span class="text-xs">Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </button>
+
+    </div>
+  </div>
+
 
   <main>
 
     <div class="pt-4 max-w-screen-xl mx-auto" id="tree-library-container">
+
       <h1 class="text-3xl font-bold text-center mx-auto">Tree Library</h1>
 
-      <div class="w-full max-w-xl mx-auto  rounded-full mt-4 p-4">
+      <div class="w-full max-w-xl mx-auto  rounded-full p-4">
         <input placeholder="Search Tree" class="rounded-full w-full h-16 bg-transparent py-2 pl-8 pr-32 outline-none border-2 
         border-gray-100 shadow-md hover:outline-none focus:ring-teal-200 focus:border-teal-200 p-2 bg-white"
           type="text" name="query" id="searchInput">
@@ -121,14 +236,16 @@
       </div>
 
 
-      <div class="relative h-12 w-full">
+      <div class=" hidden md:block relative h-12 w-full">
       </div>
-      <div class="p-4 grid m-4 mx-auto lg:max-w-5xl md:max-w-4xl md:grid-cols-3 
-      lg:grid-cols-4 gap-12" id="tree-grid">
+      <div class="p-4 grid mx-auto lg:max-w-5xl md:max-w-4xl md:grid-cols-3 
+      lg:grid-cols-4 md:gap-12 gap-0" id="tree-grid">
       </div>
     </div>
 
-    <div id="pagination" class="flex justify-center mt-4 gap-4"></div>
+    <div id="pagination" class="flex justify-center mt-0 gap-2 md:gap-4 mb-10 md:mb-0"></div>
+<!-- Product Card -->
+  
 
 
 
