@@ -25,8 +25,6 @@ function serializeSubscription(subscription) {
 
 //Automatically triggered on page load
 window.addEventListener('load', async () => {
-  console.log('🔄 Checking for push setup...');
-
 
   if (!authToken) {
     console.warn('Cannot subscribe: authToken is missing.');
@@ -36,9 +34,11 @@ window.addEventListener('load', async () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     try {
       //Register the Service Worker
-      const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js?v=1', { scope: '/assets/js/' });
+      // const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js?v=1', { scope: '/assets/js/' });
+      // For github pages
+      const registration = await navigator.serviceWorker.register('/service-worker-ghpages.js');
 
-      console.log('✅ Service Worker registered:', registration);
+      console.log('Service Worker registered:', registration);
 
       //Ask for permission
       const permission = await Notification.requestPermission();
