@@ -3,7 +3,6 @@ self.addEventListener('push', function(event) {
     return;
   }
 
-  // 🔥 Immediately call event.waitUntil and pass an async IIFE
   event.waitUntil((async () => {
     const data = event.data?.json() || {};
 
@@ -40,7 +39,7 @@ self.addEventListener('push', function(event) {
 });
 
 
-// 🧭 Handle notification click to open tab
+//Handle notification click to open tab
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
 
