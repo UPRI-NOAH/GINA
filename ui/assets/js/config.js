@@ -356,8 +356,8 @@ async function unsubscribeUserFromPush() {
   try {
     
     // Get the service worker registration (no waiting for .ready)
-    // const registration = await navigator.serviceWorker.getRegistration();
-    const registration = await navigator.serviceWorker.getRegistration('/assets/js/');
+    const registration = await navigator.serviceWorker.getRegistration();
+    // const registration = await navigator.serviceWorker.getRegistration('/assets/js/');
 
     if (!registration) {
       return;
