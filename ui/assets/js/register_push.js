@@ -36,7 +36,7 @@ window.addEventListener('load', async () => {
       //Register the Service Worker
       // const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js?v=1', { scope: '/assets/js/' });
       // For github pages
-      const registration = await navigator.serviceWorker.register('/service-worker-ghpages.js');
+      const registration = await navigator.serviceWorker.register('service-worker-ghpages.js');
 
       console.log('Service Worker registered:', registration);
 
