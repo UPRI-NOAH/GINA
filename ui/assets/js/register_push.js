@@ -36,9 +36,12 @@ window.addEventListener('load', async () => {
       //Register the Service Worker
       // const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js?v=1', { scope: '/assets/js/' });
       // For github pages
-      const registration = await navigator.serviceWorker.register('service-worker-ghpages.js');
+      // const basePath = window.location.pathname.replace(/[^/]+$/, ''); // gets "/GINA/ui/"
+      // const registration = await navigator.serviceWorker.register('service-worker-ghpages.js');
+      const basePath = window.location.pathname.replace(/[^/]+$/, '');  // e.g., /GINA/ui/
+      const swPath = basePath + 'service-worker-ghpages.js';
 
-      console.log('Service Worker registered:', registration);
+      const registration = await navigator.serviceWorker.register(swPath);
 
       //Ask for permission
       const permission = await Notification.requestPermission();
@@ -56,7 +59,7 @@ window.addEventListener('load', async () => {
       });
 
       const serializedSub = serializeSubscription(subscription);
-      console.log('📬 Subscribing with:', serializedSub);
+      console.log('Subscribing with:', serializedSub);
 
       //Send to backend
       const response = await fetch(`${http}://${url}/subscribe/`, {
