@@ -1,0 +1,139 @@
+ html,
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+
+    /* map id */
+    #map {
+      position: absolute;
+      top: 91px;
+      /* adjust to the height of the navigation bar */
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 91px);
+      /* adjust to the height of the navigation bar */
+      z-index: 0;
+      /* make sure the map is behind the overlay */
+    }
+
+    .overlay {
+      position: absolute;
+      top: 75px;
+      /* adjust to the height of the navigation bar */
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 75px);
+      /* adjust to the height of the navigation bar */
+      background-color: rgba(179, 176, 176, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      /* make sure the overlay is on top of the map */
+    }
+
+    .invis {
+      display: none;
+    }
+
+    .map-blurred {
+      filter: blur(5px);
+      pointer-events: none;
+    }
+
+    /* responsive tweaks */
+  @media (max-width: 775px) {
+      #map {
+        top: 111px;
+        height: calc(100vh - 111px);
+      }
+
+      .overlay {
+        top: 0px;
+        height: calc(100vh - 0px);
+      }
+
+      nav {
+        padding: 10px;
+      }
+
+      nav ul {
+        flex-direction: column;
+        display: none;
+      }
+
+      nav li {
+        margin-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #map {
+        top: 0px;
+        height: calc(93vh - 0px);
+      }
+
+      .overlay {
+        top: 0px;
+        height: calc(100vh - 0px);
+      }
+
+      nav {
+        padding: 10px;
+      }
+
+      nav ul {
+        flex-direction: column;
+        display: none;
+      }
+
+      nav li {
+        margin-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #map {
+        top: 0px;
+        height: calc(93vh - 0px);
+      }
+
+      .overlay {
+        top: 0px;
+        height: calc(100vh - 0px);
+      }
+
+      nav {
+        padding: 5px;
+      }
+
+      nav ul {
+        flex-direction: column;
+        display: none;
+      }
+
+      nav li {
+        margin-bottom: 5px;
+      }
+    }
+
+    /* Extra small devices (phones, 600px and down) */
+    @media only screen and (max-width: 600px) {
+      .example {
+        background: red;
+      }
+    }
+
+
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media only screen and (min-width: 600px) {
+      .example {
+        background: green;
+      }
+    }
+    
+        .bottom-sheet {
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        }
+        

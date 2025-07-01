@@ -24,16 +24,19 @@ if (authToken){
   isLoggedIn = false;
 }
 // User buttons checking if user is logged in (logged in = icon, else = login/signup buttons)
-if (isLoggedIn){
-  document.getElementById('user-buttons').classList.remove('invis');
-  document.getElementById('mobile-login').classList.add('invis');
-  document.getElementById('user-buttons').classList.add('mobile-visible');
+if (isLoggedIn) {
+  document.getElementById('user-buttons')?.classList.remove('invis');
+  document.getElementById('mobile-login')?.classList.add('invis');
+  document.getElementById('user-buttons')?.classList.add('mobile-visible');
+  document.getElementById('profileMenu')?.classList.remove('invis');
+  document.getElementById('notLoggedIn')?.classList.add('invis');
 } else {
   document.getElementById('auth-buttons')?.classList.remove('invis');
   document.getElementById('mobile-login')?.classList.remove('invis');
   document.getElementById('user-buttons')?.classList.remove('mobile-visible');
+  document.getElementById('notLoggedIn')?.classList.remove('invis');
+  document.getElementById('profileMenu')?.classList.add('invis');
 }
-
 // View Profile Function
 function viewProfile() {
     document.getElementById("user-dropdown").classList.add("invis");
@@ -77,4 +80,56 @@ function showLoading() {
 
 function hideLoading() {
   loadingOverlay.style.display = 'none';
+}
+
+
+// USER DROPDOWN
+function dropdownHandler(element) {
+    let single = element.getElementsByTagName("ul")[0];
+    single.classList.toggle("hidden");
+}
+function MenuHandler(el, val) {
+    let MainList = el.parentElement.parentElement.getElementsByTagName("ul")[0];
+    let closeIcon = el.parentElement.parentElement.getElementsByClassName("close-m-menu")[0];
+    let showIcon = el.parentElement.parentElement.getElementsByClassName("show-m-menu")[0];
+    if (val) {
+        MainList.classList.remove("hidden");
+        el.classList.add("hidden");
+        closeIcon.classList.remove("hidden");
+    } else {
+        showIcon.classList.remove("hidden");
+        MainList.classList.add("hidden");
+        el.classList.add("hidden");
+    }
+}
+// ------------------------------------------------------
+
+let cross = document.getElementById("cross");
+const sidebarHandler = (check) => {
+    if (check) {
+
+        cross.classList.remove("hidden");
+    } else {
+
+        cross.classList.add("hidden");
+    }
+};
+let list = document.getElementById("list");
+let chevrondown = document.getElementById("chevrondown");
+let chevronup = document.getElementById("chevronup");
+const listHandler = (check) => {
+    if (check) {
+        list.classList.remove("hidden");
+        chevrondown.classList.remove("hidden");
+        chevronup.classList.add("hidden");
+    } else {
+        list.classList.add("hidden");
+        chevrondown.classList.add("hidden");
+        chevronup.classList.remove("hidden");
+    }
+};
+
+function pleaseLogin() {
+  alert("Please log in first");
+  console.log("Please log in first");
 }

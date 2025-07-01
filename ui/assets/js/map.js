@@ -2,6 +2,10 @@ var markers = L.markerClusterGroup();
 
 const addtree_button = document.getElementById('addTree');
 const identify_button = document.getElementById('idenTree');
+const mobileAddtree_button = document.getElementById('mobile-addTree');
+const mobileIden_button = document.getElementById('mobile-idenTree');
+const displayAddTreeButton = document.getElementById('notLoggedInAdd');
+const displayIdentifyButton = document.getElementById('notLoggedInIden');
 
 let rememberMe = sessionStorage.getItem('rememberMe');
 
@@ -11,23 +15,33 @@ if (isLoggedIn) {
   document.getElementById('user-buttons').classList.add('mobile-visible');
   addtree_button.classList.remove('invis');
   identify_button.classList.remove('invis');
+  mobileAddtree_button.classList.remove('invis');
+  mobileIden_button.classList.remove('invis');
   document.getElementById('mobile-login').classList.add('invis');
+  document.getElementById('notLoggedInAdd').classList.add('invis');
+  document.getElementById('notLoggedInIden').classList.add('invis');
   if (rememberMe === 'true') {
     document.getElementById("overlay").classList.add("invis");
     document.getElementById("map").classList.remove("map-blurred");
+
   } else {
     document.getElementById("overlay").classList.remove("invis");
     document.getElementById("map").classList.add("map-blurred");
+
   }
 } else {
   addtree_button.classList.add('invis');
   identify_button.classList.add('invis');
+  mobileAddtree_button.classList.add('invis');
+  mobileIden_button.classList.add('invis');
+
+
   //document.getElementById('auth-buttons').classList.remove('invis');
   document.getElementById("overlay").classList.add("invis");
   document.getElementById("uploadoverlay").classList.add("invis");
   document.getElementById("map").classList.remove("map-blurred");
   document.getElementById('mobile-login').classList.remove('invis');
- // document.getElementById('user-buttons').classList.remove('mobile-visible');
+  // document.getElementById('user-buttons').classList.remove('mobile-visible');
 }
 
 
@@ -63,7 +77,7 @@ function showPosition(position) {
     iconSize: [40, 40],
     iconAnchor: [12, 12]
   });
-  
+
   const lat = position.coords.latitude;
   const lon = position.coords.longitude;
   map.setView([lat, lon], 13);
@@ -72,28 +86,28 @@ function showPosition(position) {
 }
 
 
-const legend = L.control({ position: 'bottomleft' });
+// const legend = L.control({ position: 'bottomleft' });
 
-legend.onAdd = function (map) {
-  const div = L.DomUtil.create('div', 'info legend');
-  
-  div.innerHTML += `
-<div style="background: white; padding: 10px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.3); font-size: 14px;">
-      <div style="display: flex; align-items: center; margin-bottom: 8px;">
-        <img src="./assets/img/gina_marker2.png" style="height: 24px;" />
-        <span style="margin-left: 8px;">My planted/identified tree</span>
-      </div>
-      <div style="display: flex; align-items: center;">
-        <img src="./assets/img/gina_marker.png" style="height: 24px;" />
-        <span style="margin-left: 8px;">Community-planted tree</span>
-      </div>
-    </div>
-  `;
-  
-  return div;
-};
+// legend.onAdd = function (map) {
+//   const div = L.DomUtil.create('div', 'info legend');
 
-legend.addTo(map);
+//   div.innerHTML += `
+// <div style="background: white; padding: 10px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.3); font-size: 14px;">
+//       <div style="display: flex; align-items: center; margin-bottom: 8px;">
+//         <img src="./assets/img/gina_marker2.png" style="height: 24px;" />
+//         <span style="margin-left: 8px;">My planted/identified tree</span>
+//       </div>
+//       <div style="display: flex; align-items: center;">
+//         <img src="./assets/img/gina_marker.png" style="height: 24px;" />
+//         <span style="margin-left: 8px;">Community-planted tree</span>
+//       </div>
+//     </div>
+//   `;
+
+//   return div;
+// };
+
+// legend.addTo(map);
 
 
 function showError(error) {
@@ -106,18 +120,35 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+function setAttributionPosition() {
+  if (window.innerWidth <= 768) {
+    // Mobile screen: place at top right
+    map.attributionControl.setPosition('topright');
+  } else {
+    // Large screen: place at bottom right
+    map.attributionControl.setPosition('bottomright');
+  }
+}
+
+// Run on initial load
+setAttributionPosition();
+
+// Optional: Update on resize
+window.addEventListener('resize', setAttributionPosition);
+
+
 var treeIcon = L.icon({
-  iconUrl: "./assets/img/gina_marker.png", // file path of image
-  iconSize: [29, 39], // set size of icon
+  iconUrl: "./assets/img/marker.png", // file path of image
+  iconSize: [70, 90], // set size of icon
 });
 
 var owntreeIcon = L.icon({
-  iconUrl: "./assets/img/gina_marker2.png", // file path of image
-  iconSize: [29, 39], // set size of icon
+  iconUrl: "./assets/img/marker2.png", // file path of image
+  iconSize: [70, 90], // set size of icon
 });
 
 
-function showComments(refId){
+function showComments(refId) {
   document.getElementById("identifyoverlay").classList.remove("invis");
   document.getElementById("map").classList.add("map-blurred");
   document.getElementById('identify-ref-id').value = refId
@@ -134,7 +165,7 @@ function showComments(refId){
       commentContainer.innerHTML = '';  // Clear previous comments
       if (data.length > 0) {
         data.slice(0, 5).forEach(renderComment);  // Show only first 5 initially
-  
+
         // Show "View More" button if more than 5
         if (data.length > 5) {
           const viewMoreBtn = document.createElement('button');
@@ -147,7 +178,7 @@ function showComments(refId){
           };
           commentContainer.appendChild(viewMoreBtn);
         }
-  
+
         // Apply fixed height styling
         const modal = document.getElementById('identify-modal');
         modal.classList.add('h-3/4');
@@ -173,7 +204,7 @@ function renderComment(comment) {
   const formattedDate = date.toLocaleString();
   const currentUser = localStorage.getItem('username') || sessionStorage.getItem('username');
   const canDelete = currentUser === comment.identified_by;
-  const edited = comment.edited_on !== null; 
+  const edited = comment.edited_on !== null;
 
   commentCard.innerHTML = `
     <div class="flex gap-3 items-center justify-between">
@@ -217,15 +248,15 @@ $.when(treeList).done(function () {
   editDynamicSelect.innerHTML = '<option value="">Select a specie</option>';
   treeJSON.forEach(item => {
     const selects = [dynamicSelect, editDynamicSelect];
-      selects.forEach(select => {
-        const option = document.createElement('option');
-        option.value = item.tree_name;
-        option.textContent = item.tree_name;
-        select.appendChild(option);
+    selects.forEach(select => {
+      const option = document.createElement('option');
+      option.value = item.tree_name;
+      option.textContent = item.tree_name;
+      select.appendChild(option);
     });
-    
+
   });
-  
+
 
 });
 
@@ -243,14 +274,14 @@ var ph = $.ajax({
 
 $.when(ph).done(function () {
   bound = ph.responseJSON;
-  bound.forEach(function(feature) {
+  bound.forEach(function (feature) {
     var latlng = L.latLng(feature.latitude, feature.longitude);
-    
+
     var icon = (username === feature.owning_user) ? owntreeIcon : treeIcon;
     var marker = L.marker(latlng, { icon: icon })
     marker.feature = feature; // add feature property to marker
 
-    marker.on('click', function(e) {
+    marker.on('click', function (e) {
       var refId = feature.reference_id;
       var name = feature.tree_name;
       var user = feature.owning_user;
@@ -263,7 +294,7 @@ $.when(ph).done(function () {
       var version = feature.version;
       var lat = feature.latitude;
       var lng = feature.longitude;
-      
+
       let editIconUrl = "https://cdn-icons-png.flaticon.com/128/481/481874.png"
 
 
@@ -299,7 +330,7 @@ $.when(ph).done(function () {
       // Create popup DOM elements
       const popupContent = document.createElement("div");
       popupContent.style.position = "relative";
-    
+
       const button = document.createElement("button");
 
       const isOneMonth = now >= oneMonthLater
@@ -323,54 +354,54 @@ $.when(ph).done(function () {
         button.style.display = 'none';
       }
       // latestPlantedOnDate = new Date("2028-05-08T00:00:00.000Z");  // Dummy future date
-      button.addEventListener("click", function(event) {
+      button.addEventListener("click", function (event) {
         event.stopPropagation();
         // if (!isOneMonth) {
         //   alert("You can only edit this tree within 1 month of planting.");
         //   return;
         // }
-        if (action != "Identified"){
-        if (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate) {
-          editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
-          return;
-        }
-        
-        if (now >= oneMonthLater && now < threeYearsAfterPlanting) {
-          // pag may 6 below yung now pasok dito
-          editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
-          
-        }
-
-        // Case 2: After 3 years — only allow updates after 6 months
-        else if (now >= threeYearsAfterPlanting) {
-          
-          if (now >= sixMonthsAfterLastUpdate) {
-            
-            // Editing allowed after 6 months post 3 years"
+        if (action != "Identified") {
+          if (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate) {
             editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
             return;
-          } else {
-            
-            alert("After 3 years, you can only edit this tree every 6 months.");
+          }
+
+          if (now >= oneMonthLater && now < threeYearsAfterPlanting) {
+            // pag may 6 below yung now pasok dito
+            editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
+
+          }
+
+          // Case 2: After 3 years — only allow updates after 6 months
+          else if (now >= threeYearsAfterPlanting) {
+
+            if (now >= sixMonthsAfterLastUpdate) {
+
+              // Editing allowed after 6 months post 3 years"
+              editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
+              return;
+            } else {
+
+              alert("After 3 years, you can only edit this tree every 6 months.");
+              return;
+            }
+          }
+
+          // Case 3: Less than 1 month after planting — block edits
+          else if (now < oneMonthLater) {
+            alert("Tree edits are locked. You can only edit it within 1 hour of planting or update after 1 month.");
             return;
           }
-        }
 
-        // Case 3: Less than 1 month after planting — block edits
-        else if (now < oneMonthLater) {
-          alert("Tree edits are locked. You can only edit it within 1 hour of planting or update after 1 month.");
-          return;
-        }
+          else {
+            alert("Editing is not yet allowed at this time.");
+            return;
+          }
+        } else {
 
-        else {
-          alert("Editing is not yet allowed at this time.");
-          return;
-        }
-      } else{
-          
-        editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
+          editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action);
 
-      }
+        }
 
 
       });
@@ -378,31 +409,72 @@ $.when(ph).done(function () {
       const photoId = `tree-photo-${refId}`;
 
       infoDiv.innerHTML = `
-        <img id="${photoId}" src="${photoUrl}" class="w-full h-56 object-cover" />
-        <b>Name:</b> ${name}<br>
-        <b>Description:</b> ${treeDescription}<br>
-        <b>Tree Type:</b> ${treeType}<br>
-        <b>Date Planted:</b> ${plantDate}<br>
-        <b>${action} by:</b> ${user}<br>
-        <b>Version:</b> ${version}<br>
-        <hr style="height: 1px; background-color: #0095ff; border: none;">
-        <button onclick="showComments('${refId}')" class="text-blue-600 text-sm hover:underline mt-2">View Discussion 💬</button>
+<div class="rounded overflow-hidden flex flex-col"  style="font-family: 'Poppins', sans-serif;">
+            <div class="relative">
+              <img class="w-full h-48 object-scale-down"
+                src="${photoUrl}" 
+                alt="Tree Photo">
+            <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25"
+              id="${photoId}" role="button">
+              </div>
+                <div
+                  class="text-xs absolute top-0 right-0 bg-green-600 px-4 py-2 text-white  rounded-lg mt-3 mr-3">
+                 Endemic Tree
+                </div>
+            </div>
+          
+          <div class="w-full dark:bg-gray-700 rounded p-4 relative">
+           <a
+              class="text-green-500 text-lg hover:text-green-600 transition duration-500 ease-in-out inline-block mb-2">
+             <b>Name:</b>  ${name}
+              </a>
+              <ul>
+                <li class="text-xs text-gray-600 dark:text-gray-400 font-normal tracking-normal capitalize"> <b>Description:</b> ${treeDescription}</li>
+                <li class="text-xs text-gray-600 dark:text-gray-400 font-normal tracking-normal my-2"> <b>${action} by:</b> ${user}</li>
+                <li class="text-xs text-gray-600 dark:text-gray-400 font-normal tracking-normal"><b>Version:</b> ${version}</li>
+                </ul>
+              </div>
+
+          <div class="px-2 py-3 flex flex-row items-center justify-between bg-gray-100">
+            <span href="#" class="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
+              <svg height="13px" width="13px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512"
+                style="enable-background:new 0 0 512 512;" xml:space="preserve">
+                <g>
+                  <g>
+                    <path d="M256,0C114.837,0,0,114.837,0,256s114.837,256,256,256s256-114.837,256-256S397.163,0,256,0z M277.333,256
+			c0,11.797-9.536,21.333-21.333,21.333h-85.333c-11.797,0-21.333-9.536-21.333-21.333s9.536-21.333,21.333-21.333h64v-128
+			c0-11.797,9.536-21.333,21.333-21.333s21.333,9.536,21.333,21.333V256z" />
+                  </g>
+                </g>
+              </svg>
+              <span class="ml-1">${plantDate}</span></span>
+
+            <span href="#" class="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
+              <svg class="h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                </path>
+              </svg>
+            <button class="ml-1" role="button" onclick="showComments('${refId}')">View Discussion</button>
+          </div>
+        </div>
 
       `;
-    
+
       // Add button and info to popup
       popupContent.appendChild(button);
       popupContent.appendChild(infoDiv);
-    
+
 
       setTimeout(() => {
         const img = document.getElementById(photoId);
         if (img) {
-          img.addEventListener("click", function(event) {
-            
+          img.addEventListener("click", function (event) {
+
             event.stopPropagation();
             clickTreeImg(name, refId)
-            
+
           });
         }
       }, 0);
@@ -418,21 +490,21 @@ $.when(ph).done(function () {
     markers.addLayer(marker);
 
   });
-    map.addLayer(markers);
+  map.addLayer(markers);
 
 });
 
-L.Control.geocoder().addTo(map);
+// L.Control.geocoder().addTo(map);
 
 let mark;
 
 
 function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action) {
-  if (user == username){
+  if (user == username) {
     const modalTitle = document.getElementById('modalEditTitle');
     const modalDesc = document.getElementById('modalEditDesc');
     modalTitle.innerHTML = "Edit the tree you planted"
-    if(action == "Identified"){
+    if (action == "Identified") {
       modalTitle.innerHTML = "Edit the tree you identified"
     }
     modalDesc.innerHTML = "Please fill in the details of the tree you want to edit"
@@ -447,7 +519,7 @@ function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, 
     document.getElementById('edit-date').value = plantDate
 
   }
-  
+
 }
 
 
@@ -539,12 +611,12 @@ function clickTreeImg(name, refId) {
       indicators[0].classList.add('opacity-100');
       indicators[0].classList.remove('opacity-50');
     } else {
-      
+
     }
 
     // Move to a specific slide
     function moveToSlide(index) {
-      
+
       if (
         items[currentIndex] &&
         items[index] &&
@@ -576,11 +648,11 @@ function clickTreeImg(name, refId) {
     // Previous/Next button click
     const prevButton = document.querySelector('[data-twe-slide="prev"]');
     const nextButton = document.querySelector('[data-twe-slide="next"]');
-    
+
     nextButton?.querySelector('svg')?.classList.add('text-green-500');
     prevButton?.querySelector('svg')?.classList.add('text-green-500');
 
-    
+
     if (prevButton && nextButton) {
       nextButton.classList.add(
         'bg-yellow-300',
@@ -619,7 +691,7 @@ function clickTreeImg(name, refId) {
         moveToSlide(newIndex);
       });
     } else {
-      
+
     }
   });
 }
@@ -650,9 +722,9 @@ function addTreeClick() {
   const modalDesc = document.getElementById('modalDesc');
   modalTitle.innerHTML = "Plant Your Tree"
   modalDesc.innerHTML = "Please fill in the details of the tree you want to plant"
-  
+
   picAction = "Planted"
-  
+
   if (mark) {
     const lat = mark.getLatLng().lat;
     const lng = mark.getLatLng().lng;
@@ -665,14 +737,18 @@ function addTreeClick() {
   }
 }
 
+function pleaseLoginAddtree() {
+  alert("Please log in to add a tree.");
+}
+
 function identifyTreeClick() {
   const modalTitle = document.getElementById('modalTitle');
   const modalDesc = document.getElementById('modalDesc');
   modalTitle.innerHTML = "Identify Tree"
   modalDesc.innerHTML = "Please fill in the details of the tree you want to identify"
-  
+
   picAction = "Identified"
-  
+
   if (mark) {
     const lat = mark.getLatLng().lat;
     const lng = mark.getLatLng().lng;
