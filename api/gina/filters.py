@@ -1,5 +1,5 @@
 import django_filters
-from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive
+from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
 
 class TreeInfoFilter(django_filters.FilterSet):
     class Meta:
@@ -60,4 +60,18 @@ class UserTreeArchiveTreeFilter(django_filters.FilterSet):
             "tree_type": ["exact"],
             "tree_description": ["exact"],
             "planted_on": ["exact"],
+        }
+
+class NotificationFilter(django_filters.FilterSet):
+    class Meta:
+        model = Notification
+        fields = {
+            "id": ["exact"],
+            "sender": ["exact"],
+            "notif_type": ["exact"],
+            "message": ["exact"],
+            "related_tree": ["exact"],
+            "related_comment": ["exact"],
+            "is_seen": ["exact"],
+            "created_at": ["exact"],
         }

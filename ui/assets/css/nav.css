@@ -1,3 +1,7 @@
+.bg-nav{
+  background-color: #c6f6d5;
+}
+
 nav > ul > li > a,
 #md-nav > ul > li > a{
     border-radius: 0.75rem;
@@ -15,38 +19,4 @@ nav > ul > li > a:hover,
 
 #mobile-menu > ul > li{
     margin-bottom: 1rem;
-}
-
-#login-signup-container > button,
-#auth-buttons > button{
-    background-color: #48bb78;
-    font-weight:700;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border-radius: 0.75rem;
-}
-
-
-#login-signup-container > button:hover,
-#auth-buttons > button:hover{
-    background-color: #2f855a;
-
-
-/* Add this section */
-@media (max-width: 768px) {
-  #user-buttons {
-    display: none;
-  }
-  #user-buttons.mobile-visible {
-    display: flex;
-  }
-  #auth-buttons {
-    display: none;
-  }
-  #auth-buttons.mobile-visible {
-    display: flex;
-  }
-}
 }

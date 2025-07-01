@@ -21,6 +21,13 @@ torch = "*"
 torchvision = "*"
 scikit-learn = "*"
 pillow = "*"
+pymupdf = "*"
+celery = "*"
+daphne = "*"
+redis = "*"
+pywebpush = "*"
+channels = "*"
+channels-redis = "*"
 
 [dev-packages]
 

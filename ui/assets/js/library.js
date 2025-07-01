@@ -26,7 +26,7 @@ var treeLib = $.ajax({
       const pageData = filteredData.slice(startIndex, endIndex);
       pageData.forEach((data) => {
         const row = document.createElement("div");
-        row.className = "tree-container flex md:flex-col-reverse md:w-56 overflow-x-auto";
+        row.className = "tree-container flex md:flex-col-reverse md:w-64 p-2 shadow-lg overflow-x-auto transform hover:scale-105 transition duration-500";
         row.innerHTML = `
           <div class="flex flex-col justify-center detail-container w-full h-32">
             <div class="text-xl font-bold" style="color:black"><p>${data.tree_name}</p></div>
@@ -36,6 +36,7 @@ var treeLib = $.ajax({
           <div class="flex-shrink">
             <img src="${data.tree_image}" class="w-full h-48 object-cover">
           </div>
+          
         `;
         treeGrid.appendChild(row);
       });
@@ -48,7 +49,7 @@ var treeLib = $.ajax({
       for (let i = 1; i <= totalPages; i++) {
         const button = document.createElement("button");
         button.innerText = i;
-        button.className = "pagination-btn px-3 py-1 mx-1 border rounded bg-gray-200 hover:bg-gray-300";
+        button.className = "pagination-btn rounded-lg border border-green-500 bg-green-500 px-4 py-2 text-white hover:bg-green-300 hover:border-green-300";
         button.addEventListener("click", () => {
           currentPage = i;
           renderPage(currentPage);

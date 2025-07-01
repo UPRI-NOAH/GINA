@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive
-from api.gina.tree_image_utils import check_image_similarity_against_embeddings, get_image_embedding
+from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
+from api.gina.tree_image_utils import check_image_similarity_against_embeddings, get_image_embedding, schedule_tree_reminder
 from PIL import Image
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
@@ -14,6 +14,10 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import F
 from rest_framework.response import Response
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from api.gina.models import PushSubscription
+from api.gina.tasks import send_push_notification
 
 import io
 
@@ -91,6 +95,49 @@ class IdentifyTreeInfoSerializer(serializers.ModelSerializer):
     def get_identified_on(self, obj):
         manila = pytz_timezone('Asia/Manila')
         return obj.identified_on.astimezone(manila).strftime('%b %d, %Y %I:%M %p')
+    
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+
+        # Notify tree owner
+        tree = instance.tree_identifier
+        commenter = self.context['request'].user
+        owner = tree.owning_user.user
+        tree_name = tree.tree_name
+        if commenter.id != owner.id:
+            message = f"{commenter.username} commented on your tree: {tree_name}"
+
+            Notification.objects.create(
+                recipient=owner,
+                sender=commenter,
+                notif_type="comment",
+                message=message,
+                related_tree=tree,
+                related_comment=instance,
+            )
+            
+            # send_push_notification.delay(owner.id, "New Comment", message)
+            send_push_notification.delay(owner.id, "New Comment", message, "comment", tree.reference_id,)
+
+            channel_layer = get_channel_layer()
+            try:
+                async_to_sync(channel_layer.group_send)(
+                    "tree_notifications",
+                    {
+                        "type": "send_tree_notification",
+                        "message": message,
+                        "user": commenter.username,
+                        "timestamp": timezone.now().isoformat(),
+                        "tree_id": str(tree.reference_id),
+                        "notif_type": "comment"
+                    }
+                )
+                print("✅ group_send completed", commenter.username)
+            except Exception as e:
+                print("❌ group_send failed:", e)
+
+        return instance
+
     
     def update(self, instance, validated_data):
         instance.tree_comment = validated_data.get('tree_comment', instance.tree_comment)
@@ -185,7 +232,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
             validated_data['image'] = self.compress_image(new_image)
 
             # Validate similarity and get the embedding
-            embedding_list = self._validate_and_embed_image(new_image)
+            embedding_list = self.validate_and_embed_image(new_image)
             
         # Create the instance
         instance = super().create(validated_data)
@@ -201,6 +248,8 @@ class UserTreeSerializer(serializers.ModelSerializer):
             image=instance.image,
             image_embedding=embedding_list,
         )
+
+        schedule_tree_reminder(instance)
 
         # Increment user points
         if instance.owning_user:
@@ -237,7 +286,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
         new_image = validated_data.get('image')
         if new_image:
             validated_data['image'] = self.compress_image(new_image)  # Compress early
-            validated_data['image_embedding'] = self._validate_and_embed_image(new_image)
+            validated_data['image_embedding'] = self.validate_and_embed_image(new_image)
 
         # Use current time as planted_on for archive records
         new_planted_on = now
@@ -310,10 +359,12 @@ class UserTreeSerializer(serializers.ModelSerializer):
                     image_embedding=validated_data.get('image_embedding'),
                 )
 
+        schedule_tree_reminder(updated_instance)
+
         return updated_instance
     
     
-    def _validate_and_embed_image(self, image):
+    def validate_and_embed_image(self, image):
         user_tree_images = UserTreeArchive.objects.exclude(image='').exclude(image_embedding__isnull=True)
         reference_tree_images = TreeInfo.objects.exclude(tree_image='').exclude(image_embedding__isnull=True)
         combined_entries = list(user_tree_images) + list(reference_tree_images)
@@ -336,4 +387,24 @@ class UserTreeSerializer(serializers.ModelSerializer):
             )
 
         return new_embedding.tolist()
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    sender_username = serializers.SerializerMethodField()
+    created_at = serializers.DateTimeField(format="%b %d, %Y %I:%M %p")
+    lat = serializers.SerializerMethodField()
+    lng = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Notification
+        fields = '__all__'
+
+    def get_sender_username(self, obj):
+        return obj.sender.username if obj.sender else None
+    
+    def get_lat(self, obj):
+            return obj.related_tree.latitude if obj.related_tree else None
+
+    def get_lng(self, obj):
+        return obj.related_tree.longitude if obj.related_tree else None
 

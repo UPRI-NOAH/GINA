@@ -14,6 +14,7 @@ from pathlib import Path
 from api import get_str
 import os
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 
 load_dotenv()
 
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    'channels',
     'storages',
 ]
 
@@ -125,6 +127,33 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'api.wsgi.application'
+
+ASGI_APPLICATION = 'api.asgi.application'
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer",
+#     },
+# }
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+# CELERY_BROKER_URL = 'memory://'
+CELERY_BROKER_URL = get_str("CELERY_BROKER_URL")
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Manila'
+
+VAPID_PUBLIC_KEY = get_str("VAPID_PUBLIC_KEY")
+VAPID_PRIVATE_KEY = get_str("VAPID_PRIVATE_KEY")
+VAPID_ADMIN_EMAIL = get_str("VAPID_ADMIN_EMAIL")
 
 
 # Database
@@ -270,10 +299,12 @@ AWS_QUERYSTRING_AUTH = False
 
 CORS_ALLOWED_ORIGINS = ['https://upri-noah.github.io',]
 
-CORS_ALLOW_HEADERS = [
+# CORS_ALLOW_HEADERS = [
+CORS_ALLOW_HEADERS = list(default_headers) + [
     "content-type",
     "authorization",
     "x-requested-with",
     "x-csrf-token",
+    "x-csrftoken",
     "ngrok-skip-browser-warning",
 ]

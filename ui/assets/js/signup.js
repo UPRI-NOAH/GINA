@@ -1,4 +1,4 @@
-
+document.addEventListener('DOMContentLoaded', () => {
 
 const formReg = document.getElementById('register-form');
 
@@ -91,4 +91,6 @@ formReg.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && loadingOverlay.style.display === 'flex') {
     e.preventDefault(); // prevent the form from being submitted
   }
+});
+
 });

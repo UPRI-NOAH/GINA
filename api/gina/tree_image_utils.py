@@ -5,6 +5,15 @@ import torchvision.transforms as transforms
 from torchvision.models import mobilenet_v2, MobileNet_V2_Weights
 from sklearn.metrics.pairwise import cosine_similarity
 from rest_framework import serializers  # for raising DRF validation error
+from api.gina.models import UserTreeArchive
+from api.gina.tasks import send_tree_reminder
+from datetime import timedelta
+from django.utils import timezone
+import redis
+from api.gina.celery_app import app as celery_app
+
+
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
 
 # Load MobileNetV2 with proper weights and remove classifier
 weights = MobileNet_V2_Weights.DEFAULT
@@ -57,3 +66,45 @@ def check_image_similarity_against_embeddings(new_embedding, existing_trees, thr
             continue
 
     return best_score >= threshold, best_score, best_id
+
+
+def schedule_tree_reminder(tree):
+    now = timezone.now()
+    tree_age_days = (now - tree.planted_on).days
+    interval_days = 180 if tree_age_days >= 1095 else 30
+    
+    # Get the last update time
+    latest_archive = (
+        UserTreeArchive.objects
+        .filter(reference_id=tree.reference_id)
+        .order_by('-planted_on')
+        .first()
+    )
+    last_update = latest_archive.planted_on if latest_archive else tree.planted_on
+    # reminder_time = last_update + timedelta(days=interval_days)
+    reminder_time = now + timedelta(seconds=10)
+
+    now = timezone.now()
+
+    ttl_seconds = int((reminder_time - now).total_seconds())
+    if ttl_seconds <= 0:
+        # Reminder time {reminder_time} is in the past or too soon.
+        return
+
+    redis_key = f"tree_reminder_task:{str(tree.reference_id)}" # Register redis key to store in task
+    old_task_id = redis_client.get(redis_key)
+
+    if old_task_id:
+        # Revoke tasks after updating tree
+        celery_app.control.revoke(old_task_id, terminate=True)
+        print(f"Revoked previous task ID {old_task_id}")
+
+    task = send_tree_reminder.apply_async(
+        args=[tree.owning_user.user.id, str(tree.reference_id), tree.tree_name],
+        eta=reminder_time
+    )
+
+    redis_client.set(redis_key, task.id, ex=ttl_seconds)
+    #  "Set Redis key {redis_key} = {task.id} for {ttl_seconds} seconds"
+
+  

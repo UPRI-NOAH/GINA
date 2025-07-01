@@ -6,8 +6,9 @@
     <title>GINA - Grow and Idetinfy Native trees in your Area</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <link href="assets/css/nav.css" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 
     <!-- ajax library for fetching json/geojson files-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -19,7 +20,7 @@
   </style>
 
 </head>
-<body class="bg-teal-100 pt-20 pb-12">
+<body class="bg-teal-100 md:pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">
   <div id="loading-overlay" style="
         display: none;
         position: fixed;
@@ -34,89 +35,311 @@
         color: white;
         font-size: 1.5rem;
       ">
-        <img src="./assets/img/gina-loading.gif" alt="Computer man" style="width:100px;height:100px;">
+        <img src="./assets/img/gina-loading(1).gif" alt="GINA Loading" class="object-cover w-96 h-96">
       </div>
-  <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
-    <div class="flex justify-between items-center mx-4 h-full">
-      <div class="md:hidden">
-        <button onclick="toggleNav()">
-            <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
-        </button>
+ 
+
+ <div class="bg-nav hidden md:block py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
+<div id="in-app-banner"
+          class="hidden fixed bottom-4 left-4 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
       </div>
+        <nav class="hidden md:flex max-w-6xl mx-auto justify-between px-10">
+            <!--  logo     -->
+            <div class="flex items-center">
+                <div class="font-bold flex items-center uppercase">
+                    <img src="assets/img/gina.png" class="w-20">
 
+                </div>
 
-      <div id="logo-container" class="md:flex">
-        <a href="index.html"><img src="assets/img/gina.png" class="w-20"></a>
+                <!--  primary navigation  -->
+                <div class="hidden md:flex ml-10 items-center ">
+                    <a class="px-5" href="index.html">Home</a>
+                    <a class="px-5" href="library.html">Library</a>
+                    <a class="px-5" href="#">Leaderboards</a>
+                    <a class="px-5" href="map.html">Map</a>
+                </div>
+            </div>
 
-        <nav class="hidden md:flex items-center ml-4">
-          <ul class="flex font-bold">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="library.html">Library</a></li>
-              <li><a href="leaderboard.html" class="bg-gray-200">Leaderboards</a></li>
-              <li><a href="map.html">Map</a></li>
-          </ul>
+     <!-- Sign Up/Login Button, icon for user and cart -->
+            <div class="flex items-center">
+                <div id="auth-buttons" class="md:flex hidden invis">
+                                   <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+                hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
+                             <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                    hover:bg-green-600 rounded-2xl
+            text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
+             focus:ring-green-600"><a href="login.html">Login</a></button>
+                </div>
+                <div id="user-buttons" class="md:flex hidden invis">
+                   <div class="relative">
+                      <button id="notification-bell" class="p-2 rounded-full">
+                        <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
+                    <span id="notification-count" class="absolute top-0 right-0 inline-block w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
+                      0
+                    </span>
+                       </button>
+
+                      <!-- Notification dropdown -->
+                      <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
+                        <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
+                        <ul id="notification-list" class="max-h-60 overflow-y-auto p-2 text-sm text-gray-600">
+                          <li class="text-gray-400 italic text-center py-2">No notifications</li>
+                        </ul>
+                      </div>
+                    </div>
+                <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
+                        focus:border-green-700 focus:text-green-700 text-gray-600
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(event, this)">
+                          <ul id="user-dropdown" class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
+                               focus:text-green-700 focus:outline-none" role="button" onclick="event.preventDefault(); document.location='profile.html'">
+                                  <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" 
+                                      width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" />
+                                          <circle cx="12" cy="7" r="4" />
+                                          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                      </svg>
+                                      <span class="ml-2">My Profile</span>
+                                  </a>
+                              </li>
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                              hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+                              role="button" onclick="logOut()">
+                                  <a href="javascript:void(0)" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                  <img class="rounded-full object-cover" 
+                                          src="./assets/img/logout.svg" alt="log out" />
+                                      <span class="ml-2">Log Out</span>
+                              </a>
+                              </li>
+                          </ul>
+                          <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
+                          focus:border-white transition duration-150 ease-in-out">
+                              <img class="rounded-full h-10 w-10 object-cover" 
+                              src="./assets/img/profile.svg" alt="logo" />
+                          </div>
+                          <div class="ml-2 ">
+                              <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer" 
+                              src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
+                          </div>
+                </button>
+                </div>
+            </div>
+
+            <!--  Mobile Menu    -->
+            <div class="md:hidden flex items-center">
+                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 rounded-full transition duration-500  p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+
         </nav>
-      </div>
-      <!-- Sign Up/Login Button, icon for user and cart -->
-      <div class="flex items-center"> 
-        <div id="auth-buttons" class="md:flex hidden invis">
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
-        </div>
-        <div id="user-buttons" class="md:flex hidden invis">
-          <!-- Cart -->
-          <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-            <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-          </button> -->
-          <!-- user -->
-          <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-            <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-          </button>
-        </div>
-      </div>
-  </header>
 
-  <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
-    <ul class="flex flex-col font-bold p-4">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="library.html">Library</a></li>
-        <li><a href="leaderboard.html" class="bg-gray-200">Leaderboards</a></li>
-        <li><a href="map.html">Map</a></li>
-        <div class="invis" id="mobile-login">
-          <hr class="border-black border-t-2 mb-4">
-          <li><a href="login.html">Log in</a></li>
-          <li><a href="signup.html">Sign up</a></li>
+        <!-- Mobile menu -->
+        <div class="menu-navigation mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600">
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Leaderboards</a>
+            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
+           <div class="invis" id="mobile-login">
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
       </div>
-    </ul>
-  </nav>
-  <!-- Drop-down menu for user -->
-  <div class="invis" id="user-dropdown">
-    <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-      <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
-      <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
+
+        </div>
+    </div>
+    <!-- // end main nav  -->
+ 
+
+
+
+<div class=" fixed z-50 w-full h-16 max-w-full -translate-x-1/2 bg-white border border-gray-200
+  dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30" style="justify-self: anchor-center;">
+    <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
+     
+      <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center
+         justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group"
+        onclick="document.location='index.html'">
+        <i class="ri-home-5-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Home</span>
+      </button>
+
+      <button data-tooltip-target="tooltip-wallet" type="button" class="inline-flex flex-col items-center justify-center 
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='library.html'">
+       <i class="ri-book-2-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Library</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='leaderboard.html'">
+           <i class="ri-trophy-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Leaderboards</span>
+      </button>
+
+         <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group">
+           <i class="ri-map-pin-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Map</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 rounded-full hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+
+        <ul class=" w-28 border-r bg-white absolute rounded right-0 shadow bottom-16 mt-16 hidden pl-2"
+          style="justify-content: center;">
+          <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700 
+          focus:text-green-700 focus:outline-none" role="button" onclick="document.location='profile.html'">
+            <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="12" cy="7" r="4" />
+                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              </svg>
+              <span class="text-xs">My Profile</span>
+            </a>
+          </li>
+          <li
+            class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+            role="button" onclick="logOut()">
+            <a href="javascript:void(0)"
+              class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+              <span class="text-xs">Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </button>
+
+    </div>
+  </div><div class=" fixed z-50 w-full h-16 max-w-full -translate-x-1/2 bg-white border border-gray-200
+  dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30" style="justify-self: anchor-center;">
+    <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
+     
+      <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center
+         justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group"
+        onclick="document.location='index.html'">
+        <i class="ri-home-5-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Home</span>
+      </button>
+
+      <button data-tooltip-target="tooltip-wallet" type="button" class="inline-flex flex-col items-center justify-center 
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='library.html'">
+       <i class="ri-book-2-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Library</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='leaderboard.html'">
+           <i class="ri-trophy-line ri-lg text-green-700"></i>
+        <span class="text-xs text-green-700 mt-1">Leaderboards</span>
+      </button>
+
+         <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
+         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='map.html'">
+           <i class="ri-map-pin-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1">Map</span>
+      </button>
+
+           <!-- not logged in show profile -->
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="pleaseLogin()" id="notLoggedIn">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+      </button>
+
+
+      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)" id="profileMenu">
+       <i class="ri-user-line ri-lg text-gray-500"></i>
+        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+    
+        <ul class=" w-28 border-r bg-white absolute rounded right-2 pr-2 shadow bottom-0 hidden pl-2"
+          style="justify-content: center; bottom: 63px;">
+          <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700 
+          focus:text-green-700 focus:outline-none" role="button" onclick="document.location='profile.html'">
+            <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="12" cy="7" r="4" />
+                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              </svg>
+              <span class="text-xs">My Profile</span>
+            </a>
+          </li>
+          <li
+            class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+            role="button" onclick="logOut()">
+            <a href="javascript:void(0)"
+              class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+              <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+              <span class="text-xs">Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </button>
+
     </div>
   </div>
 
+
   <main>
     <!-- Leaderboard Container -->
-    <div class="container mx-auto mt-10 p-4 rounded-lg shadow-lg"> 
+    <div class="container h-full mx-auto mt-10 p-4 max-w-3xl"> 
 
         <h2 class="text-2xl font-bold mb-4 text-center">Leaderboard</h2>
-        <table id ="leaderboard" class="w-full text-center">
-            <tr>
-                <th class="bg-teal-150 px-4 py-2">Rank</th>
-                <th class="bg-teal-150 px-4 py-2">Username</th>
-                <th class="bg-teal-150 px-4 py-2">Points</th>
-            </tr>
-            <tbody id="leaderboard-body">
-                <!-- Leaderboard data will be loaded here -->
-                
-            </tbody>
-        </table>
+
+        <!-- Podium Section -->
+        <div id="podium-section" class="flex justify-center mb-10">
+            
+        </div>
+
+        <!-- Rankings Table -->
+        <div class="bg-nav rounded-xl max-w-xl m-auto shadow-lg overflow-hidden">
+            <!-- Table Header -->
+            <div class="bg-nav px-6 py-3">
+                <div class="flex items-center justify-between max-w-2xl mx-auto">
+                    <span class="font-semibold text-gray-700 w-20 text-left">Rank</span>
+                    <span class="font-semibold text-gray-700 text-center">Username</span>
+                    <span class="font-semibold text-gray-700 w-20 text-right">Points</span>
+                </div>
+            </div>
+
+            
+            <!-- Table Body -->
+            <div id="leaderboard-body" class="flex flex-col items-center">
+                <!-- Leaderboard entries will be dynamically inserted here -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center m-6">
+                <div id="pagination-controls" class="bg-white rounded-lg shadow-md px-4 py-3 max-w-2xl w-full">
+                    <!-- Pagination buttons will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+
+        
     </div>
   </main>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/leaderboard.js"></script>
 </body>
 </html>
-
