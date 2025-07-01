@@ -3,6 +3,9 @@ import sys
 from pathlib import Path
 import os
 import django
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import make_aware, is_naive
+import urllib.parse
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
@@ -25,8 +28,20 @@ for index, row in df.iterrows():
         user=user,
         defaults={'last_name': 'N/A'}
     )
+
+    raw = row['date_inserted']
+    clean = urllib.parse.unquote(str(raw)).strip()  # handle %3A and \r\n
+    dt = parse_datetime(clean)
+
+    if dt is None:
+        print(f"⚠️ Skipping row {index}: invalid datetime '{raw}'")
+        continue
+
+    if is_naive(dt):
+        dt = make_aware(dt)
+
     userTreeInfo = UserTreeInfo(
-        planted_on=row['date_inserted'][:10],
+        planted_on=dt,
         longitude=row['lng'],
         latitude=row['lat'],
         # model_tree=TreeInfo.objects.get(tree_name=row['name']),

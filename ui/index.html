@@ -19,10 +19,28 @@
 </head>
 
 <body class="bg-teal-100 pb-12" style="font-family: 'Poppins', sans-serif;">
+<div id="loading-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+  ">
+  <img src="./assets/img/gina-loading(1).gif" alt="Computer man" style="width:100px;height:100px;">
+</div>
 
     <!-- main nav  -->
     <div class="hidden md:block bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
-
+        <div id="in-app-banner"
+          class="hidden fixed bottom-4 left-4 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
+      </div>
         <nav class=" hidden max-w-6xl mx-auto md:flex justify-between px-10">
             <!--  logo     -->
             <div class="flex items-center">
@@ -52,120 +70,70 @@
              focus:ring-green-600"><a href="login.html">Login</a></button>
                 </div>
                 <div id="user-buttons" class="md:flex hidden invis">
-                    <!-- Cart -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button> -->
-                    <!-- user -->
-                    <!-- <button class="" id="user-dropdown-toggle">
-                        <img class="w-16 h-16" src="./assets/img/profile.svg">
-                    </button> -->
+                    <div class="relative">
+                      <button id="notification-bell" class="p-2 rounded-full">
+                        <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
+                    <span id="notification-count" class="absolute top-0 right-0 inline-block w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
+                      0
+                    </span>
+                       </button>
+
+                      <!-- Notification dropdown -->
+                      <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
+                        <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
+                        <ul id="notification-list" class="max-h-60 overflow-y-auto p-2 text-sm text-gray-600">
+                          <li class="text-gray-400 italic text-center py-2">No notifications</li>
+                        </ul>
+                      </div>
+                    </div>
 
                 <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
                         focus:border-green-700 focus:text-green-700 text-gray-600
-                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(this)">
-                                        <ul class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
-                                            <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
-                                             focus:text-green-700 focus:outline-none" role="button" onclick="document.location='profile.html'">
-                                                <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" 
-                                                    width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" />
-                                                        <circle cx="12" cy="7" r="4" />
-                                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                                    </svg>
-                                                    <span class="ml-2">My Profile</span>
-                                                </a>
-                                            </li>
-                                            <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
-                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
-                                            role="button" onclick="logOut()">
-                                                <a href="javascript:void(0)" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
-                                                <img class="rounded-full object-cover" 
-                                                        src="./assets/img/logout.svg" alt="log out" />
-                                                    <span class="ml-2">Log Out</span>
-                                            </a>
-                                            </li>
-                                        </ul>
-                                        <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
-                                        focus:border-white transition duration-150 ease-in-out">
-                                            <img class="rounded-full h-10 w-10 object-cover" 
-                                            src="./assets/img/profile.svg" alt="logo" />
-                                        </div>
-                                        <div class="ml-2 ">
-                                            <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer" 
-                                            src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
-                                        </div>
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(event, this)">
+                          <ul id="user-dropdown" class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
+                               focus:text-green-700 focus:outline-none" role="button" onclick="event.preventDefault(); document.location='profile.html'">
+                                  <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" 
+                                      width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" />
+                                          <circle cx="12" cy="7" r="4" />
+                                          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                      </svg>
+                                      <span class="ml-2">My Profile</span>
+                                  </a>
+                              </li>
+                                <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                                hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+                                role="button" onclick="logOut()">
+                                    <a href="javascript:void(0)" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                    <img class="rounded-full object-cover" 
+                                            src="./assets/img/logout.svg" alt="log out" />
+                                        <span class="ml-2">Log Out</span>
+                                </a>
+                                </li>
+                            </ul>
+                            <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
+                            focus:border-white transition duration-150 ease-in-out">
+                                <img class="rounded-full h-10 w-10 object-cover" 
+                                src="./assets/img/profile.svg" alt="logo" />
+                            </div>
+                            <div class="ml-2 ">
+                                <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer" 
+                                src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
+                            </div>
                 </button>
 
                 </div>
             </div>
 
-    <!--  Mobile Menu    -->
-            <!-- <div class="md:hidden flex items-center">
-                <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 
-                rounded-full transition duration-500  p-2"
-                onclick="toggleNav()">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div> -->
-
-                   <!-- <div id="user-buttons" class="md:flex hidden invis"> -->
-                    <!-- Cart -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button> -->
-                    <!-- user -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-                        <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-                    </button>
-                </div> -->
-
         </nav>
-
-        <!-- Mobile menu -->
-         <!-- <div class="mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600" 
-        class="invis" id="mobile-menu">
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Home</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
-            <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Map</a>
-            <div class="invis" id="mobile-login">
-                <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
-                <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
-            </div>
-                   
-            <div id="user-buttons" class="md:flex hidden invis">
-                  
-            <button class="mt-2" id="user-dropdown-toggle">
-            <img class="w-10 h-10" src="./assets/img/profile.svg">
-            </button>
-            </div>
-            
-        </div> -->
-
-
 
     </div>
     <!-- // end main nav  -->
 
-
     <!-- Drop-down menu for user -->
-    <div class="invis" id="user-dropdown">
-        <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-            <button
-                class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2"
-                onclick="document.location='profile.html'">User Profile</button>
-            <button
-                class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2"
-                onclick="logOut()">Log Out</button>
-        </div>
-    </div>
 
 <div class="fixed z-50 w-full h-16 max-w-full -translate-x-1/2 border bg-white border-gray-200
 dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30 inset-shadow-sm inset-shadow-indigo-500/50" style="justify-self: anchor-center;">
@@ -206,7 +174,7 @@ dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30 inse
 
 
       <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
-         dark:hover:bg-gray-800 group" onclick="dropdownHandler(this)" id="profileMenu">
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)" id="profileMenu">
        <i class="ri-user-line ri-lg text-gray-500"></i>
         <span class="text-xs text-gray-500 mt-1 ">Profile</span>
 
@@ -319,7 +287,7 @@ dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30 inse
             <div class="bg-white bg-opacity-75 max-w-screen-xl mx-auto border-black rounded-3xl my-6 pb-10">
                 <div class="flex flex-col items-center text-center pt-4">
                     <span class=" sm:text-xl text-lg">in collaboration with the Climate Change Commission (CCC)<br />
-                        Forest Foundation Philippines (FFp) and the Energy Development Corporation (EDC)</span>
+                        Forest Foundation Philippines (FFp), the Energy Development Corporation (EDC) and Palec & Amigos Urban Environ </span>
                 </div>
 
                 <div class="px-6 flex items-center flex-no-wrap mt-4 justify-center">
@@ -332,6 +300,9 @@ dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30 inse
                     </a>
                     <a tabindex="0" class="focus:outline-none  w-36 h-24 object-cover sm:w-48 sm:h-32 bg-center ml-2">
                         <img src="assets/img/edc.png" alt="ecd" class=" w-36 h-24 sm:w-48 sm:h-32" />
+                    </a>
+                    <a tabindex="0" class="focus:outline-none object-cover w-36 h-24 sm:w-60 sm:h-32 ml-2">
+                        <img src="assets/img/palec.jpg" alt="ffp" class="w-36 h-24 sm:w-60 sm:h-40" />
                     </a>
                 </div>
             </div>
@@ -473,6 +444,7 @@ dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30 inse
         </section>
     </main>
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/register_push.js"></script>
 </body>
 
 </html>

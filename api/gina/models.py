@@ -90,4 +90,25 @@ class UserTreeArchive(models.Model):
     planted_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
     image = models.ImageField(upload_to=PathAndRename('gina_trees/'), null=True, blank=True,)
     image_embedding = ArrayField(models.FloatField(), null=True, blank=True)
-    
+
+
+class PushSubscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subscription = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Notification(models.Model):
+    NOTIF_TYPES = [
+        ('comment', 'Comment'),
+        ('reminder', 'Reminder'),
+    ]
+
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='sent_notifications')
+    notif_type = models.CharField(max_length=20, choices=NOTIF_TYPES)
+    message = models.TextField()
+    related_tree = models.ForeignKey("UserTreeInfo", null=True, blank=True, on_delete=models.CASCADE)
+    related_comment = models.ForeignKey("IdentifyTreeInfo", null=True, blank=True, on_delete=models.CASCADE)
+    is_seen = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)

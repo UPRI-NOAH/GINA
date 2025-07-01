@@ -40,7 +40,9 @@
  
 
  <div class="bg-nav hidden md:block py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
-
+<div id="in-app-banner"
+          class="hidden fixed bottom-4 left-4 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
+      </div>
         <nav class="hidden md:flex max-w-6xl mx-auto justify-between px-10">
             <!--  logo     -->
             <div class="flex items-center">
@@ -70,47 +72,58 @@
              focus:ring-green-600"><a href="login.html">Login</a></button>
                 </div>
                 <div id="user-buttons" class="md:flex hidden invis">
-                    <!-- Cart -->
-                    <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button> -->
-                    <!-- user -->
+                   <div class="relative">
+                      <button id="notification-bell" class="p-2 rounded-full">
+                        <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
+                    <span id="notification-count" class="absolute top-0 right-0 inline-block w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
+                      0
+                    </span>
+                       </button>
+
+                      <!-- Notification dropdown -->
+                      <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
+                        <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
+                        <ul id="notification-list" class="max-h-60 overflow-y-auto p-2 text-sm text-gray-600">
+                          <li class="text-gray-400 italic text-center py-2">No notifications</li>
+                        </ul>
+                      </div>
+                    </div>
                 <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
                         focus:border-green-700 focus:text-green-700 text-gray-600
-                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(this)">
-                                        <ul class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
-                                            <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
-                                             focus:text-green-700 focus:outline-none" role="button" onclick="document.location='profile.html'">
-                                                <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" 
-                                                    width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" />
-                                                        <circle cx="12" cy="7" r="4" />
-                                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                                    </svg>
-                                                    <span class="ml-2">My Profile</span>
-                                                </a>
-                                            </li>
-                                            <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
-                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
-                                            role="button" onclick="logOut()">
-                                                <a href="javascript:void(0)" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
-                                                <img class="rounded-full object-cover" 
-                                                        src="./assets/img/logout.svg" alt="log out" />
-                                                    <span class="ml-2">Log Out</span>
-                                            </a>
-                                            </li>
-                                        </ul>
-                                        <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
-                                        focus:border-white transition duration-150 ease-in-out">
-                                            <img class="rounded-full h-10 w-10 object-cover" 
-                                            src="./assets/img/profile.svg" alt="logo" />
-                                        </div>
-                                        <div class="ml-2 ">
-                                            <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer" 
-                                            src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
-                                        </div>
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(event, this)">
+                          <ul id="user-dropdown" class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
+                               focus:text-green-700 focus:outline-none" role="button" onclick="event.preventDefault(); document.location='profile.html'">
+                                  <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" 
+                                      width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" />
+                                          <circle cx="12" cy="7" r="4" />
+                                          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                      </svg>
+                                      <span class="ml-2">My Profile</span>
+                                  </a>
+                              </li>
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                              hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+                              role="button" onclick="logOut()">
+                                  <a href="javascript:void(0)" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                  <img class="rounded-full object-cover" 
+                                          src="./assets/img/logout.svg" alt="log out" />
+                                      <span class="ml-2">Log Out</span>
+                              </a>
+                              </li>
+                          </ul>
+                          <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
+                          focus:border-white transition duration-150 ease-in-out">
+                              <img class="rounded-full h-10 w-10 object-cover" 
+                              src="./assets/img/profile.svg" alt="logo" />
+                          </div>
+                          <div class="ml-2 ">
+                              <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer" 
+                              src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
+                          </div>
                 </button>
                 </div>
             </div>
@@ -144,13 +157,7 @@
     </div>
     <!-- // end main nav  -->
  
-  <!-- Drop-down menu for user -->
-  <div class="invis" id="user-dropdown">
-    <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-      <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="document.location='profile.html'">User Profile</button>
-      <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
-    </div>
-  </div>
+
 
 
 <div class=" fixed z-50 w-full h-16 max-w-full -translate-x-1/2 bg-white border border-gray-200
@@ -185,7 +192,7 @@
 
 
       <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 rounded-full hover:bg-gray-50
-         dark:hover:bg-gray-800 group" onclick="dropdownHandler(this)">
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)">
        <i class="ri-user-line ri-lg text-gray-500"></i>
         <span class="text-xs text-gray-500 mt-1 ">Profile</span>
 
@@ -257,7 +264,7 @@
 
 
       <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
-         dark:hover:bg-gray-800 group" onclick="dropdownHandler(this)" id="profileMenu">
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)" id="profileMenu">
        <i class="ri-user-line ri-lg text-gray-500"></i>
         <span class="text-xs text-gray-500 mt-1 ">Profile</span>
     

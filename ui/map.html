@@ -46,13 +46,12 @@
     <img src="./assets/img/gina-loading(1).gif" alt="Computer man" style="width:100px;height:100px;">
   </div>
 
-    <!-- main nav  -->
-    <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-40 transition duration-300">
-
 
   <!-- main nav  -->
   <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300 hidden md:block">
-
+       <div id="in-app-banner"
+          class="hidden fixed bottom-4 left-4 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
+      </div>
     <nav class="max-w-6xl mx-auto flex justify-between px-2">
       <!--  logo     -->
       <div class="flex items-center">
@@ -82,22 +81,30 @@
              focus:ring-green-600"><a href="login.html">Login</a></button>
         </div>
         <div id="user-buttons" class="md:flex hidden invis">
-          <!-- Cart -->
-          <!-- <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button> -->
-          <!-- user -->
-          <!-- <button class="" id="user-dropdown-toggle">
-                        <img class="w-16 h-16" src="./assets/img/profile.svg">
-                    </button> -->
+                              <div class="relative">
+                      <button id="notification-bell" class="p-2 rounded-full">
+                        <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
+                    <span id="notification-count" class="absolute top-0 right-0 inline-block w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
+                      0
+                    </span>
+                       </button>
+
+                      <!-- Notification dropdown -->
+                      <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
+                        <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
+                        <ul id="notification-list" class="max-h-60 overflow-y-auto p-2 text-sm text-gray-600">
+                          <li class="text-gray-400 italic text-center py-2">No notifications</li>
+                        </ul>
+                      </div>
+                    </div>
 
           <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
                         focus:border-green-700 focus:text-green-700 text-gray-600
-                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(this)">
-            <ul class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(event, this)">
+            <ul id="user-dropdown" class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
               <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
                                              focus:text-green-700 focus:outline-none" role="button"
-                onclick="document.location='profile.html'">
+                onclick="event.preventDefault(); document.location='profile.html'">
                 <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20"
                     height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
@@ -207,7 +214,7 @@
 
 
       <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
-         dark:hover:bg-gray-800 group" onclick="dropdownHandler(this)" id="profileMenu">
+         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)" id="profileMenu">
        <i class="ri-user-line ri-lg text-gray-500"></i>
         <span class="text-xs text-gray-500 mt-1 ">Profile</span>
 
@@ -266,6 +273,26 @@
         </div>
   </nav> -->
 
+<body class="bg-teal-100 pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">
+  <div id="loading-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+  ">
+  <img src="./assets/img/gina-loading(1).gif" alt="Computer man" style="width:100px;height:100px;">
+</div>
+
+
+  
   <!-- Map Controls -->
   <div>
       <!-- Legend -->
@@ -360,7 +387,7 @@
       <label class="block text-md">Species:</label>
       <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
           sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="plant-name" name="plant-name">
-        <option value="">Select a species</option>
+        <option value="">Select species</option>
       </select>
 
       <label class="block text-md">Description:</label>
@@ -443,7 +470,7 @@
       <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
       Species:
       <select class="w-full p-1 mb-4" id="edit-plant-name" name="edit-plant-name">
-        <option value="">Select a species</option>
+        <option value="">Select species</option>
       </select>
       Description:
       <textarea id="edit-description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
@@ -538,6 +565,7 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/map.js"></script>
   <script src="assets/js/map_actions.js"></script>
+  <script src="assets/js/register_push.js"></script>
 
 </body>
 
