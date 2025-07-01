@@ -28,7 +28,6 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
                 continue
 
             aud = get_audience(endpoint)
-            print("🔍 AUD:", aud)
 
             webpush(
                 subscription_info=subscription_data,
@@ -51,7 +50,7 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
 
 
 def get_audience(endpoint):
-    print("📨 Raw endpoint received:", endpoint)
+    print("Raw endpoint received:", endpoint)
     parsed = urlparse(endpoint)
     print("Parsed scheme:", parsed.scheme)
     print("Parsed netloc:", parsed.netloc)

@@ -23,35 +23,42 @@ function serializeSubscription(subscription) {
   };
 }
 
-// ✅ Automatically triggered on page load
+//Automatically triggered on page load
 window.addEventListener('load', async () => {
-  
+  console.log('🔄 Checking for push setup...');
+
+
   if (!authToken) {
-    
+    console.warn('Cannot subscribe: authToken is missing.');
     return;
   }
 
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     try {
-      // ✅ Register the Service Worker
-      const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js', { scope: '/assets/js/' });
+      //Register the Service Worker
+      const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js?v=1', { scope: '/assets/js/' });
 
-      // ✅ Ask for permission
+      console.log('✅ Service Worker registered:', registration);
+
+      //Ask for permission
       const permission = await Notification.requestPermission();
+      console.log('Notification permission:', permission);
 
       if (permission !== 'granted') {
+        console.warn('Permission not granted for notifications');
         return;
       }
 
-      // ✅ Subscribe to Push
+      //Subscribe to Push
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: 'BPRvxQ24yz8iNO0uIYkS593ToRrv5l-HcEaR22LAzot22aa9pAOORQo1xVD2cpx0FPPMsnyT9ZEmo5pMai3N7rE'  // replace with your VAPID public key
       });
 
       const serializedSub = serializeSubscription(subscription);
+      console.log('📬 Subscribing with:', serializedSub);
 
-      // ✅ Send to backend
+      //Send to backend
       const response = await fetch(`${http}://${url}/subscribe/`, {
         method: 'POST',
         headers: {
@@ -64,10 +71,15 @@ window.addEventListener('load', async () => {
 
       if (response.ok) {
         const result = await response.json();
+        console.log('Push subscription saved:', result);
       } else {
         const error = await response.json();
+        console.error('Failed to save subscription:', error);
       }
     } catch (err) {
+      console.error('Error during push registration:', err);
     }
+  } else {
+    console.warn('Push notifications are not supported in this browser.');
   }
 });
