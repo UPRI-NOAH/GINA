@@ -485,6 +485,50 @@ $.when(ph).done(function () {
         .setLatLng(e.latlng)
         .setContent(popupContent) // not a string — a DOM node!
         .openOn(map);
+
+      setTimeout(() => {
+        const popup = document.querySelector('.leaflet-popup');
+        const wrapper = document.querySelector('.leaflet-popup-content-wrapper');
+        const content = document.querySelector('.leaflet-popup-content');
+
+        const img = document.getElementById(`${photoId}`);
+        if (img) {
+          img.style.width = "200px";
+          img.style.height = "200px";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "8px";
+
+          const imgwrapper = img.parentElement;
+          if (imgwrapper) {
+            imgwrapper.style.width = "200px";
+            imgwrapper.style.height = "200px";
+            imgwrapper.style.overflow = "hidden";
+          }
+        }
+
+        if (popup) {
+          popup.style.setProperty('z-index', '999999', 'important');
+          popup.style.setProperty('position', 'relative', 'important');
+        }
+
+        if (wrapper) {
+          wrapper.style.setProperty('width', '100%', 'important');
+          wrapper.style.setProperty('max-width', '90vw', 'important');  // Mobile
+          wrapper.style.setProperty('max-height', 'unset', 'important');
+
+          if (window.innerWidth >= 768) {
+            wrapper.style.setProperty('min-width', '400px', 'important');
+            wrapper.style.setProperty('max-width', '450px', 'important');
+          }
+        }
+
+        if (content) {
+          content.style.setProperty('padding', '0', 'important');
+          content.style.setProperty('margin', '0', 'important');
+          content.style.setProperty('width', '100%', 'important');
+          content.style.setProperty('overflow', 'visible', 'important');
+        }
+      }, 0);
     });
 
     markers.addLayer(marker);
