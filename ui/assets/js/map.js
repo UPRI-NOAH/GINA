@@ -124,6 +124,7 @@ function setAttributionPosition() {
   if (window.innerWidth <= 768) {
     // Mobile screen: place at top right
     map.attributionControl.setPosition('topright');
+
   } else {
     // Large screen: place at bottom right
     map.attributionControl.setPosition('bottomright');
@@ -139,12 +140,12 @@ window.addEventListener('resize', setAttributionPosition);
 
 var treeIcon = L.icon({
   iconUrl: "./assets/img/marker.png", // file path of image
-  iconSize: [70, 90], // set size of icon
+  iconSize: [40, 55], // set size of icon
 });
 
 var owntreeIcon = L.icon({
   iconUrl: "./assets/img/marker2.png", // file path of image
-  iconSize: [70, 90], // set size of icon
+  iconSize: [40, 55], // set size of icon
 });
 
 
@@ -708,3 +709,20 @@ window.addEventListener('DOMContentLoaded', async () => {
     hideLoading();
   }
 });
+
+// Hide and show the legend
+ document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("legendToggle");
+    const closeBtn = document.getElementById("legendClose");
+    const legendContent = document.getElementById("legendContent");
+
+    closeBtn.addEventListener("click", () => {
+      legendContent.classList.add("hidden");
+      toggleBtn.classList.remove("hidden");
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      legendContent.classList.remove("hidden");
+      toggleBtn.classList.add("hidden");
+    });
+  });
