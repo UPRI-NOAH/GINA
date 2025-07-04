@@ -298,50 +298,44 @@
     <div>
 
       <!-- Legend -->
-     <div class="absolute 
+      <div class="absolute 
          top-6 right-2 
          md:bottom-0 md:left-0 md:top-auto md:right-auto 
          md:mx-2 md:my-2 bg-opacity-80 
-         z-50 bg-white rounded-lg shadow-md mr-2"
->
-  <!-- Legend Button (hidden initially) -->
-  <button
-    id="legendToggle"
-    class="hidden text-sm font-medium text-white bg-green-700 opacity-80 hover:bg-green-500 px-3 py-1 rounded w-full text-left"
-  >
-    Legend
-  </button>
+         z-50 bg-white rounded-lg shadow-md mr-2">
+        <!-- Legend Button (hidden initially) -->
+        <button id="legendToggle"
+          class="hidden text-sm font-medium text-white bg-green-700 opacity-80 hover:bg-green-500 px-3 py-1 rounded w-full text-left">
+          Legend
+        </button>
 
-  <!-- Legend Content (shown by default) -->
-  <div id="legendContent" class="relative">
-    <!-- Circular X Button -->
-    <button
-      id="legendClose"
-      class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-400
+        <!-- Legend Content (shown by default) -->
+        <div id="legendContent" class="relative">
+          <!-- Circular X Button -->
+          <button id="legendClose" class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-400
        hover:bg-gray-400 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center shadow"
-      aria-label="Close legend"
-    >
-      ✕
-    </button>
+            aria-label="Close legend">
+            ✕
+          </button>
 
-        <!-- Toggleable Content -->
-  <div class="space-y-1 p-2">
-     <span class="text-sm ">Legend</span>
-    <div class="flex items-center gap-2">
-      <div class="w-6 h-6 flex items-center justify-center rounded-full">
-        <img src="./assets/img/marker2.png" alt="Seedling Icon" class="w-10 h-8" />
+          <!-- Toggleable Content -->
+          <div class="space-y-1 p-2">
+            <span class="text-sm ">Legend</span>
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full">
+                <img src="./assets/img/marker2.png" alt="Seedling Icon" class="w-10 h-8" />
+              </div>
+              <span class="text-sm text-gray-600">My Trees</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full">
+                <img src="./assets/img/marker.png" alt="Seedling Icon" class="w-10 h-8" />
+              </div>
+              <span class="text-sm text-gray-600">Community Trees</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <span class="text-sm text-gray-600">My Trees</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <div class="w-6 h-6 flex items-center justify-center rounded-full">
-        <img src="./assets/img/marker.png" alt="Seedling Icon" class="w-10 h-8" />
-      </div>
-      <span class="text-sm text-gray-600">Community Trees</span>
-    </div>
-  </div>
-  </div>
-</div>
       <!-- Legend -->
       <div id="map">
       </div>
@@ -432,22 +426,23 @@
           <option value="Endemic Tree">Endemic Tree</option>
           <option value="Invasive Tree">Invasive Tree Type</option>
         </select>
+
         <!-- Image -->
         <div class="mb-6">
           <label class="block text-md">Add a photo:</label>
           <div
             class="relative border-2 rounded-md px-4 py-3 bg-white flex items-center justify-between hover:border-green-500 transition duration-150 ease-in-out">
-            <input type="file" id="tree-photo" name="tree-photo"
-              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
-            <div class="flex items-center">
+
+            <input type="file" id="tree-photo" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept="image/*" onchange="handleFileUpload(event, 'file-name-add')">
+
+            <div class="flex items-center pointer-events-none">
               <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              <span class="ml-2 text-sm text-gray-600">Choose a file</span>
+              <span id="file-name-add" class="ml-2 text-sm text-gray-600">Choose a file</span>
             </div>
-            <span class="text-sm text-gray-500">Max file size: 5MB</span>
           </div>
         </div>
 
@@ -497,34 +492,62 @@
       <div class="bg-white p-4 rounded-xl">
         <h2 id="modalEditTitle" class="text-2xl font-bold mb-4">Edit Your Tree</h2>
         <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
-        Species:
-        <select class="w-full p-1 mb-4" id="edit-plant-name" name="edit-plant-name">
+
+        <label class="block text-md">Species:</label>
+        <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="edit-plant-name"
+          name="edit-plant-name">
           <option value="">Select species</option>
         </select>
-        Description:
-        <textarea id="edit-description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
-        Tree Type:
-        <select class="w-full p-1 mb-4" id="edit-tree-type" name="dit-tree-type">
+
+        <label class="block text-md">Description:</label>
+        <textarea id="edit-description" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500" placeholder="Description"></textarea>
+
+
+
+        <label class="block text-md">Tree Type:</label>
+        <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="edit-tree-type"
+          name="edit-tree-type">
           <option value="">Select tree type</option>
-          <option value="Indigenous Tree">Indigenous Tree</option>
+          <option value=" Indigenous Tree">Indigenous Tree</option>
           <option value="Endemic Tree">Endemic Tree</option>
           <option value="Invasive Tree">Invasive Tree Type</option>
         </select>
 
         <!-- Image -->
-        <p class="text-lg mb-4">Add a photo:</p>
-        <input type="file" id="edit-tree-photo" accept="image/*"><br> <br>
+        <div class="mb-6">
+          <label class="block text-md">Edit a photo:</label>
+          <div
+            class="relative border-2 rounded-md px-4 py-3 bg-white flex items-center justify-between hover:border-green-500 transition duration-150 ease-in-out">
+
+            <!-- Hidden File Input -->
+            <input type="file" id="edit-tree-photo" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept="image/*" onchange="handleFileUpload(event, 'file-name-edit')">
+
+            <!-- Visible Label -->
+            <div class="flex items-center pointer-events-none">
+              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              <span id="file-name-edit" class="ml-2 text-sm text-gray-600">Choose a file</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Add hidden input fields for latitude and longitude -->
         <input type="hidden" id="edit-action" name="edit-action">
         <input type="hidden" id="edit-ref-id" name="edit-ref-id">
         <input type="hidden" id="edit-latitude" name="edit-latitude">
         <input type="hidden" id="edit-longitude" name="edit-longitude">
         <input type="hidden" id="edit-date" name="edit-date">
+
         <div class="float-right">
-          <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl"
-            onclick="skip()">Skip</button>
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
-            onclick="editTree()">Edit</button>
+          <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+          <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl"
+            onclick="editTree()">Upload</button>
         </div>
       </div>
     </div>
