@@ -28,6 +28,7 @@ redis = "*"
 pywebpush = "*"
 channels = "*"
 channels-redis = "*"
+django = "*"
 
 [dev-packages]
 

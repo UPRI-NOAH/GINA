@@ -161,12 +161,12 @@ VAPID_ADMIN_EMAIL = get_str("VAPID_ADMIN_EMAIL")
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': get_str("DB_NAME"),
-        'USER': get_str("DB_USER"),
-        'PASSWORD': get_str("DB_PASSWORD"),
-        'HOST': get_str("DB_HOST"),
-        'PORT': get_str("DB_PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'gina_test'),
+        'USER': os.environ.get('DB_USER', 'calebcstr'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -286,6 +286,8 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
+if DEBUG:
+    STORAGES["default"] = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
 
 AWS_ACCESS_KEY_ID = get_str("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = get_str("AWS_SECRET_ACCESS_KEY")

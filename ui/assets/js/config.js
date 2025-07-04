@@ -1,5 +1,5 @@
-let url = "punla.up.edu.ph";
-let http = "https";
+let url = "127.0.0.1:8000"; // or "localhost:8000"
+let http = "http"; // Use http instead of https for local server
 let usertreeURL = `${http}://${url}/api/user-tree-info/`;
 let username = localStorage.getItem('username') || sessionStorage.getItem('username');
 let editUserURL = `${http}://${url}/api/user-info/${username}/`;
