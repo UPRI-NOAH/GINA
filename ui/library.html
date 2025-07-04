@@ -45,7 +45,7 @@
 <div id="in-app-banner"
           class="hidden fixed bottom-4 left-4 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
       </div>
-    <nav class="hidden max-w-6xl mx-auto md:flex justify-between px-10">
+    <nav class="hidden max-w-6xl mx-auto md:flex justify-between px-5">
       <!--  logo     -->
       <div class="flex items-center">
         <div class="font-bold flex items-center uppercase">
@@ -55,10 +55,10 @@
 
         <!--  primary navigation  -->
         <div class="hidden md:flex ml-10 items-center ">
-          <a class="px-5" href="index.html">Home</a>
-          <a class="px-5" href="#">Library</a>
-          <a class="px-5" href="leaderboard.html">Leaderboards</a>
-          <a class="px-5" href="map.html">Map</a>
+          <a class="px-5 md:text-sm lg:text-base" href="index.html">Home</a>
+          <a class="px-5 md:text-sm lg:text-base text-green-800" href="#">Library</a>
+          <a class="px-5 md:text-sm lg:text-base" href="leaderboard.html">Leaderboards</a>
+          <a class="px-5 md:text-sm lg:text-base" href="map.html">Map</a>
         </div>
       </div>
 
@@ -67,17 +67,19 @@
         <div id="auth-buttons" class="md:flex hidden invis">
           <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
                 hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
-              focus:ring-green-700"><a href="signup.html">Sign Up</a></button>
+              focus:ring-green-700 md:text-sm lg:text-base"><a href="signup.html">Sign Up</a></button>
+
           <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
                     hover:bg-green-600 rounded-2xl
-            text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
-             focus:ring-green-600"><a href="login.html">Login</a></button>
+            text-white px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
+             focus:ring-green-600 md:text-sm lg:text-base"><a href="login.html">Login</a></button>
         </div>
                         <div id="user-buttons" class="md:flex hidden invis">
                    <div class="relative">
                       <button id="notification-bell" class="p-2 rounded-full">
                         <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
-                    <span id="notification-count" class="absolute top-0 right-0 inline-block w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
+                    <span id="notification-count" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white 
+                    text-xs rounded-full text-center leading-4 hidden">
                       0
                     </span>
                        </button>
