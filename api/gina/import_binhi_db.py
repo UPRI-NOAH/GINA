@@ -58,8 +58,7 @@ for idx, a in enumerate(soup.select("a[href*=tree-name]")):
     f_name = str(mydivs).replace('<div class="value__fam">', '').replace('</div>', '')
     tree_list[idx]["family_name"] = f_name
 
-## MY DEVELOPMENT CODE -- extracting tree description from binhi.ph 
-
+## Extract Tree Description from Binhi -- Extract relevant details: bark, leaf, flower, seed, fruit. If not avail from the website, set as "No description available". 
 for idx, b in enumerate(soup.select("a[href*=tree-name]")):
     href = b['href']
     tree_profile_url = f"https://binhi.ph/{href}"
@@ -93,7 +92,6 @@ for idx, b in enumerate(soup.select("a[href*=tree-name]")):
         tree_list[idx]["tree_description"] = "\n ".join(desc_texts) # combine all desc_texts of each tree description
     else:
         tree_list[idx]["tree_description"] = "No description available" # if there is no tree descriptions
-
 ##
 
 for tree in tree_list:
