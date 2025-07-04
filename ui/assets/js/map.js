@@ -124,6 +124,7 @@ function setAttributionPosition() {
   if (window.innerWidth <= 768) {
     // Mobile screen: place at top right
     map.attributionControl.setPosition('topright');
+
   } else {
     // Large screen: place at bottom right
     map.attributionControl.setPosition('bottomright');
@@ -139,12 +140,12 @@ window.addEventListener('resize', setAttributionPosition);
 
 var treeIcon = L.icon({
   iconUrl: "./assets/img/marker.png", // file path of image
-  iconSize: [70, 90], // set size of icon
+  iconSize: [40, 55], // set size of icon
 });
 
 var owntreeIcon = L.icon({
   iconUrl: "./assets/img/marker2.png", // file path of image
-  iconSize: [70, 90], // set size of icon
+  iconSize: [40, 55], // set size of icon
 });
 
 
@@ -301,7 +302,7 @@ function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, 
   if (user == username) {
     const modalTitle = document.getElementById('modalEditTitle');
     const modalDesc = document.getElementById('modalEditDesc');
-    modalTitle.innerHTML = "Edit the tree you planted"
+    modalTitle.innerHTML = "Edit The Tree You Planted"
     if (action == "Identified") {
       modalTitle.innerHTML = "Edit the tree you identified"
     }
@@ -561,6 +562,13 @@ function skip() {
   document.getElementById("editoverlay").classList.add("invis");
   document.getElementById("identifyoverlay").classList.add("invis");
   document.getElementById("treeArchiveTitleOverlay").classList.add("invis");
+
+    // Reset Edit input
+    document.getElementById('tree-photo').value = '';
+    document.getElementById('file-name-add').textContent = 'Choose a file';
+    
+    document.getElementById('edit-tree-photo').value = '';
+    document.getElementById('file-name-edit').textContent = 'Choose a file';
 }
 
 function buildPopupContent(feature, username) {
@@ -708,3 +716,29 @@ window.addEventListener('DOMContentLoaded', async () => {
     hideLoading();
   }
 });
+
+// Hide and show the legend
+ document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("legendToggle");
+    const closeBtn = document.getElementById("legendClose");
+    const legendContent = document.getElementById("legendContent");
+
+    closeBtn.addEventListener("click", () => {
+      legendContent.classList.add("hidden");
+      toggleBtn.classList.remove("hidden");
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      legendContent.classList.remove("hidden");
+      toggleBtn.classList.add("hidden");
+    });
+  });
+
+ function handleFileUpload(event, labelId) {
+    const input = event.target;
+    const fileNameSpan = document.getElementById(labelId);
+
+    if (input.files.length > 0) {
+      fileNameSpan.textContent = input.files[0].name;
+    }
+  }

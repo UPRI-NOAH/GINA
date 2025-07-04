@@ -169,6 +169,12 @@ function uploadTree() {
   const latitude = Number(document.getElementById('latitude').value).toFixed(6);
   const longitude = Number(document.getElementById('longitude').value).toFixed(6);
   const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+    // Reset Edit input
+    document.getElementById('tree-photo').value = '';
+    document.getElementById('file-name-add').textContent = 'Choose a file';
+    
+    document.getElementById('edit-tree-photo').value = '';
+    document.getElementById('file-name-edit').textContent = 'Choose a file';
 
   showLoading();
 
@@ -279,6 +285,13 @@ function editTree() {
   const image = document.getElementById('edit-tree-photo').files[0];
   const username = localStorage.getItem('username') || sessionStorage.getItem('username');
   const treeId = document.getElementById('edit-ref-id').value;
+
+    // Reset Edit input
+    document.getElementById('tree-photo').value = '';
+    document.getElementById('file-name-add').textContent = 'Choose a file';
+    
+    document.getElementById('edit-tree-photo').value = '';
+    document.getElementById('file-name-edit').textContent = 'Choose a file';
 
   showLoading();
 
