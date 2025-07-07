@@ -42,11 +42,17 @@ class TreeInfo(models.Model):
     image_embedding = ArrayField(models.FloatField(), null=True, blank=True)
 
 class UserInfo(models.Model):
+    USER_TYPES = [
+        ('Regular', 'Regular'),
+        ('Expert', 'Expert'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, to_field="username")
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=False)
     contact = models.CharField(max_length=20, null=True, blank=True)
     profile_picture = models.URLField(max_length=200, null=True, blank=True)
+    user_type = models.CharField(max_length=20, choices=USER_TYPES)
     user_points = models.PositiveIntegerField(default=0)
 
 TREE_STATUS = [
@@ -70,6 +76,7 @@ class UserTreeInfo(models.Model):
     action = models.CharField(max_length=100, null=False, blank=False)
     quantity = models.IntegerField()
     status = models.CharField(choices=TREE_STATUS)
+    edited_by = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(upload_to=PathAndRename('gina_trees/'), null=True, blank=True,)
 
 
@@ -102,6 +109,7 @@ class Notification(models.Model):
     NOTIF_TYPES = [
         ('comment', 'Comment'),
         ('reminder', 'Reminder'),
+        ('tree_help', 'Tree Help'),
     ]
 
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
@@ -111,4 +119,5 @@ class Notification(models.Model):
     related_tree = models.ForeignKey("UserTreeInfo", null=True, blank=True, on_delete=models.CASCADE)
     related_comment = models.ForeignKey("IdentifyTreeInfo", null=True, blank=True, on_delete=models.CASCADE)
     is_seen = models.BooleanField(default=False)
+    is_passed = models.BooleanField(default=False) 
     created_at = models.DateTimeField(default=timezone.now)

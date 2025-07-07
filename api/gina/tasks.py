@@ -31,7 +31,6 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
 
             webpush(
                 subscription_info=subscription_data,
-                # data=json.dumps({"title": title, "body": body}),
                 data=json.dumps({
                     "title": title,
                     "body": body,
@@ -62,7 +61,6 @@ def send_tree_reminder(user_id, tree_ref_id, tree_name):
     User = get_user_model()
     user = User.objects.get(id=user_id)
     tree = UserTreeInfo.objects.get(reference_id=tree_ref_id)
-
     message = f"It's time to update the photo of your tree: {tree_name}"
 
     # Save to Notification model (for badge + dropdown)
@@ -80,6 +78,7 @@ def send_tree_reminder(user_id, tree_ref_id, tree_name):
         {
             "type": "send_tree_notification",
             "message": message,
+            "tree_owner": user.username,
             "user": None,
             "timestamp": timezone.now().isoformat(),
             "tree_id": str(tree.reference_id),

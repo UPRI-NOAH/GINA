@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from api.gina.views import UserInfoViewset, UserTreeViewset, IdentifyTreeInfoViewset, UserTreeArchiveViewset, NotificationViewSet
+from api.gina.views import UserInfoViewset, UserTreeViewset, IdentifyTreeInfoViewset, UserTreeArchiveViewset, NotificationViewSet, CustomTokenCreateView, SaveSubscriptionView
 from django.conf import settings
 from django.conf.urls.static import static
-
-from api.gina.views import TreeInfoViewset, TreeTypeViewset, activate_page, reset_password, save_subscription, unsubscribe, mark_all_notifications_seen
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from api.gina.views import (TreeInfoViewset, TreeTypeViewset, 
+                            activate_page, reset_password, unsubscribe, 
+                            mark_all_notifications_seen, pass_tree_notif)
 
 router = DefaultRouter()
 
@@ -41,11 +42,12 @@ urlpatterns = [
     path('activate.html', activate_page),
     path('reset_password.html', reset_password),
     path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
-    path("subscribe/", save_subscription, name="save-subscription"),
+    # path('auth/', include('djoser.urls.authtoken')),
+    path("subscribe/", SaveSubscriptionView.as_view(), name="save-subscription"),    
     path("unsubscribe/", unsubscribe, name="delete-subscription"),  
     path('notifications/mark_all_seen/', mark_all_notifications_seen, name='mark_all_seen'),
-
+    path('auth/token/login/', CustomTokenCreateView.as_view(), name='custom_token_login'),
+    path("api/tree-help/pass/<uuid:reference_id>/", pass_tree_notif),
     # path('api-auth/', include('rest_framework.urls')), # for local only
 
 ]

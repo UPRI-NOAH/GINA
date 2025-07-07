@@ -45,17 +45,20 @@ if (authToken && rememberMe) {
         if (response.ok) {
             // Login successful, save the auth token
             const authToken = data.auth_token;
-
+            const userType = data.user_type;
             if (rememberMe) {
                 // Remember me is checked, store the auth token in local storage
                 localStorage.setItem('authToken', authToken);
                 localStorage.setItem('username', username);
+                localStorage.setItem('userType', userType); 
             } else {
                 // Remember me is not checked, store the auth token in session storage
                 localStorage.setItem('authToken', authToken);
                 localStorage.setItem('username', username);
+                localStorage.setItem('userType', userType); 
                 sessionStorage.setItem('authToken', authToken);
                 sessionStorage.setItem('username', username);
+                sessionStorage.setItem('userType', userType);
             }
             hideLoading(); 
 
