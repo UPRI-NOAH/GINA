@@ -21,7 +21,7 @@ os.makedirs(tree_library, exist_ok=True)
 
 base_url = "https://binhi.ph/trees-results/"
 
-attachments_response = requests.get(base_url, verify=False)
+attachments_response = requests.get(base_url)
 soup = BeautifulSoup(attachments_response.text, 'html.parser')
 
 tree_list = []
@@ -52,7 +52,7 @@ for idx, x in enumerate(sci_name):
 for idx, a in enumerate(soup.select("a[href*=tree-name]")):
     href = a['href']
     tree_profile_url = f"https://binhi.ph/{href}"
-    req_tree_profile = requests.get(tree_profile_url, verify=False)
+    req_tree_profile = requests.get(tree_profile_url)
     souper = BeautifulSoup(req_tree_profile.text, 'html.parser')
     mydivs = souper.find("div", {"class": "value__fam"})
     f_name = str(mydivs).replace('<div class="value__fam">', '').replace('</div>', '')
