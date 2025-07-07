@@ -49,10 +49,8 @@
 
   <!-- main nav  -->
   <div class="bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300 hidden md:block">
-       <div id="in-app-banner"
-          class="hidden fixed bottom-4 left-4 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
-      </div>
-    <nav class="max-w-6xl mx-auto flex justify-between px-2">
+
+    <nav class="max-w-6xl mx-auto flex justify-between px-5">
       <!--  logo     -->
       <div class="flex items-center">
         <div class="font-bold flex items-center uppercase">
@@ -157,7 +155,7 @@
 
     <!-- Mobile menu -->
     <div class="mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600" class="invis" id="mobile-menu">
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="map.html">Home</a>
+      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
       <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Map</a>
@@ -488,23 +486,33 @@
       </div>
     </div>
 
-  <div class="overlay invis" id="editoverlay">
-    <div class="bg-white p-4 rounded-xl">
-      <h2 id="modalEditTitle" class="text-2xl font-bold mb-4">Edit Your Tree</h2>
-      <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
-      Species:
-      <select class="w-full p-1 mb-4" id="edit-plant-name" name="edit-plant-name">
-        <option value="">Select species</option>
-      </select>
-      Description:
-      <textarea id="edit-description" class="resize-none w-full p-1 mb-4" placeholder="Description"></textarea><br>
-      Tree Type:
-      <select class="w-full p-1 mb-4" id="edit-tree-type" name="dit-tree-type">
-        <option value="">Select tree type</option>
-        <option value="Indigenous Tree">Indigenous Tree</option>
-        <option value="Endemic Tree">Endemic Tree</option>
-        <option value="Invasive Tree">Invasive Tree Type</option>
-      </select>
+    <div class="overlay invis" id="editoverlay">
+      <div class="bg-white p-4 rounded-xl">
+        <h2 id="modalEditTitle" class="text-2xl font-bold mb-4">Edit Your Tree</h2>
+        <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
+
+        <label class="block text-md">Species:</label>
+        <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="edit-plant-name"
+          name="edit-plant-name">
+          <option value="">Select species</option>
+        </select>
+
+        <label class="block text-md">Description:</label>
+        <textarea id="edit-description" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500" placeholder="Description"></textarea>
+
+
+
+        <label class="block text-md">Tree Type:</label>
+        <select class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-xs
+          sm:leading-5 resize-none focus:outline-none focus:border-green-500 mb-3" id="edit-tree-type"
+          name="edit-tree-type">
+          <option value="">Select tree type</option>
+          <option value="Indigenous Tree">Indigenous Tree</option>
+          <option value="Endemic Tree">Endemic Tree</option>
+          <option value="Invasive Tree">Invasive Tree Type</option>
+        </select>
 
         <!-- Image -->
         <div class="mb-6">
@@ -587,14 +595,43 @@
           </button>
         </div>
 
-      <!-- <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl mt-4" onclick="skip()">Close</button> -->
+        <!-- <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl mt-4" onclick="skip()">Close</button> -->
+      </div>
+    </div>
+
+  <div class="overlay invis" id="expertoverlay">
+    <div class="bg-white p-4 rounded-xl">
+      <h2 id="modalEditTitleExpert" class="text-2xl font-bold mb-4">Expert: Identify Tree</h2>
+      <p id="modalEditExpertDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
+      Species:
+      <select class="w-full p-1 mb-4" id="expert-plant-name" name="expert-plant-name">
+        <option value="">Select species</option>
+      </select>
+      Tree Type:
+      <select class="w-full p-1 mb-4" id="expert-tree-type" name="expert-tree-type">
+        <option value="">Select tree type</option>
+        <option value="Indigenous Tree">Indigenous Tree</option>
+        <option value="Endemic Tree">Endemic Tree</option>
+        <option value="Invasive Tree">Invasive Tree Type</option>
+      </select>
+      
+      <input type="hidden" id="expert-ref-id" name="expert-ref-id">
+
+      <div class="float-right">
+        <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl"
+          onclick="skip()">Skip</button>
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
+          onclick="editExpertTree()">Edit</button>
+      </div>
     </div>
   </div>
 
-    <button class="hidden md:block  fixed mb-4 mr-4 bottom-4 right-0 bg-white hover:bg-green-700  p-1 rounded-full z-0"
-      id="addTree" onclick="addTreeClick()">
-      <img class="rounded-full w-10 h-10" src="./assets/img/addtree.svg">
-    </button>
+
+
+  <button class="hidden md:block  fixed mb-4 mr-4 bottom-4 right-0 bg-white hover:bg-green-700  p-1 rounded-full z-0"
+    id="addTree" onclick="addTreeClick()">
+    <img class="rounded-full w-10 h-10" src="./assets/img/addtree.svg">
+  </button>
 
     <button
       class="hidden md:block fixed mb-16 mr-4 bottom-6 right-0 bg-green-500 hover:bg-green-700 p-1 rounded-full z-0"
