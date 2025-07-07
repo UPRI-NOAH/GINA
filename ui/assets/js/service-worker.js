@@ -30,7 +30,6 @@ self.addEventListener('push', function(event) {
       if (!isClientFocused) {
         await self.registration.showNotification(title, options);
       } else {
-        console.log("👁️ App is visible. Skipping notification.");
       }
     } catch (err) {
       console.error("Error handling push:", err);

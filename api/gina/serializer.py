@@ -18,8 +18,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from api.gina.models import PushSubscription
 from api.gina.tasks import send_push_notification
-
 import io
+import random
 
 User = get_user_model()
 
@@ -126,15 +126,16 @@ class IdentifyTreeInfoSerializer(serializers.ModelSerializer):
                     {
                         "type": "send_tree_notification",
                         "message": message,
+                        "tree_owner": str(owner),
                         "user": commenter.username,
                         "timestamp": timezone.now().isoformat(),
                         "tree_id": str(tree.reference_id),
                         "notif_type": "comment"
                     }
                 )
-                print("✅ group_send completed", commenter.username)
+                print("group_send completed", commenter.username)
             except Exception as e:
-                print("❌ group_send failed:", e)
+                print("group_send failed:", e)
 
         return instance
 
@@ -237,6 +238,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
         # Create the instance
         instance = super().create(validated_data)
 
+        action = validated_data.get('action') or instance.action
         # Archive the created tree in UserTreeArchive
         UserTreeArchive.objects.create(
             reference_id=instance,
@@ -248,12 +250,28 @@ class UserTreeSerializer(serializers.ModelSerializer):
             image=instance.image,
             image_embedding=embedding_list,
         )
+        if action != "Identified": # Equivalent action = Planted
+            schedule_tree_reminder(instance)
 
-        schedule_tree_reminder(instance)
+            if instance.tree_name == "TBD":
+                self.notify_experts_tree_help(instance)
+                give_points = 5
+            else:
+                give_points = 10
 
-        # Increment user points
-        if instance.owning_user:
-            instance.owning_user.user_points = F('user_points') + 10
+        elif (
+            action == "Identified"
+            # and instance.owning_user.user_type == "Regular"
+            and instance.tree_name == "TBD"
+        ):
+            self.notify_experts_tree_help(instance)
+            give_points = 0 
+
+        else:
+            give_points = 10
+
+        if instance.owning_user and give_points:
+            instance.owning_user.user_points = F('user_points') + give_points
             instance.owning_user.save(update_fields=['user_points'])
             instance.owning_user.refresh_from_db()
 
@@ -293,73 +311,117 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
         # Remove planted_on from validated_data so main model planting date doesn't get overwritten
         validated_data.pop('planted_on', None)
-
+        action = validated_data.pop('action', None)
+        original_tree = UserTreeInfo.objects.get(reference_id=instance.reference_id)
+        original_tree_name = original_tree.tree_name
         # Update the main model instance
         updated_instance = super().update(instance, validated_data)
 
         # Action field (might be from validated_data or from instance)
-        action = validated_data.get('action') or instance.action
-
-        if in_free_edit_window:
-            try:
-                archive = UserTreeArchive.objects.filter(reference_id=updated_instance).latest('planted_on')
-                created = False
-            except UserTreeArchive.DoesNotExist:
-                archive = UserTreeArchive.objects.create(
-                    reference_id=updated_instance,
-                    owning_user=updated_instance.owning_user,
-                    tree_name=updated_instance.tree_name,
-                    tree_type=updated_instance.tree_type,
-                    tree_description=updated_instance.tree_description,
-                    planted_on=new_planted_on,
-                    image=updated_instance.image,
-                    image_embedding=validated_data.get('image_embedding'),
+        if str(action) == "Expert":
+            sender_user = self.context['request'].user
+            print(original_tree_name)
+            if original_tree_name == "TBD":
+                allowed_fields = {"tree_name", "tree_type", "edited_by"}
+                validated_data = {key: value for key, value in validated_data.items() if key in allowed_fields}
+                message = f"{sender_user} identified your tree: {updated_instance.tree_name}"
+                
+                Notification.objects.create(
+                    recipient=updated_instance.owning_user.user,
+                    sender=sender_user,
+                    notif_type="reminder",
+                    message=message,
+                    related_tree=updated_instance,
                 )
-                created = True
 
-            if not created:
-                archive.tree_name = updated_instance.tree_name
-                archive.tree_type = updated_instance.tree_type
-                archive.tree_description = updated_instance.tree_description
-                archive.planted_on = new_planted_on
-                archive.image = updated_instance.image
-                if 'image_embedding' in validated_data:
-                    archive.image_embedding = validated_data['image_embedding']
-                archive.save()
+                send_push_notification.delay(sender_user.id, "Identified", message, "reminder", instance.reference_id,)
 
-        else:
-            # Outside free edit window: create a new archive entry only if unique
-            # Award points if applicable
-            if action != "Identified":
-                user_info = updated_instance.owning_user
+                channel_layer = get_channel_layer()
+                try:
+                    async_to_sync(channel_layer.group_send)(
+                        "tree_notifications",
+                        {
+                            "type": "send_tree_notification",
+                            "message": message,
+                            "tree_owner": str(updated_instance.owning_user.user),
+                            "user": sender_user.username,
+                            "timestamp": timezone.now().isoformat(),
+                            "tree_id": str(updated_instance.reference_id),
+                            "tree_name": str(updated_instance.tree_name),
+                            "notif_type": "reminder"
+                        }
+                    )
+                    print("group_send completed", sender_user.username)
+                except Exception as e:
+                    print("group_send failed:", e)
+
+                user_info = sender_user.userinfo
                 if user_info:
-                    user_info.user_points = F('user_points') + 5
+                    user_info.user_points = F('user_points') + 10
                     user_info.save(update_fields=['user_points'])
                     user_info.refresh_from_db()
+            else:
+                raise serializers.ValidationError("This tree has already been identified. Please refresh the app")
 
-            # Check if identical archive entry already exists
-            exists = UserTreeArchive.objects.filter(
-                reference_id=updated_instance,
-                tree_name=updated_instance.tree_name,
-                tree_type=updated_instance.tree_type,
-                tree_description=updated_instance.tree_description,
-                planted_on=new_planted_on,
-                image=updated_instance.image
-            ).exists()
+        else:
+            if in_free_edit_window:
+                try:
+                    archive = UserTreeArchive.objects.filter(reference_id=updated_instance).latest('planted_on')
+                    created = False
+                except UserTreeArchive.DoesNotExist:
+                    archive = UserTreeArchive.objects.create(
+                        reference_id=updated_instance,
+                        owning_user=updated_instance.owning_user,
+                        tree_name=updated_instance.tree_name,
+                        tree_type=updated_instance.tree_type,
+                        tree_description=updated_instance.tree_description,
+                        # planted_on=new_planted_on,
+                        image=updated_instance.image,
+                        image_embedding=validated_data.get('image_embedding'),
+                    )
+                    created = True
 
-            if not exists:
-                UserTreeArchive.objects.create(
+                if not created:
+                    archive.tree_name = updated_instance.tree_name
+                    archive.tree_type = updated_instance.tree_type
+                    archive.tree_description = updated_instance.tree_description
+                    # archive.planted_on = new_planted_on
+                    archive.image = updated_instance.image
+                    if 'image_embedding' in validated_data:
+                        archive.image_embedding = validated_data['image_embedding']
+                    archive.save()
+            else:
+                # Outside free edit window: create a new archive entry only if unique
+                # Check if identical archive entry already exists
+                exists = UserTreeArchive.objects.filter(
                     reference_id=updated_instance,
-                    owning_user=updated_instance.owning_user,
                     tree_name=updated_instance.tree_name,
                     tree_type=updated_instance.tree_type,
                     tree_description=updated_instance.tree_description,
                     planted_on=new_planted_on,
-                    image=updated_instance.image,
-                    image_embedding=validated_data.get('image_embedding'),
-                )
+                    image=updated_instance.image
+                ).exists()
 
-        schedule_tree_reminder(updated_instance)
+                if not exists:
+                    UserTreeArchive.objects.create(
+                        reference_id=updated_instance,
+                        owning_user=updated_instance.owning_user,
+                        tree_name=updated_instance.tree_name,
+                        tree_type=updated_instance.tree_type,
+                        tree_description=updated_instance.tree_description,
+                        planted_on=new_planted_on,
+                        image=updated_instance.image,
+                        image_embedding=validated_data.get('image_embedding'),
+                    )
+                    
+                if action == "Planted":
+                    schedule_tree_reminder(updated_instance)
+                    # Award points if applicable
+                    user_info = updated_instance.owning_user
+                    if user_info:
+                        user_info.user_points = F('user_points') + 5
+                        user_info.save(update_fields=['user_points'])
+                        user_info.refresh_from_db()
 
         return updated_instance
     
@@ -387,6 +449,48 @@ class UserTreeSerializer(serializers.ModelSerializer):
             )
 
         return new_embedding.tolist()
+    
+    def notify_experts_tree_help(self, instance):
+        expert_users = list(UserInfo.objects.filter(user_type='Expert').exclude(user=instance.owning_user.user))
+
+        random_experts = random.sample(expert_users, min(len(expert_users), 2))
+
+        message = f"{instance.owning_user.user} needs help identifying a tree"
+        for expert in random_experts:
+            Notification.objects.create(
+                recipient=expert.user,
+                sender=instance.owning_user.user,
+                notif_type="tree_help",
+                message=message,
+                related_tree=instance,
+            )
+            send_push_notification.delay(
+                expert.user.id,
+                "Tree Identification Needed",
+                message,
+                "tree_help",
+                str(instance.reference_id),
+            )
+            
+            channel_layer = get_channel_layer()
+            try:
+                async_to_sync(channel_layer.group_send)(
+                    "tree_notifications",
+                    {
+                        "type": "send_tree_notification",
+                        "message": message,
+                        "tree_owner": instance.owning_user.user.username,
+                        "user": instance.owning_user.user.username,
+                        "timestamp": timezone.now().isoformat(),
+                        "tree_id": str(instance.reference_id),
+                        "tree_name": str(instance.tree_name),
+                        "notif_type": "tree_help",
+                        "recipient": expert.user.username,
+                    }
+                )
+                print("group_send to experts completed", instance.owning_user.user)
+            except Exception as e:
+                print("group_send to experts failed:", e)
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -394,6 +498,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%b %d, %Y %I:%M %p")
     lat = serializers.SerializerMethodField()
     lng = serializers.SerializerMethodField()
+    tree_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Notification
@@ -407,4 +512,14 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     def get_lng(self, obj):
         return obj.related_tree.longitude if obj.related_tree else None
+    
+    def get_tree_name(self, obj):
+        return obj.related_tree.tree_name if obj.related_tree else None
 
+
+class SubscriptionSerializer(serializers.Serializer):
+    endpoint = serializers.URLField()
+    keys = serializers.DictField()
+    
+    def validate(self, data):
+        return data

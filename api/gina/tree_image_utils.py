@@ -81,8 +81,8 @@ def schedule_tree_reminder(tree):
         .first()
     )
     last_update = latest_archive.planted_on if latest_archive else tree.planted_on
-    # reminder_time = last_update + timedelta(days=interval_days)
-    reminder_time = now + timedelta(seconds=10)
+    reminder_time = last_update + timedelta(days=interval_days)
+    # reminder_time = now + timedelta(seconds=10) # For testing
 
     now = timezone.now()
 

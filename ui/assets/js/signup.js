@@ -21,6 +21,13 @@ if (isLoggedIn == true) {
       hideLoading()
       return;
     }
+
+    const userType = document.getElementsByName('user_type')[0].value;
+    if (!userType) {
+      alert("Please select a user type.");
+      hideLoading();
+      return;
+    }
     
     const userData = {
       "email": document.getElementsByName('email')[0].value,
@@ -34,6 +41,7 @@ if (isLoggedIn == true) {
       "last_name": document.getElementsByName('lname')[0].value,
       "email": document.getElementsByName('email')[0].value,
       "contact": document.getElementsByName('cnum')[0].value,
+      "user_type": userType,
       "profile_picture": "",
       "user_points": 0
     };

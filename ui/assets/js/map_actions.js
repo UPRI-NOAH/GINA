@@ -305,6 +305,7 @@ function editTree() {
   formData.append('tree_name', plantName);
   formData.append('tree_description', description);
   formData.append('tree_type', treeType);
+  formData.append('action', action);
   formData.append('owning_user', username);
   if (image) {
     formData.append('image', image);
@@ -326,6 +327,66 @@ function editTree() {
           // DRF validation errors come as object with keys pointing to lists of errors
           if (typeof errorData === 'object') {
             // Flatten all error messages into one string
+            errorMessage = Object.values(errorData)
+              .flat()
+              .join('\n');
+          } else if (typeof errorData === 'string') {
+            errorMessage = errorData;
+          }
+        }
+        throw new Error(errorMessage);
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert("Tree updated successfully");
+
+      document.getElementById("map").classList.remove("map-blurred");
+      document.getElementById("uploadoverlay").classList.add("invis");
+      hideLoading();
+      location.reload();
+    })
+    .catch(error => {
+      console.error(error);
+      hideLoading();
+      alert(error.message);
+    });
+}
+
+
+function editExpertTree() {
+  const plantName = document.getElementById('expert-plant-name').value;
+  const treeType = document.getElementById('expert-tree-type').value;
+  const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+  const treeId = document.getElementById('expert-ref-id').value;
+
+  showLoading();
+
+  if (!plantName || !treeId || !treeType) {
+    hideLoading();
+    alert("Please fill in all required fields before submitting.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('tree_name', plantName);
+  formData.append('tree_type', treeType);
+  formData.append('edited_by', username);
+  formData.append('action', "Expert");
+
+  fetch(`${usertreeURL}${treeId}/`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Token ${authToken}`,
+    },
+    body: formData
+    })
+    .then(async response => {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        let errorMessage = 'Failed to edit tree data.';
+        if (errorData) {
+          if (typeof errorData === 'object') {
             errorMessage = Object.values(errorData)
               .flat()
               .join('\n');
@@ -375,7 +436,7 @@ function commentIdentify() {
   
   const formData = new FormData();
   formData.append("tree_comment", commentText);
-  formData.append("tree_identifier", referenceId);  // should match UserTreeInfo.reference_id
+  formData.append("tree_identifier", referenceId);
   formData.append("identified_by", username);
 
   fetch(identifyTreeURL, {
@@ -391,9 +452,8 @@ function commentIdentify() {
   })
   .then(data => {
     hideLoading()
-    // alert("Comment posted successfully!");
     document.querySelector('textarea[name="body"]').value = "";
-    showComments(referenceId);  // Reload comments if you have a loader function
+    showComments(referenceId);
   })
   .catch(err => {
     console.error(err);

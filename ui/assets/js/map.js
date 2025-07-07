@@ -48,6 +48,7 @@ if (isLoggedIn) {
 var map = L.map('map').setView([12.8797, 121.7740], 5);
 
 window.onload = function () {
+  loadTreeMarkers()
   if (!navigator.geolocation || !navigator.permissions) {
     alert("Geolocation or Permissions API not supported.");
     return;
@@ -243,25 +244,56 @@ var treeList = $.ajax({
 
 $.when(treeList).done(function () {
   treeJSON = treeList.responseJSON;
+
   const dynamicSelect = document.getElementById('plant-name');
   const editDynamicSelect = document.getElementById('edit-plant-name');
-  dynamicSelect.innerHTML = '<option value="">Select species</option>';
-  editDynamicSelect.innerHTML = '<option value="">Select species</option>';
+  const expertDynamicSelect = document.getElementById('expert-plant-name');
+
+  // Clear previous options
+  dynamicSelect.innerHTML = '';
+  editDynamicSelect.innerHTML = '';
+  expertDynamicSelect.innerHTML = '';
+
+  const basicOption = { value: '', text: 'Select species' };
+
+  // Function to initialize a select element
+  function initializeSelect(select, includeAskExpert = false) {
+  // "Select species" as default, disabled option
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.textContent = 'Select species';
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  select.appendChild(defaultOption);
+
+  // Optionally add "Ask an expert" with bold style
+  if (includeAskExpert) {
+    const expertOption = document.createElement('option');
+    expertOption.value = 'TBD';
+    expertOption.textContent = 'Ask an expert';
+    expertOption.style.fontWeight = 'bold';
+    select.appendChild(expertOption);
+  }
+}
+
+  initializeSelect(dynamicSelect, true);      // adds "Ask an expert"
+  initializeSelect(editDynamicSelect);        // removes
+  initializeSelect(expertDynamicSelect);      // removes
+
+  // Add dynamic options to all selects
+  const selects = [dynamicSelect, editDynamicSelect, expertDynamicSelect];
   treeJSON.forEach(item => {
-    const selects = [dynamicSelect, editDynamicSelect];
     selects.forEach(select => {
       const option = document.createElement('option');
       option.value = item.tree_name;
       option.textContent = item.tree_name;
       select.appendChild(option);
     });
-
   });
-
 
 });
 
-
+function loadTreeMarkers(){
 var ph = $.ajax({
   url: usertreeURL,
   dataType: "json",
@@ -274,11 +306,11 @@ var ph = $.ajax({
 });
 
 $.when(ph).done(function () {
+  
   bound = ph.responseJSON;
   bound.forEach(function(feature) {
   const latlng = L.latLng(feature.latitude, feature.longitude);
   const icon = (username === feature.owning_user) ? owntreeIcon : treeIcon;
-
   const marker = L.marker(latlng, { icon });
   marker.feature = feature;
   treeMarkers[feature.reference_id] = marker;
@@ -292,10 +324,26 @@ map.addLayer(markers);
 window._resolveMarkersLoaded();
 
 });
-
+}
 // L.Control.geocoder().addTo(map);
 
 let mark;
+
+
+function expertEditClick(refId, name, user, treeType, action) {
+    const modalTitle = document.getElementById('modalEditTitle');
+    const modalDesc = document.getElementById('modalEditDesc');
+    modalTitle.innerHTML = "Expert: Identify Tree"
+    modalDesc.innerHTML = "Please fill in the details of the tree you want to edit."
+    document.getElementById("expertoverlay").classList.remove("invis");
+    document.getElementById("map").classList.add("map-blurred");
+
+    document.getElementById('expert-ref-id').value = refId
+    document.getElementById('expert-plant-name').value = name
+    document.getElementById('expert-tree-type').value = treeType
+
+}
+
 
 
 function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action) {
@@ -562,6 +610,7 @@ function skip() {
   document.getElementById("editoverlay").classList.add("invis");
   document.getElementById("identifyoverlay").classList.add("invis");
   document.getElementById("treeArchiveTitleOverlay").classList.add("invis");
+  document.getElementById("expertoverlay").classList.add("invis");
 
     // Reset Edit input
     document.getElementById('tree-photo').value = '';
@@ -572,7 +621,7 @@ function skip() {
 }
 
 function buildPopupContent(feature, username) {
-  const {
+  let {
     reference_id: refId,
     tree_name: name,
     owning_user: user,
@@ -580,6 +629,7 @@ function buildPopupContent(feature, username) {
     tree_description: treeDescription,
     planted_on: plantDateStr,
     latest_tree_update: latestDateStr,
+    edited_by: editedBy,
     action,
     image: photoUrl,
     version
@@ -594,18 +644,25 @@ function buildPopupContent(feature, username) {
   const oneHourAfterLastUpdate = new Date(latestDate.getTime() + 60 * 60 * 1000);
 
   const oneMonthLater = new Date(latestDate);
-  oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+  // oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+  oneMonthLater.setDate(oneMonthLater.getDate() + 30);
 
   const threeYearsLater = new Date(plantDate);
-  threeYearsLater.setFullYear(plantDate.getFullYear() + 3);
+  // threeYearsLater.setFullYear(plantDate.getFullYear() + 3);
+  threeYearsLater.setDate(threeYearsLater.getDate() + 1095);
 
   const sixMonthsLater = new Date(latestDate);
-  sixMonthsLater.setMonth(latestDate.getMonth() + 6);
+  // sixMonthsLater.setMonth(latestDate.getMonth() + 6);
+  sixMonthsLater.setDate(sixMonthsLater.getDate() + 180);
 
+  
   let editIconUrl = (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate)
     ? "https://cdn-icons-png.flaticon.com/128/481/481874.png"
     : "https://cdn-icons-png.flaticon.com/128/992/992651.png";
 
+  if (userType === "Expert") {
+    editIconUrl = "https://cdn-icons-png.flaticon.com/128/481/481874.png";
+  }
   const popupContent = document.createElement("div");
   popupContent.style.position = "relative";
 
@@ -627,10 +684,19 @@ function buildPopupContent(feature, username) {
   button.innerHTML = `<img src="${editIconUrl}" style="width: 15px; height: 15px;">`;
   if (username !== user) {
     button.style.display = 'none';
+    if(userType == "Expert" && name == "TBD" ) {
+      button.style.display = 'block'
+    }
   }
+  
+  
 
   button.addEventListener("click", (event) => {
     event.stopPropagation();
+    console.log(user, username)
+    if(userType == "Expert" && name == "TBD" && user != username) {
+        expertEditClick(refId, name, user, treeType, action)
+    }
 
     if (action !== "Identified") {
       if (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate) {
@@ -648,27 +714,30 @@ function buildPopupContent(feature, username) {
           editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action);
           return;
         } else {
-          alert("After 3 years, you can only edit this tree every 6 months.");
+          alert("After 3 years, you can only edit this tree every 180 days.");
           return;
         }
       }
 
-      alert("Tree edits are locked. You can only edit it within 1 hour of planting or update after 1 month.");
+      alert("Tree edits are locked. You can only edit it within 1 hour of planting or update after 30 days.");
     } else {
       editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action);
     }
   });
 
+  const versionDisplay = editedBy ? `${version}.1` : version;
+
   const infoDiv = document.createElement("div");
   const photoId = `tree-photo-${refId}`;
   infoDiv.innerHTML = `
   <img id="${photoId}" data-name="${name}" data-ref-id="${refId}" src="${photoUrl}" class="w-full h-56 object-cover" />
-    <b>Name:</b> ${name}<br>
+    <b>Species:</b> ${name}<br>
     <b>Description:</b> ${treeDescription}<br>
     <b>Tree Type:</b> ${treeType}<br>
     <b>Date Planted:</b> ${plantDateStr}<br>
     <b>${action} by:</b> ${user}<br>
-    <b>Version:</b> ${version}<br>
+    ${editedBy ? `<b>Verified by:</b> ${editedBy}<br>` : ""}
+    <b>Version:</b> ${versionDisplay}<br>
     <hr style="height: 1px; background-color: #0095ff; border: none;">
     <button onclick="showComments('${refId}')" class="text-blue-600 text-sm hover:underline mt-2">View Discussion 💬</button>
   `;

@@ -13,8 +13,11 @@ let treeUrl = `${http}://${url}/api/tree-info/`;
 let userTreeURL  = `${http}://${url}/api/user-tree-info/`;
 let passwordChangeURL = `${http}://${url}/auth/users/set_password/`;
 let resetPassUrl = `${http}://${url}/auth/users/reset_password/`;
+let passToExpert = `${http}://${url}/api/tree-help/pass`;
 
+// api/tree-help/pass/${treeId
 var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+const userType = localStorage.getItem('userType') || sessionStorage.getItem('userType');
 const currentPath = window.location.pathname;
 
 const loadingOverlay = document.getElementById('loading-overlay');
@@ -42,7 +45,7 @@ const treeMarkers = {};
     userDropdown.classList.add('hidden');
     notifDropdown.classList.toggle('hidden');
     notifDropdown.classList.toggle('show');
-    // ✅ Fetch latest notifications from backend
+    
     if (authToken && notifDropdown.classList.contains('show')) {
       try {
         const res = await fetch(`${http}://${url}/api/notifications/`, {
@@ -53,7 +56,7 @@ const treeMarkers = {};
 
         const notifications = await res.json();
         const list = document.getElementById("notification-list");
-
+        
         // Always clear the list (except placeholder)
         list.querySelectorAll("li:not(.text-gray-400)").forEach(el => el.remove());
 
@@ -76,36 +79,19 @@ const treeMarkers = {};
         } else {
           placeholder.classList.add("hidden");
           notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-          notifications.forEach(n => {
-            const item = document.createElement("li");
-            item.className = "py-2 border-b border-gray-200 cursor-pointer";
-            if (!n.is_seen) item.classList.add("font-bold");
-            
-            item.innerHTML = `
-              ${n.message}<br>
-              <small class="text-gray-500">${new Date(n.created_at).toLocaleString()}</small>
-            `;
-            const treeId = n.related_tree;
-            const notifType = n.notif_type;
-            const marker = treeMarkers[treeId];
-            item.addEventListener("click", () => {
-                const params = new URLSearchParams({
-                  focus: treeId,
-                  type: notifType,
-                });
-
-                if (!currentPath.includes('map.html')) {
-                  window.location.href = `/map.html?${params.toString()}`;
-                  return;
-                }
-                
-              focusOnTree(treeId, notifType);
-            });
-
-            list.appendChild(item);
           
-          });
+          notifications.forEach(n => {
+              addNotificationToList(
+                n.message,
+                !n.is_seen,
+                n.created_at,
+                n.related_tree,
+                n.tree_name,
+                n.notif_type,
+                n.is_passed,
+              );
+              
+            });
         }
 
         await markAllNotificationsSeen();
@@ -145,30 +131,34 @@ if ('Notification' in window) {
   const wsScheme = location.protocol === "https:" ? "wss" : "ws";
   const socket = new WebSocket(`${wsScheme}://${url}/ws/tree-notifications/`);
 
-
   socket.onmessage = (e) => {
     if (!authToken) return;
     const data = JSON.parse(e.data);
+    const isTreeOwner = (data.tree_owner === username);
+    const isUserExpert = (userType === "Expert");
+    const isCommentForMe = data.notif_type === "comment" && isTreeOwner;
+    const isReminderForMe = data.notif_type === "reminder" && isTreeOwner;
+    const isTreeHelpForExpert = data.notif_type === "tree_help" && isUserExpert && !isTreeOwner;
+    const isRecipient = data.recipient === username;
 
-    // 👇 Modified logic: allow reminders to pass
+    if ((isCommentForMe) || (isReminderForMe) || (isTreeHelpForExpert && isRecipient)) {
     
-    if ((data.user && data.user !== username) || data.notif_type === "reminder") {
-      
-      addNotificationToList(data.message, true, data.timestamp, data.tree_id, data.notif_type);
-
+      addNotificationToList(data.message, true, data.timestamp, data.tree_id, data.tree_name, data.notif_type, data.is_passed);
       if (!notifDropdown.classList.contains('show')) {
-        incrementBadge(); // ✅ Fixes your issue
+        incrementBadge(); 
       }
 
       if (isAppInFocus() && !notifDropdown.classList.contains('show')) {
+        if(data.message != "Connected to WebSocket"){
         showInAppBanner(data.message, data.notif_type, data.tree_id);
+        }
       } else {
-        navigator.serviceWorker.ready.then(registration => {
-          registration.showNotification("🌳 Tree Reminder", {
-            body: data.message,
-            icon: '/icon.png',
-          });
-        });
+        // navigator.serviceWorker.ready.then(registration => {
+        //   registration.showNotification("🌳 Tree Reminder", {
+        //     body: data.message,
+        //     icon: '/icon.png',
+        //   });
+        // });
       }
     }
   };
@@ -186,7 +176,8 @@ if ('Notification' in window) {
           const notifs = await res.json();
           let unseenCount = 0;
           for (let notif of notifs) {
-            addNotificationToList(notif.message, !notif.is_seen, notif.created_at, notif.related_tree, notif.notif_type);
+            
+            addNotificationToList(notif.message, !notif.is_seen, notif.created_at, notif.related_tree, notif.tree_name, notif.notif_type, notif.is_passed);
             
             if (!notif.is_seen) unseenCount++;
           }
@@ -296,30 +287,41 @@ async function logOut() {
 
 let unreadCount = 0;
 
-function addNotificationToList(message, isUnseen = false, timestamp = null, treeId = null, notifType = null) {
+function addNotificationToList(message, isUnseen = false, timestamp = null, treeId = null, treeName, notifType = null, isPassed) {
+  
   const list = document.getElementById("notification-list");
 
   const placeholder = list.querySelector("li.text-gray-400");
   if (placeholder) placeholder.remove();
 
   const item = document.createElement("li");
-  item.className = "py-2 border-b border-gray-200 cursor-pointer";
+  item.className = "py-2 border-b border-gray-200";
+
   if (isUnseen) item.classList.add("font-bold");
 
-  let datePart = timestamp ? `<br><small class="text-gray-500">${new Date(timestamp).toLocaleString()}</small>` : "";
+  let datePart = timestamp
+    ? `<br><small class="text-gray-500">${new Date(timestamp).toLocaleString()}</small>`
+    : "";
 
-  item.innerHTML = `${message} ${datePart}`;
+  // Message HTML
+  item.innerHTML = `
+  <div class="flex justify-between items-start relative">
+    <div class="flex-1 cursor-pointer">
+      ${message} ${datePart}
+    </div>
+  </div>
+  `;
 
-  // 👇 Make item clickable if treeId and notifType are provided
+  // Handle click on notification (to focus tree)
   if (treeId && notifType) {
-    item.addEventListener("click", (e) => {
+    item.querySelector(".flex-1").addEventListener("click", (e) => {
       e.stopPropagation();
       const params = new URLSearchParams({
         focus: treeId,
         type: notifType,
       });
 
-      if (!currentPath.includes('map.html')) {
+      if (!currentPath.includes("map.html")) {
         window.location.href = `/map.html?${params.toString()}`;
         return;
       }
@@ -329,8 +331,90 @@ function addNotificationToList(message, isUnseen = false, timestamp = null, tree
     });
   }
 
-  list.prepend(item);
+  // Handle Pass button
+  if (notifType === "tree_help") {
+  const passBtn = document.createElement("button");
+  passBtn.className = "pass-btn text-sm";
+  const actuallyPassed = isPassed === true || isPassed === "true";
+  
+  if (actuallyPassed) {
+    passBtn.textContent = "Status: You passed it to another expert";
+    passBtn.classList.add("text-gray-500");
+    passBtn.disabled = true;
+  } 
+  else if (treeName != "TBD"){
+    passBtn.textContent = "Status: Tree already identified";
+    passBtn.disabled = true;
+  }
+  else {
+    passBtn.textContent = "Pass";
+    passBtn.classList.add(
+      "bg-green-700", "text-white", "px-2", "py-1", "rounded", 
+      "hover:opacity-90", "absolute", "bottom-0", "right-0"
+    );
+
+    passBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      passBtn.disabled = true;
+      passBtn.textContent = "Passing...";
+
+      const csrfToken = await getCookie("csrftoken");
+
+      fetch(`${passToExpert}/${treeId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+          "Authorization": `Token ${authToken}`,
+        },
+      })
+        .then((res) => {
+          if (res.ok) {
+            passBtn.textContent = "Status: You passed it to another expert";
+            passBtn.classList.remove(
+              "bg-green-700", "text-white", "px-2", "py-1", "rounded", 
+              "hover:opacity-90", "absolute", "bottom-0", "right-0"
+            );
+            passBtn.classList.add("text-gray-500");
+            passBtn.disabled = true;
+          } else {
+            return res.json().then((data) => {
+              passBtn.textContent = data?.detail || "Failed to pass";
+              passBtn.classList.add("text-red-500");
+            });
+          }
+        })
+        .catch((err) => {
+          passBtn.textContent = "Error";
+          passBtn.classList.add("text-red-500");
+        });
+    });
+  }
+
+  item.querySelector(".flex-1").appendChild(passBtn); // <== Append it inside the inner div
 }
+
+    const itemTime = new Date(timestamp).getTime();
+  const children = Array.from(list.children);
+  let inserted = false;
+
+  for (const child of children) {
+    const childTimestamp = child.getAttribute("data-timestamp");
+    if (!childTimestamp) continue;
+
+    const childTime = new Date(childTimestamp).getTime();
+    if (itemTime >= childTime) {
+      list.insertBefore(item, child);
+      inserted = true;
+      break;
+    }
+  }
+
+  if (!inserted) {
+    list.appendChild(item); // oldest at bottom
+  }
+}
+
 
 function updateBadge(count) {
   const badge = document.getElementById("notification-count");
@@ -398,40 +482,74 @@ async function unsubscribeUserFromPush() {
   }
 }
 
+async function focusOnTree(treeId, notifType, retries = 10) {
+  await window.markersLoaded;
 
-function focusOnTree(treeId, notifType, retries = 5) {
-  const marker = treeMarkers?.[treeId];
-  if (!marker) {
-    if (retries > 0) {
-      return setTimeout(() => focusOnTree(treeId, notifType, retries - 1), 300);
-    } else {
+  // Wait until the specific treeId is available
+  const waitForMarker = async (triesLeft = retries) => {
+    const marker = treeMarkers?.[treeId];
+
+    if (marker) return marker;
+
+    if (triesLeft <= 0) return null;
+
+    // Wait 300ms before trying again
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(waitForMarker(triesLeft - 1));
+      }, 300);
+    });
+  };
+
+  let marker = await waitForMarker();
+if (!marker) {
+    try {
+      const res = await fetch(`${usertreeURL}${treeId}/`, {
+        headers: {
+          "Authorization": `Token ${authToken}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Tree not found");
+
+      const feature = await res.json();
+
+      // Remove old one just in case
+      if (treeMarkers[treeId]) {
+        markers.removeLayer(treeMarkers[treeId]);
+        delete treeMarkers[treeId];
+      }
+
+      const latlng = L.latLng(feature.latitude, feature.longitude);
+      const icon = (username === feature.owning_user) ? owntreeIcon : treeIcon;
+      marker = L.marker(latlng, { icon });
+      marker.feature = feature;
+      treeMarkers[treeId] = marker;
+
+      const popupContent = buildPopupContent(feature, username);
+      marker.bindPopup(popupContent);
+      markers.addLayer(marker);
+
+    } catch (err) {
+      console.warn("Marker fetch failed for treeId:", treeId, err);
       return;
     }
   }
 
   const latlng = marker.getLatLng();
 
-  // Close any existing popup
-  // map.closePopup();
-
-  // Add a one-time moveend event to trigger popup after map settles
   const onMoveEnd = () => {
-    map.off("moveend", onMoveEnd); // remove listener after it fires once
+    map.off("moveend", onMoveEnd);
     marker.openPopup();
-    if(notifType == "comment"){
-    showComments(treeId)
+    if (notifType === "comment") {
+      showComments(treeId);
     }
   };
+
   map.on("moveend", onMoveEnd);
-
-  // Start animated pan+zoom
-  map.setView(marker.getLatLng(), 20, {
-    animate: true
-  });
-  
-  // map.flyTo(marker.getLatLng(), 18);
-
+  map.setView(latlng, 20, { animate: true });
 }
+
 
 function hideLoading() {
   loadingOverlay.style.display = 'none';
@@ -510,5 +628,23 @@ async function markAllNotificationsSeen() {
 
     updateBadge(0);
   } catch (err) {
+  }
+}
+
+function togglePassword(inputId, buttonEl) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+
+  input.type = isHidden ? 'text' : 'password';
+
+  const eye = buttonEl.querySelector('.eye');
+  const eyeSlash = buttonEl.querySelector('.eye-off');
+
+  if (isHidden) {
+    eye.classList.add('hidden');
+    eyeSlash.classList.remove('hidden');
+  } else {
+    eye.classList.remove('hidden');
+    eyeSlash.classList.add('hidden');
   }
 }

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets, mixins
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
-from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer
+from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer, SubscriptionSerializer
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter, IdentifyTreeFilter, UserTreeArchiveTreeFilter, NotificationFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
@@ -15,31 +15,46 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.gina.models import PushSubscription 
 from rest_framework.authentication import TokenAuthentication
+from djoser.views import TokenCreateView
+from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
+import random
+from api.gina.tasks import send_push_notification
+from rest_framework.views import APIView
 
-@api_view(['POST'])
-def save_subscription(request):
-    user = request.user
-    data = request.data
-    sub = data.get("subscription")
 
-    if not sub:
-        return Response({"error": "Missing subscription"}, status=400)
-
-    endpoint = sub.get("endpoint")
-
-    if not endpoint:
-        return Response({"error": "Missing endpoint"}, status=400)
-
-    exists = PushSubscription.objects.filter(
-        user=user, subscription__endpoint=endpoint
-    ).exists()
-
-    if not exists:
-        PushSubscription.objects.create(user=user, subscription=sub)
-        return Response({"status": "subscription saved"}, status=201)
-    else:
-        return Response({"status": "subscription already exists"}, status=200)
+class SaveSubscriptionView(APIView):
+    permission_classes = [IsAuthenticated]
     
+    def post(self, request):
+        user = request.user
+        sub_data = request.data.get("subscription")
+        
+        if not sub_data:
+            return Response({"error": "Missing subscription"}, status=400)
+        
+        serializer = SubscriptionSerializer(data=sub_data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
+        
+        endpoint = serializer.validated_data["endpoint"]
+        
+        # Check if endpoint already belongs to a different user
+        existing = PushSubscription.objects.filter(subscription__endpoint=endpoint).first()
+        if existing and existing.user != user:
+            return Response({
+                "error": "This subscription already belongs to another user.",
+                "conflict_with_user": existing.user.username,
+            }, status=400)
+        
+        # Allow the same user to have multiple different subscriptions
+        PushSubscription.objects.update_or_create(
+            user=user,
+            subscription__endpoint=endpoint,
+            defaults={"subscription": sub_data}
+        )
+        
+        return Response({"status": "subscription saved"}, status=201)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -74,8 +89,73 @@ def mark_all_notifications_seen(request):
 def reset_password(request):
     return render(request, 'reset_password.html')
 
+
 def activate_page(request):
     return render(request, 'activate.html') 
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pass_tree_notif(request, reference_id):
+    user = request.user
+    tree = get_object_or_404(UserTreeInfo, reference_id=reference_id)
+
+    Notification.objects.filter(
+        notif_type="tree_help",
+        related_tree=tree,
+        recipient=user
+    ).update(is_passed=True)
+
+    notified_user_ids = Notification.objects.filter(
+        notif_type="tree_help",
+        related_tree=tree
+    ).values_list("recipient_id", flat=True).distinct()
+
+    remaining_experts = list(
+        UserInfo.objects.filter(user_type="Expert")
+        .exclude(user=tree.owning_user)
+        .exclude(user__id__in=notified_user_ids)
+    )
+
+    if not remaining_experts:
+        return Response({"detail": "No more available experts."}, status=204)
+
+    next_expert = random.choice(remaining_experts)
+
+    message = f"{tree.owning_user.user} needs help identifying a tree"
+    Notification.objects.create(
+        recipient=next_expert.user,
+        sender=tree.owning_user.user,
+        notif_type="tree_help",
+        message=message,
+        related_tree=tree,
+    )
+
+    send_push_notification.delay(
+        next_expert.user.id,
+        "Tree Identification Needed",
+        message,
+        "tree_help",
+        str(tree.reference_id),
+    )
+    print(next_expert.user.username)
+    async_to_sync(get_channel_layer().group_send)(
+        f"tree_notifications",
+        {
+            "type": "send_tree_notification",
+            "message": message,
+            "tree_owner": tree.owning_user.user.username,
+            "user": tree.owning_user.user.username,
+            "timestamp": timezone.now().isoformat(),
+            "tree_id": str(tree.reference_id),
+            "notif_type": "tree_help",
+            "recipient": next_expert.user.username,
+            "is_passed": False,
+        }
+    )
+
+    return Response({"detail": f"{next_expert.user.username} has been notified."}, status=200)
+
 
 @extend_schema_view(
     list=extend_schema(description="Returns a list of all information for all plantable trees")
@@ -184,3 +264,30 @@ class NotificationViewSet(viewsets.ModelViewSet):
         if user.is_authenticated:
             return Notification.objects.filter(recipient=user).order_by('-created_at')
         return Notification.objects.none() 
+
+
+class CustomTokenCreateView(TokenCreateView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        # Validate credentials
+        serializer.is_valid(raise_exception=True)
+
+        # Check that the user is here
+        user = serializer.user 
+
+        # Generate or get token
+        token, _ = Token.objects.get_or_create(user=user)
+
+        # Get user_type
+        try:
+            user_info = UserInfo.objects.get(user=user)
+            user_type = user_info.user_type
+        except UserInfo.DoesNotExist:
+            user_type = None
+
+        return Response({
+            'auth_token': token.key,
+            'username': user.username,
+            'user_type': user_type,
+        }, status=200)

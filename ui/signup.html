@@ -96,25 +96,96 @@
             class="border-none text-black outline-none" />
         </div>
 
-        <div class="mb-5 flex gap-3 rounded-full bg-green-100 px-6 py-3">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4">
-            <path
-              d="M12 14.5V16.5M7 10.0288C7.47142 10 8.05259 10 8.8 10H15.2C15.9474 10 16.5286 10 17 10.0288M7 10.0288C6.41168 10.0647 5.99429 10.1455 5.63803 10.327C5.07354 10.6146 4.6146 11.0735 4.32698 11.638C4 12.2798 4 13.1198 4 14.8V16.2C4 17.8802 4 18.7202 4.32698 19.362C4.6146 19.9265 5.07354 20.3854 5.63803 20.673C6.27976 21 7.11984 21 8.8 21H15.2C16.8802 21 17.7202 21 18.362 20.673C18.9265 20.3854 19.3854 19.9265 19.673 19.362C20 18.7202 20 17.8802 20 16.2V14.8C20 13.1198 20 12.2798 19.673 11.638C19.3854 11.0735 18.9265 10.6146 18.362 10.327C18.0057 10.1455 17.5883 10.0647 17 10.0288M7 10.0288V8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8V10.0288"
-              stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+
+         <div class="mb-5 flex gap-3 rounded-full bg-green-100 px-6 py-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#64748b" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0" />
           </svg>
-          <input type="password" placeholder="Password" name="psw" required
-            class="border-none text-black outline-none" />
+
+          <select name="user_type" required class="flex-1 border-none bg-green-100 text-black outline-none">
+            <option disabled selected>User Type: </option>
+            <option value="Regular">Regular</option>
+            <option value="Expert">Expert</option>
+          </select>
         </div>
 
-        <div class="mb-5 flex gap-3 rounded-full bg-green-100 px-6 py-3">
+        <div class="mb-5 flex items-center gap-3 rounded-full bg-green-100 px-6 py-3 relative">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4">
             <path
               d="M12 14.5V16.5M7 10.0288C7.47142 10 8.05259 10 8.8 10H15.2C15.9474 10 16.5286 10 17 10.0288M7 10.0288C6.41168 10.0647 5.99429 10.1455 5.63803 10.327C5.07354 10.6146 4.6146 11.0735 4.32698 11.638C4 12.2798 4 13.1198 4 14.8V16.2C4 17.8802 4 18.7202 4.32698 19.362C4.6146 19.9265 5.07354 20.3854 5.63803 20.673C6.27976 21 7.11984 21 8.8 21H15.2C16.8802 21 17.7202 21 18.362 20.673C18.9265 20.3854 19.3854 19.9265 19.673 19.362C20 18.7202 20 17.8802 20 16.2V14.8C20 13.1198 20 12.2798 19.673 11.638C19.3854 11.0735 18.9265 10.6146 18.362 10.327C18.0057 10.1455 17.5883 10.0647 17 10.0288M7 10.0288V8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8V10.0288"
               stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
-          <input type="password" placeholder="Enter Password Again" required name="psw_again"
-            class="border-none text-black outline-none" />
+
+          <input type="password" id="password1" name="psw" placeholder="Password" required
+            class="border-none text-black outline-none bg-transparent flex-1" />
+
+          <button type="button" onclick="togglePassword('password1', this)"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black focus:outline-none">
+            <!-- Eye open -->
+            <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5
+                    c4.478 0 8.268 2.943 9.542 7
+                    -1.274 4.057 -5.064 7 -9.542 7
+                    -4.477 0 -8.268 -2.943 -9.542 -7z" />
+            </svg>
+
+            <!-- Eye slash (hidden) -->
+            <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19
+                    c-4.478 0 -8.268 -2.943 -9.542 -7
+                    a9.964 9.964 0 012.042 -3.368
+                    m1.846 -1.88A9.955 9.955 0 0112 5
+                    c4.478 0 8.268 2.943 9.542 7
+                    a9.956 9.956 0 01-4.043 5.097M3 3l18 18" />
+            </svg>
+          </button>
         </div>
+
+        <div class="mb-5 flex items-center gap-3 rounded-full bg-green-100 px-6 py-3 relative">
+         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4">
+            <path
+              d="M12 14.5V16.5M7 10.0288C7.47142 10 8.05259 10 8.8 10H15.2C15.9474 10 16.5286 10 17 10.0288M7 10.0288C6.41168 10.0647 5.99429 10.1455 5.63803 10.327C5.07354 10.6146 4.6146 11.0735 4.32698 11.638C4 12.2798 4 13.1198 4 14.8V16.2C4 17.8802 4 18.7202 4.32698 19.362C4.6146 19.9265 5.07354 20.3854 5.63803 20.673C6.27976 21 7.11984 21 8.8 21H15.2C16.8802 21 17.7202 21 18.362 20.673C18.9265 20.3854 19.3854 19.9265 19.673 19.362C20 18.7202 20 17.8802 20 16.2V14.8C20 13.1198 20 12.2798 19.673 11.638C19.3854 11.0735 18.9265 10.6146 18.362 10.327C18.0057 10.1455 17.5883 10.0647 17 10.0288M7 10.0288V8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8V10.0288"
+              stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+
+          <input type="password" id="password2" name="psw_again" placeholder="Enter Password Again" required
+            class="border-none text-black outline-none bg-transparent flex-1" />
+
+          <button type="button" onclick="togglePassword('password2', this)"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black focus:outline-none">
+            <!-- Eye -->
+            <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5
+                    c4.478 0 8.268 2.943 9.542 7
+                    -1.274 4.057 -5.064 7 -9.542 7
+                    -4.477 0 -8.268 -2.943 -9.542 -7z" />
+            </svg>
+
+            <!-- Eye slash -->
+            <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19
+                    c-4.478 0 -8.268 -2.943 -9.542 -7
+                    a9.964 9.964 0 012.042 -3.368
+                    m1.846 -1.88A9.955 9.955 0 0112 5
+                    c4.478 0 8.268 2.943 9.542 7
+                    a9.956 9.956 0 01-4.043 5.097M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+
 
         <button type="submit" class="w-full rounded-full mt-5 bg-gradient-to-r 
         from-green-400 to-green-700 py-3 font-medium tracking-wide text-white cursor-pointer">
