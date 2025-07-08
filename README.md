@@ -98,13 +98,26 @@ Afterwards, execute the migrations via
 ```bash
 python manage.py migrate
 ```
-
+Install libraries
+```bash
+pipenv install
+```
 Finally, run the server using
 
 ```bash
 python manage.py runserver
 ```
-
+With daphne for running websockets for realtime notifications
+```bash
+daphne -b 0.0.0.0 -p 8000 api.asgi:application
+```
+For celery background notification webpush
+```bash
+redis-server
+```
+```bash
+celery -A api worker --loglevel=info
+```
 ## API Documentation
 
 Once installed and running, an API schema is available via the `/api/schema` endpoint in YAML format. It is also available in human-readable form via `/api/schema/swagger-ui`.
