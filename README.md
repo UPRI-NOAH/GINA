@@ -107,7 +107,7 @@ Finally, run the server using
 ```bash
 python manage.py runserver
 ```
-With daphne for running websockets for realtime notifications
+or instead if you want with daphne for running websockets for realtime notifications
 ```bash
 daphne -b 0.0.0.0 -p 8000 api.asgi:application
 ```
