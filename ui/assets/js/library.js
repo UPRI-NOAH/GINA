@@ -26,15 +26,17 @@ var treeLib = $.ajax({
       const pageData = filteredData.slice(startIndex, endIndex);
       pageData.forEach((data) => {
         const row = document.createElement("div");
-        row.className = "tree-container flex md:flex-col-reverse md:w-64 p-2 shadow-lg overflow-x-auto transform hover:scale-105 transition duration-500";
+        row.className = "tree-container flex flex-col md:flex-row md:w-64 p-2 shadow-lg overflow-x-auto mx-auto transform hover:scale-105 transition duration-500";
         row.innerHTML = `
-          <div class="flex flex-col justify-center detail-container w-full h-32">
-            <div class="text-xl font-bold" style="color:black"><p>${data.tree_name}</p></div>
-            <div class="text-sm"><p><b>Scientific Name: </b><i>${data.scientific_name}</i></p></div>
-            <div class="text-sm"><p><b>Family Name: </b><i>${data.family_name}</i></p></div>
-          </div>
-          <div class="flex-shrink">
-            <img src="${data.tree_image}" class="w-full h-48 object-cover">
+          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.description || 'No description available.'}\`)" class="cursor-pointer">
+            <div class="flex-shrink">
+              <img src="${data.tree_image}" class="w-full h-48 object-cover rounded-xl">
+            </div>
+            <div class="flex flex-col justify-center detail-container w-full h-32">
+              <div class="text-xl font-bold" style="color:#047857"><p>${data.tree_name}</p></div>
+              <div class="text-sm" style="color:#303030"><p><b>Scientific Name: </b><i>${data.scientific_name}</i></p></div>
+              <div class="text-sm" style="color:#303030"><p><b>Family Name: </b><i>${data.family_name}</i></p></div>
+            </div>
           </div>
           
         `;
@@ -73,4 +75,29 @@ var treeLib = $.ajax({
   });
 
 
-  
+function openModal(name, scientific, family, image, description) {
+  document.getElementById("modalImage").src = image;
+  document.getElementById("modalName").textContent = name;
+  document.getElementById("modalScientific").textContent = scientific;
+  document.getElementById("modalFamily").textContent = family;
+  document.getElementById("modalDescription").textContent = description || "No description available.";
+  document.getElementById("treeModal").classList.remove("hidden");
+  document.getElementById("treeModal").classList.add("flex");
+  document.body.style.overflow = 'hidden'
+}
+
+function closeModal() {
+  document.getElementById("treeModal").classList.remove("flex");
+  document.getElementById("treeModal").classList.add("hidden");
+  document.body.style.overflow = ''
+}
+
+// Close modal when clicking outside the content box
+document.addEventListener("click", function (event) {
+  const modal = document.getElementById("treeModal");
+  // const modalContent = modal.querySelector("div.bg-white");
+
+  if (!modal.classList.contains("hidden") && event.target === modal) {
+    closeModal();
+  }
+});
