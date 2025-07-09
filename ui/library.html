@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GINA - Grow and Idetinfy Native trees in your Area</title>
   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="assets/css/nav.css" rel="stylesheet">
   <link href="assets/css/library.css" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
@@ -236,29 +237,63 @@
 
 
   <main>
+    <div class="mt-10 p-4 flex flex-col lg:flex-row items-center justify-between max-w-4xl mx-auto px-4 gap-4 mb-6">
+      <h1 class="text-4xl font-bold text-center lg:text-left w-full lg:w-auto">Tree Library</h1>
 
-    <div class="pt-4 max-w-screen-xl mx-auto mt-10" id="tree-library-container">
-
-      <h1 class="text-3xl font-bold text-center mx-auto">Tree Library</h1>
-
-      <div class="w-full max-w-xl mx-auto  rounded-full p-4">
-        <input placeholder="Search Tree" class="rounded-full w-full h-16 bg-transparent py-2 pl-8 pr-32 outline-none border-2 
-        border-gray-100 shadow-md hover:outline-none focus:ring-teal-200 focus:border-teal-200 p-2 bg-white"
-          type="text" name="query" id="searchInput">
-
-      </div>
-
-
-      <div class=" hidden md:block relative h-12 w-full">
-      </div>
-      <div class="p-4 grid mx-auto lg:max-w-5xl md:max-w-4xl md:grid-cols-3 
-      lg:grid-cols-4 md:gap-12 gap-0" id="tree-grid">
+      <div class="relative w-full lg:max-w-sm">
+        <input
+          type="text"
+          id="searchInput"
+          name="query"
+          placeholder="Search tree"
+          class="rounded-full w-full bg-white py-3 pl-12 pr-4 outline-none border-2 border-gray-100 shadow-md hover:outline-none focus:ring-teal-200 focus:border-teal-200"
+        >
+        <i class="ri-search-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"></i>
       </div>
     </div>
 
-    <div id="pagination" class="flex justify-center mt-0 gap-2 md:gap-4 mb-10 md:mb-0"></div>
+    <div class="p-4 grid mx-auto max-w-5xl md:max-w-4xl md:grid-cols-3
+    lg:grid-cols-3 gap-6" id="tree-grid">
+    </div>
+
+    <div id="pagination" class="flex justify-center mt-10 gap-2 md:gap-4 mb-10 md:mb-0"></div>
 <!-- Product Card -->
-  
+ 
+  <!-- Tree Modal -->
+  <div id="treeModal" class="fixed inset-0 bg-nav/50 bg-opacity-40 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl w-full flex flex-col md:flex-row gap-6 relative">
+
+      <!-- Left: Tree Details -->
+      <div class="flex-1 relative flex flex-col justify-center">
+        <!-- Close button -->
+        <button onclick="closeModal()" class="absolute top-0 left-0 text-gray-600 hover:text-green-700 text-2xl">
+          &times;
+        </button>
+
+      <!-- Tree Name -->
+      <h2 id="modalName" class="text-4xl font-extrabold text-green-700 text-center mb-6">Almaciga</h2>
+
+      <!-- Tree Info -->
+      <p class="mb-2"><strong>Scientific Name:</strong><br><i id="modalScientific" class="text-gray-700"></i></p>
+      <p class="mb-2"><strong>Family Name:</strong><br><i id="modalFamily" class="text-gray-700"></i></p>
+      <p class="mt-4"><strong>Description:</strong></p>
+      <p id="modalDescription" class="text-justify text-sm text-gray-700 mt-1 max-h-40 overflow-y-auto pr-2"></p>
+    </div>
+
+    <!-- Right: Tree Image -->
+    <div class="w-full md:w-56 h-72 flex-shrink-0">
+      <img id="modalImage" src="/path/to/image.jpg" alt="Tree Image" class="w-full h-full object-cover rounded-lg shadow">
+    </div>
+  </div>
+</div>
+
+
+  <style>
+    #treeModal {
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px); /* For Safari */
+    }
+  </style>
 
 
 
