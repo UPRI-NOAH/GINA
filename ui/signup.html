@@ -10,6 +10,7 @@
   <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="./assets/css/login.css" rel="stylesheet">
+  <script src="https://hcaptcha.com/1/api.js" async defer></script>
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
 
@@ -42,7 +43,7 @@
 
     <div class="w-full rounded-lg bg-green-900 p-8 text-md text-green-300 sm:w-96 max-w-96 mt-32">
       <h1 class="mb-8 text-center text-2xl font-semibold text-white">Sign up for an account</h1>
-      <form id="register-form" action="" method="post">
+      <form id="register-form">
 
         <div class="mb-5 flex gap-3 rounded-full bg-green-100 px-6 py-3">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4">
@@ -185,6 +186,8 @@
             </svg>
           </button>
         </div>
+
+        <div class="h-captcha w-full" data-sitekey="db4e84fe-e17e-4c0c-80ae-80320a50ad32"></div>
 
 
         <button type="submit" class="w-full rounded-full mt-5 bg-gradient-to-r 

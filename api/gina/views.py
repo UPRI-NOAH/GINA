@@ -5,13 +5,12 @@ from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfo
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter, IdentifyTreeFilter, UserTreeArchiveTreeFilter, NotificationFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from django.shortcuts import render
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.gina.models import PushSubscription 
 from rest_framework.authentication import TokenAuthentication
@@ -21,6 +20,12 @@ from django.shortcuts import get_object_or_404
 import random
 from api.gina.tasks import send_push_notification
 from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
+from djoser.serializers import UserCreateSerializer
+import requests
+from django.conf import settings
+
+User = get_user_model()
 
 
 class SaveSubscriptionView(APIView):
@@ -268,18 +273,28 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
 class CustomTokenCreateView(TokenCreateView):
     def post(self, request, *args, **kwargs):
+
+        captcha_token = request.data.get("hcaptcha_token")
+        if not captcha_token:
+            return Response({"error": "Missing hCaptcha token."}, status=400)
+
+        data = {
+            'secret': settings.HCAPTCHA_SECRET_KEY,
+            'response': captcha_token
+        }
+        captcha_response = requests.post('https://hcaptcha.com/siteverify', data=data)
+        captcha_result = captcha_response.json()
+
+        if not captcha_result.get('success'):
+            return Response({"error": "Captcha verification failed."}, status=400)
+
+        # login
         serializer = self.get_serializer(data=request.data)
-
-        # Validate credentials
         serializer.is_valid(raise_exception=True)
+        user = serializer.user
 
-        # Check that the user is here
-        user = serializer.user 
-
-        # Generate or get token
         token, _ = Token.objects.get_or_create(user=user)
 
-        # Get user_type
         try:
             user_info = UserInfo.objects.get(user=user)
             user_type = user_info.user_type
@@ -291,3 +306,30 @@ class CustomTokenCreateView(TokenCreateView):
             'username': user.username,
             'user_type': user_type,
         }, status=200)
+    
+
+class RegisterWithCaptchaView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        captcha_token = request.data.get("hcaptcha_token")
+        if not captcha_token:
+            return Response({"error": "Missing hCaptcha token."}, status=400)
+
+        # Verify hCaptcha token
+        data = {
+            'secret': settings.HCAPTCHA_SECRET_KEY,
+            'response': captcha_token
+        }
+        captcha_response = requests.post('https://hcaptcha.com/siteverify', data=data)
+        captcha_result = captcha_response.json()
+
+        if not captcha_result.get('success'):
+            return Response({"error": "Captcha verification failed."}, status=400)
+
+        # Proceed to create user
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)

@@ -1,92 +1,102 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-    const element = document.getElementById('some-id');
-    if (element) {
-      element.classList.add('some-class');
+    const form = document.querySelector('form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    const rememberMe = localStorage.getItem('authToken') !== null;
+
+    if (authToken && rememberMe) {
+        window.location.href = 'index.html';
+        return;
     }
-  });
 
-if (isLoggedIn == true) {
-
-  window.location.href = 'profile.html';
-
-}
-
-const form = document.querySelector('form');
-
-
-if (authToken && rememberMe) {
-    // User has an authToken saved, automatically log them in
-    window.location.href = 'index.html';
-} else {
-    // User doesn't have an authToken saved, show the login form
+      if (isLoggedIn === true) {
+        window.location.href = 'profile.html';
+        return;
+    }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        showLoading(); 
+        showLoading();
 
         const username = document.querySelector('input[name="uname"]').value;
         const password = document.querySelector('input[name="psw"]').value;
-        const rememberMe = document.querySelector('input[name="remember"]').checked;
+        const remember = document.querySelector('input[name="remember"]').checked;
+        const captchaToken = document.querySelector('[name="h-captcha-response"]').value;
 
-        const response = await fetch(loginURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        });
+        if (!captchaToken) {
+            hideLoading();
+            alert("Please complete the hCaptcha.");
+            return;
+        }
 
-        const data = await response.json();
+        try {
+            const response = await fetch(loginURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    hcaptcha_token: captchaToken,
+                }),
+            });
 
-        if (response.ok) {
-            // Login successful, save the auth token
-            const authToken = data.auth_token;
-            const userType = data.user_type;
-            if (rememberMe) {
-                // Remember me is checked, store the auth token in local storage
-                localStorage.setItem('authToken', authToken);
-                localStorage.setItem('username', username);
-                localStorage.setItem('userType', userType); 
+            const data = await response.json();
+
+            if (response.ok) {
+                const authToken = data.auth_token;
+                const userType = data.user_type;
+
+                // Store token
+                if (remember) {
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('userType', userType);
+                } else {
+                    sessionStorage.setItem('authToken', authToken);
+                    sessionStorage.setItem('username', username);
+                    sessionStorage.setItem('userType', userType);
+                }
+
+                hideLoading();
+                window.location.href = 'index.html';
             } else {
-                // Remember me is not checked, store the auth token in session storage
-                localStorage.setItem('authToken', authToken);
-                localStorage.setItem('username', username);
-                localStorage.setItem('userType', userType); 
-                sessionStorage.setItem('authToken', authToken);
-                sessionStorage.setItem('username', username);
-                sessionStorage.setItem('userType', userType);
-            }
-            hideLoading(); 
+                let errorMessage = 'An unexpected error occurred.';
+                if (data.error) errorMessage = data.error;
+                else if (data.detail) errorMessage = data.detail;
+                else if (data.non_field_errors) errorMessage = data.non_field_errors.join(', ');
+                else errorMessage = JSON.stringify(data);
 
-            // Redirect to the home page
-            window.location.href = 'index.html';
-        } else {
-            // Login failed, handle the error
-            console.error(data);
-            let errorMessage = 'An unexpected error occurred.';
-            
-            // Check if there are error messages from the backend
-            if (data && data.detail) {
-                errorMessage = data.detail;  // If a specific message is returned from the backend
-            } else if (data.non_field_errors) {
-                errorMessage = data.non_field_errors.join(', ');  // If multiple errors are present (e.g., incorrect credentials)
+                hideLoading();
+                alert(errorMessage);
+                resetCaptcha();  // reset after failed login
             }
-            hideLoading(); 
-
-            // Display the error message in an alert box
-            alert(errorMessage);
+        } catch (err) {
+            hideLoading();
+            console.error('Network or fetch error:', err);
+            resetCaptcha();
         }
     });
-}
 
-  // Prevent enter when loading
-  form.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && loadingOverlay.style.display === 'flex') {
-      e.preventDefault(); // prevent the form from being submitted
+    form.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && loadingOverlay.style.display === 'flex') {
+            e.preventDefault();
+        }
+    });
+
+    function showLoading() {
+        loadingOverlay.style.display = 'flex';
     }
-  });
-  
+
+    function hideLoading() {
+        loadingOverlay.style.display = 'none';
+    }
+
+    function resetCaptcha() {
+        if (window.hcaptcha) {
+            hcaptcha.reset();
+        }
+    }
+});
