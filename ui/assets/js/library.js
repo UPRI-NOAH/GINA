@@ -10,6 +10,7 @@ var treeLib = $.ajax({
   })
   showLoading()
   const treeGrid = document.getElementById("tree-grid");
+  const treeListMobile = document.getElementById("tree-list-mobile");
 
   $.when(treeLib).done(function () {
     hideLoading()
@@ -42,6 +43,25 @@ var treeLib = $.ajax({
         `;
         treeGrid.appendChild(row);
       });
+
+      treeListMobile.innerHTML = ''; // Clear old content
+      pageData.forEach((data) => {
+        const mobileRow = document.createElement("div");
+        mobileRow.className = "flex justify-between bg-white rounded-xl shadow-md p-4 gap-4 items-center transform hover:scale-105 transition duration-500";
+        mobileRow.innerHTML = `
+          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.description || 'No description available.'}\`)" class="cursor-pointer flex-1">
+            <div class="text-xl font-bold text-green-700">${data.tree_name}</div>
+            <div class="text-sm"><strong>Scientific Name:</strong> <i>${data.scientific_name}</i></div>
+            <div class="text-sm"><strong>Family Name:</strong> <i>${data.family_name}</i></div>
+            <div class="text-xs text-gray-500 line-clamp-3">${data.description || 'No description available.'}</div>
+          </div>
+          <div class="w-24 h-24 flex-shrink-0">
+            <img src="${data.tree_image}" class="w-full h-full object-cover rounded-lg cursor-pointer">
+          </div>
+        `;
+        treeListMobile.appendChild(mobileRow);
+      });
+
     }
     // Function to create pagination buttons
     function createPagination() {
@@ -103,7 +123,7 @@ var treeLib = $.ajax({
           
           const lastButton = document.createElement("button");
           lastButton.innerText = totalPages;
-          lastButton.className = "pagination-btn rounded-md sm:rounded-lg border border-green-500 bg-white hover:bg-green-100 text-green-700 px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm min-w-[32px] sm:min-w-[40px] flex items-center justify-center transition-colors";
+          lastButton.className = "pagination-btn rounded-md sm:rounded-lg border border-green-500 bg-white hover:bg-green-100 text-green-700 px-4 py-2 text-sm min-w-[32px] sm:min-w-[40px] flex items-center justify-center transition-colors";
           lastButton.addEventListener("click", () => {
             currentPage = totalPages;
             renderPage(currentPage);

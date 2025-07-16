@@ -4,6 +4,11 @@
     border-radius: 0.75rem;
 }
 
+#treeModal {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px); /* For Safari */
+}
+
 .detail-container{
     min-width: 8rem;
 }
@@ -24,6 +29,7 @@
     .tree-container{
         margin-left: 4rem;
         margin-right: 4rem;
+        flex-direction: row;
     }
 }
 
