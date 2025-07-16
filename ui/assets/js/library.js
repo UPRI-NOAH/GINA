@@ -48,17 +48,90 @@ var treeLib = $.ajax({
       const paginationContainer = document.getElementById("pagination");
       paginationContainer.innerHTML = '';
       const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-      for (let i = 1; i <= totalPages; i++) {
+
+      // Previous button
+      const prevButton = document.createElement("button");
+      prevButton.innerHTML = `
+        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      `;
+      prevButton.disabled = currentPage === 1;
+      prevButton.className = `pagination-btn px-4 py-2 rounded-md border 
+        ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-white hover:bg-green-100 text-green-700 border-green-500'}`;
+      prevButton.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderPage(currentPage);
+          createPagination();
+        }
+      });
+      paginationContainer.appendChild(prevButton);
+
+      // Show only 3 page numbers centered around current page
+      const maxVisible = 3;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+      if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
         const button = document.createElement("button");
         button.innerText = i;
-        button.className = "pagination-btn rounded-lg border border-green-500 bg-green-500 px-4 py-2 text-white hover:bg-green-300 hover:border-green-300";
+        button.className = `pagination-btn px-4 py-2 rounded-md border mx-1 
+          ${i === currentPage 
+            ? 'bg-green-500 text-white border-green-500' 
+            : 'bg-white hover:bg-green-100 text-green-700 border-green-500'}`;
         button.addEventListener("click", () => {
           currentPage = i;
           renderPage(currentPage);
+          createPagination();
         });
         paginationContainer.appendChild(button);
       }
+
+      // Add ellipsis and last page if needed (from leaderboard.js)
+      if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+              const ellipsis = document.createElement("span");
+              ellipsis.innerText = "...";
+              ellipsis.className = "px-1 sm:px-2 text-xs sm:text-sm text-gray-500 flex items-center";
+              paginationContainer.appendChild(ellipsis);
+          }
+          
+          const lastButton = document.createElement("button");
+          lastButton.innerText = totalPages;
+          lastButton.className = "pagination-btn rounded-md sm:rounded-lg border border-green-500 bg-white hover:bg-green-100 text-green-700 px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm min-w-[32px] sm:min-w-[40px] flex items-center justify-center transition-colors";
+          lastButton.addEventListener("click", () => {
+            currentPage = totalPages;
+            renderPage(currentPage);
+            createPagination();
+          });
+          paginationContainer.appendChild(lastButton);
+      }
+
+      // Next button
+      const nextButton = document.createElement("button");
+      nextButton.innerHTML = `
+        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      `;
+      nextButton.disabled = currentPage === totalPages;
+      nextButton.className = `pagination-btn px-4 py-2 rounded-md border 
+        ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-white hover:bg-green-100 text-green-700 border-green-500'}`;
+      nextButton.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderPage(currentPage);
+          createPagination();
+        }
+      });
+      paginationContainer.appendChild(nextButton);
     }
+
     // Function to filter data based on search query
     function searchTrees() {
       const query = searchInput.value.toLowerCase();
