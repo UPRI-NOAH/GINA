@@ -9,6 +9,13 @@
     -webkit-backdrop-filter: blur(3px); /* For Safari */
 }
 
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .detail-container{
     min-width: 8rem;
 }

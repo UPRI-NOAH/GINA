@@ -29,7 +29,7 @@ var treeLib = $.ajax({
         const row = document.createElement("div");
         row.className = "tree-container flex flex-col md:flex-row md:w-64 p-2 shadow-lg overflow-x-auto mx-auto transform hover:scale-105 transition duration-500";
         row.innerHTML = `
-          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.description || 'No description available.'}\`)" class="cursor-pointer">
+          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)" class="cursor-pointer">
             <div class="flex-shrink">
               <img src="${data.tree_image}" class="w-full h-48 object-cover rounded-xl">
             </div>
@@ -49,13 +49,13 @@ var treeLib = $.ajax({
         const mobileRow = document.createElement("div");
         mobileRow.className = "flex justify-between bg-white rounded-xl shadow-md p-4 gap-4 items-center transform hover:scale-105 transition duration-500";
         mobileRow.innerHTML = `
-          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.description || 'No description available.'}\`)" class="cursor-pointer flex-1">
-            <div class="text-xl font-bold text-green-700">${data.tree_name}</div>
-            <div class="text-sm"><strong>Scientific Name:</strong> <i>${data.scientific_name}</i></div>
-            <div class="text-sm"><strong>Family Name:</strong> <i>${data.family_name}</i></div>
-            <div class="text-xs text-gray-500 line-clamp-3">${data.description || 'No description available.'}</div>
+          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)" class="cursor-pointer flex-1">
+            <div class="text-xl sm:text-2xl font-bold text-green-700">${data.tree_name}</div>
+            <div class="text-sm" style="color:#303030"><strong>Scientific Name:</strong> <i>${data.scientific_name}</i></div>
+            <div class="text-sm" style="color:#303030"><strong>Family Name:</strong> <i>${data.family_name}</i></div>
+            <div class="mt-2 text-xs text-gray-400 line-clamp-3">${data.tree_description || 'No description available.'}</div>
           </div>
-          <div class="w-24 h-24 flex-shrink-0">
+          <div class="w-36 h-36 flex-shrink-0">
             <img src="${data.tree_image}" class="w-full h-full object-cover rounded-lg cursor-pointer">
           </div>
         `;
