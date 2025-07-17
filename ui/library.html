@@ -237,7 +237,7 @@
 
 
   <main>
-    <div class="mt-10 p-4 flex flex-col lg:flex-row items-center justify-between max-w-4xl mx-auto px-4 gap-4 mb-6">
+    <div class="mt-6 md:mt-10 p-4 flex flex-col lg:flex-row items-center justify-between max-w-4xl mx-auto px-4 gap-4 mb-3 md:mb-6">
       <h1 class="text-3xl font-bold text-left sm:text-center sm:text-4xl lg:text-left w-full lg:w-auto">Tree Library</h1>
 
       <div class="relative w-full lg:max-w-sm">
@@ -261,45 +261,41 @@
     </div>
 
     <div id="pagination" class="flex justify-center mt-10 gap-2 md:gap-4 mb-10 md:mb-0"></div>
-<!-- Product Card -->
  
-  <!-- Tree Modal -->
-  <div id="treeModal" class="fixed inset-0 bg-nav/50 bg-opacity-40 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl w-full flex flex-col md:flex-row gap-6 relative">
+    <!-- Tree Modal -->
+    <div id="treeModal" class="fixed inset-0 bg-nav/50 bg-opacity-40 hidden items-center justify-center z-50">
+      <div class="bg-white rounded-3xl md:rounded-xl shadow-lg p-8 max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl w-full flex flex-col md:flex-row gap-6 relative">
+        
+        <div class="block md:hidden absolute top-2 left-4">
+          <button onclick="closeModal()" class="text-green-700 text-lg sm:text-xl mb-2 text-left flex items-center gap-1">
+            <i class="ri-arrow-left-line text-2xl sm:3xl"></i> Tree Info  <!-- Mobile view back button -->
+          </button>
+        </div>
+        
+        <!-- Left: Tree Details -->
+        <div class="flex-1 relative flex flex-col justify-center order-2 md:order-1">
+          <!-- Close button -->
+          <button onclick="closeModal()" class="hidden md:block absolute top-0 left-0 text-gray-600 hover:text-green-700 text-2xl">
+            &times;
+          </button>
 
-      <!-- Left: Tree Details -->
-      <div class="flex-1 relative flex flex-col justify-center">
-        <!-- Close button -->
-        <button onclick="closeModal()" class="absolute top-0 left-0 text-gray-600 hover:text-green-700 text-2xl">
-          &times;
-        </button>
+          <!-- Tree Name -->
+          <h2 id="modalName" class="text-3xl md:text-4xl font-extrabold text-green-700 text-center mb-6">Almaciga</h2>
 
-      <!-- Tree Name -->
-      <h2 id="modalName" class="text-4xl font-extrabold text-green-700 text-center mb-6">Almaciga</h2>
+          <!-- Tree Info -->
+          <p class="mb-2 text-center sm:text-left"><strong>Scientific Name:</strong><br><i id="modalScientific" class="text-gray-700 text-md md:text-lg"></i></p>
+          <p class="mb-2 text-center sm:text-left"><strong>Family Name:</strong><br><i id="modalFamily" class="text-gray-700 text-md md:text-lg"></i></p>
+          <p class="mt-2 text-center sm:text-left"><strong>Description:</strong></p>
+          <p id="modalDescription" class="text-justify text-sm text-gray-700 mt-1 max-h-20 overflow-y-auto pr-2"></p>
+        </div>
 
-      <!-- Tree Info -->
-      <p class="mb-2"><strong>Scientific Name:</strong><br><i id="modalScientific" class="text-gray-700"></i></p>
-      <p class="mb-2"><strong>Family Name:</strong><br><i id="modalFamily" class="text-gray-700"></i></p>
-      <p class="mt-4"><strong>Description:</strong></p>
-      <p id="modalDescription" class="text-justify text-sm text-gray-700 mt-1 max-h-40 overflow-y-auto pr-2"></p>
+        <!-- Right: Tree Image -->
+        <div class="w-full h-60 md:w-56 md:h-72 flex-shrink-0 flex items-center justify-center order-1 md:order-2 mt-5 sm:mt-7 md:mt-0">
+          <img id="modalImage" src="/path/to/image.jpg" alt="Tree Image" class="w-full h-full object-cover rounded-lg shadow">
+        </div>
+
+      </div>
     </div>
-
-    <!-- Right: Tree Image -->
-    <div class="w-full md:w-56 h-72 flex-shrink-0">
-      <img id="modalImage" src="/path/to/image.jpg" alt="Tree Image" class="w-full h-full object-cover rounded-lg shadow">
-    </div>
-  </div>
-</div>
-
-
-  <style>
-    #treeModal {
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px); /* For Safari */
-    }
-  </style>
-
-
 
   </main>
 
