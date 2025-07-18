@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets, mixins
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
-from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer, SubscriptionSerializer
+from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer, SubscriptionSerializer, CustomUserCreateSerializer
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter, IdentifyTreeFilter, UserTreeArchiveTreeFilter, NotificationFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
@@ -25,6 +25,7 @@ from djoser.serializers import UserCreateSerializer
 import requests
 from django.conf import settings
 from rest_framework import serializers
+from djoser.email import ActivationEmail
 
 User = get_user_model()
 
@@ -317,7 +318,7 @@ class RegisterWithCaptchaView(APIView):
         if not captcha_token:
             return Response({"error": "Missing hCaptcha token."}, status=400)
 
-        # Verify hCaptcha token
+        # Verify hCaptcha
         data = {
             'secret': settings.HCAPTCHA_SECRET_KEY,
             'response': captcha_token
@@ -329,10 +330,18 @@ class RegisterWithCaptchaView(APIView):
             return Response({"error": "Captcha verification failed."}, status=400)
 
         # Proceed to create user
-        serializer = UserCreateSerializer(data=request.data)
+        serializer = CustomUserCreateSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+
+            # Send activation email manually (because we bypassed Djoser's default view)
+            if settings.DJOSER.get('SEND_ACTIVATION_EMAIL', False):
+                context = {'user': user}
+                to = [getattr(user, user.get_email_field_name())]
+                ActivationEmail(request, context).send(to)
+
             return Response(serializer.data, status=201)
+
         return Response(serializer.errors, status=400)
     
 

@@ -163,3 +163,50 @@ function togglePassword(inputId, buttonEl) {
     eyeSlash.classList.add('hidden');
   }
 }
+
+
+async function unsubscribeUserFromPush() {
+  try {
+    
+    // Get the service worker registration (no waiting for .ready)
+    const registration = await navigator.serviceWorker.getRegistration();
+    // const registration = await navigator.serviceWorker.getRegistration('/assets/js/');
+
+    if (!registration) {
+      return;
+    }
+
+    if (!registration.pushManager) {
+      return;
+    }
+
+    // Get current push subscription
+    const subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      
+      return;
+    }
+
+
+    // Unsubscribe the subscription in the browser
+    const unsubscribed = await subscription.unsubscribe();
+
+    // Send unsubscribe request to server
+    const res = await fetch(`${http}://${url}/unsubscribe/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': await getCookie('csrftoken'),
+        'Authorization': `Token ${authToken}`,
+      },
+      body: JSON.stringify({ endpoint: subscription.endpoint }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server responded with status ${res.status}`);
+    }
+
+    const data = await res.json();
+  } catch (err) {
+  }
+}
