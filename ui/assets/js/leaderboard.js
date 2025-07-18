@@ -23,6 +23,7 @@ $.when(ph).done(function () {
 
 function renderPodium() {
     const podiumSection = document.getElementById('podium-section');
+    const username = localStorage.getItem('username') || sessionStorage.getItem('username');
 
     if (bound.length < 3) {
         podiumSection.innerHTML = '<p class="text-gray-500 text-center">Loading podium...</p>';
@@ -43,20 +44,21 @@ function renderPodium() {
     podiumOrder.forEach(orderIndex => {
         const player = top3[orderIndex];
         const medal = medalData[orderIndex];
+        const currentUser = player.user === username;
 
         let extraMargin = '';
         if (orderIndex === 0) extraMargin = 'mt-0';
         if (orderIndex === 1 || orderIndex === 2) extraMargin = 'mt-4';
 
         const podiumCard = document.createElement('div');
-        podiumCard.className = `${extraMargin} w-40 bg-nav rounded-lg shadow-lg text-center p-4 transform hover:scale-105 transition-transform`;
+        podiumCard.className = `${extraMargin} w-40 ${currentUser ? 'bg-green-500' : 'bg-nav'} rounded-lg shadow-lg text-center p-4 transform hover:scale-105 transition-transform`;
 
         podiumCard.innerHTML = `
             <div class="${medal.size} mx-auto mb-3">
                 <img src="${medal.icon}" alt="${medal.alt}" class="w-full h-full object-contain">
             </div>
-            <h3 class="font-semibold text-gray-800">${player.user}</h3>
-            <p class="text-gray-600 text-sm">${player.user_points}</p>
+            <h3 class="${currentUser ? "text-white" : "text-gray-800"} font-semibold">${player.user}</h3>
+            <p class= "${currentUser ? "text-white" : "text-gray-600"} text-sm">${player.user_points}</p>
         `;
 
         podiumSection.querySelector('div').appendChild(podiumCard);
@@ -65,7 +67,8 @@ function renderPodium() {
 
 function renderLeaderboard() {
     const leaderboardBody = document.getElementById('leaderboard-body');
-    
+    const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+
     if (bound.length === 0) {
         leaderboardBody.innerHTML = '<div class="px-6 py-4 text-center text-gray-500">Loading leaderboard...</div>';
         return;
@@ -80,16 +83,15 @@ function renderLeaderboard() {
 
     pageData.forEach((data, index) => {
         const actualRank = startIndex + index + 4;
-        const isHighlighted = data.highlighted || false; 
-        const usernameClass = isHighlighted ? 'font-semibold' : '';
+        const currentUser = data.user === username;
         
         const row = document.createElement('div');
         row.className = `px-5 py-2 w-full flex `;
         row.innerHTML = `
-            <div class="flex items-center justify-between w-full p-3 max-w-2xl mx-auto bg-white rounded-lg shadow-md">
-                <span class="font-medium text-gray-800 w-20 text-left">${actualRank}</span>
-                <span class=" text-gray-700 text-center ${usernameClass}">${data.user}</span>
-                <span class="font-semibold text-gray-800 w-20 text-right">${data.user_points}</span>
+            <div class="flex items-center justify-between w-full p-3 max-w-2xl mx-auto rounded-lg shadow-md ${currentUser ? "bg-green-500" : "bg-white"}">
+                <span class="font-medium ${currentUser ? "text-white" : "text-gray-800"} w-20 text-left">${actualRank}</span>
+                <span class="text-center ${currentUser ? "text-white font-bold" : "text-gray-700"}">${data.user}</span>
+                <span class="font-semibold ${currentUser ? "text-white" : "text-gray-800"} w-20 text-right">${data.user_points}</span>
             </div>
         `;
         leaderboardBody.appendChild(row);
