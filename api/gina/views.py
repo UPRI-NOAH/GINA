@@ -330,7 +330,9 @@ class RegisterWithCaptchaView(APIView):
             return Response({"error": "Captcha verification failed."}, status=400)
 
         # Proceed to create user
-        serializer = CustomUserCreateSerializer(data=request.data)
+        data = request.data.copy()
+        data.pop('hcaptcha_token', None)
+        serializer = CustomUserCreateSerializer(data=data)
         if serializer.is_valid():
             user = serializer.save()
 
