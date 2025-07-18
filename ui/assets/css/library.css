@@ -1,7 +1,42 @@
 #tree-grid > div{
     background-color: white;
-    padding: 1rem;
+    padding: 0.75rem;
     border-radius: 0.75rem;
+}
+
+#treeModal {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px); /* For Safari */
+}
+
+#modalDescription::-webkit-scrollbar {
+    width: 6px;
+}
+
+#modalDescription::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#modalDescription::-webkit-scrollbar-thumb {
+    background-color: #22c55e; /* Tailwind green-300 */
+    border-radius: 4px;
+}
+
+#modalDescription::-webkit-scrollbar-thumb:hover {
+    background-color: #15803d; /* Tailwind green-700 */
+}
+
+#modalDescription {
+    scrollbar-width: thin;
+    scrollbar-color: #22c55e #f1f1f1;   /* For Firefox */
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .detail-container{
@@ -24,6 +59,7 @@
     .tree-container{
         margin-left: 4rem;
         margin-right: 4rem;
+        flex-direction: row;
     }
 }
 

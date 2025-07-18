@@ -170,9 +170,13 @@ class UserTreeArchiveInfoSerializer(serializers.ModelSerializer):
         manila = pytz_timezone('Asia/Manila')
         return obj.planted_on.astimezone(manila).strftime('%b %d, %Y %I:%M %p')
 
+    def update(self, instance, validated_data):
+        validated_data.pop('planted_on', None)
+        return super().update(instance, validated_data)
+
     
 class UserTreeSerializer(serializers.ModelSerializer):
-    version = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     latest_tree_update = serializers.SerializerMethodField()
     planted_on = serializers.SerializerMethodField()
 
@@ -191,10 +195,21 @@ class UserTreeSerializer(serializers.ModelSerializer):
             return latest_archive.planted_on
         return None
     
-    def get_version(self, obj):
-        user_tree_count = UserTreeArchive.objects.filter(reference_id=obj.reference_id).count()
+    def get_image(self, obj):
+        latest = (
+            UserTreeArchive.objects
+            .filter(reference_id=obj)
+            .order_by('-id')  # or '-id' if you want by creation
+            .first()
+        )
+        if latest and latest.image:
+            request = self.context.get('request')
+            return request.build_absolute_uri(latest.image.url) if request else latest.image.url
+        return None
+    # def get_version(self, obj):
+    #     user_tree_count = UserTreeArchive.objects.filter(reference_id=obj.reference_id).count()
 
-        return f"{user_tree_count}" #  user_tree_count to be changed to the album model
+    #     return f"{user_tree_count}" #  user_tree_count to be changed to the album model
 
     def compress_image(self, image):
         try:
@@ -226,47 +241,39 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        new_image = validated_data.get('image')
-
-        if new_image:
-            # Compress the image before saving
-            validated_data['image'] = self.compress_image(new_image)
-
-            # Validate similarity and get the embedding
-            embedding_list = self.validate_and_embed_image(new_image)
-            
-        # Create the instance
+        images = self.context['request'].FILES.getlist('images')  # Expecting <input name="images" multiple>
+        # Create the main tree instance
         instance = super().create(validated_data)
-
         action = validated_data.get('action') or instance.action
-        # Archive the created tree in UserTreeArchive
-        UserTreeArchive.objects.create(
-            reference_id=instance,
-            owning_user=instance.owning_user,
-            tree_name=instance.tree_name,
-            tree_type=instance.tree_type,
-            tree_description=instance.tree_description,
-            planted_on=instance.planted_on,
-            image=instance.image,
-            image_embedding=embedding_list,
-        )
-        if action != "Identified": # Equivalent action = Planted
-            schedule_tree_reminder(instance)
 
+        give_points = 0
+
+        # Handle multiple images
+        if images:
+            for img in images:
+                try:
+                    compressed_img = self.compress_image(img) # Compress image
+                    embedding = get_image_embedding(compressed_img).tolist()
+                    UserTreeArchive.objects.create(
+                        reference_id=instance,
+                        owning_user=instance.owning_user,
+                        planted_on=instance.planted_on,
+                        image=compressed_img,
+                        image_embedding=embedding,
+                    )
+                except Exception as e:
+                    print(f"Error processing image: {e}")
+                    continue  # Optionally skip invalid images
+
+        # Points and reminders
+        if action != "Identified":
+            schedule_tree_reminder(instance)
+            give_points = 5 if instance.tree_name == "TBD" else 10
             if instance.tree_name == "TBD":
                 self.notify_experts_tree_help(instance)
-                give_points = 5
-            else:
-                give_points = 10
-
-        elif (
-            action == "Identified"
-            # and instance.owning_user.user_type == "Regular"
-            and instance.tree_name == "TBD"
-        ):
+        elif action == "Identified" and instance.tree_name == "TBD":
             self.notify_experts_tree_help(instance)
-            give_points = 0 
-
+            give_points = 0
         else:
             give_points = 10
 
@@ -280,47 +287,39 @@ class UserTreeSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         now = timezone.now()
-
-        # Original planting date
         planted_on = instance.planted_on
-
-        # Calculate one hour after planting
         one_hour_after_planting = planted_on + timedelta(hours=1)
 
-        # Find latest archive for this tree to get last edit time
         latest_archive = (
             UserTreeArchive.objects.filter(reference_id=instance)
             .order_by('-planted_on')
             .first()
         )
-
         last_edit_time = latest_archive.planted_on if latest_archive else planted_on
         one_hour_after_last_edit = last_edit_time + timedelta(hours=1)
 
-        # Determine if we are within the free edit window
         in_free_edit_window = now <= one_hour_after_planting or now <= one_hour_after_last_edit
 
-        # Handle image compression and embedding if image provided
-        new_image = validated_data.get('image')
-        if new_image:
-            validated_data['image'] = self.compress_image(new_image)  # Compress early
-            validated_data['image_embedding'] = self.validate_and_embed_image(new_image)
-
-        # Use current time as planted_on for archive records
-        new_planted_on = now
-
-        # Remove planted_on from validated_data so main model planting date doesn't get overwritten
         validated_data.pop('planted_on', None)
         action = validated_data.pop('action', None)
         original_tree = UserTreeInfo.objects.get(reference_id=instance.reference_id)
         original_tree_name = original_tree.tree_name
-        # Update the main model instance
+
+        # Fetch uploaded images from request.FILES
+        images = self.context['request'].FILES.getlist('images')
         updated_instance = super().update(instance, validated_data)
 
-        # Action field (might be from validated_data or from instance)
-        if str(action) == "Expert":
+        # Update main tree info
+        if str(action) != "Expert" and updated_instance.owning_user.user == self.context['request'].user:
+            if original_tree_name == "TBD":
+                user_info = updated_instance.owning_user
+                if user_info:
+                    user_info.user_points = F('user_points') + 5
+                    user_info.save(update_fields=['user_points'])
+                    user_info.refresh_from_db()
+
+        elif str(action) == "Expert":
             sender_user = self.context['request'].user
-            print(original_tree_name)
             if original_tree_name == "TBD":
                 allowed_fields = {"tree_name", "tree_type", "edited_by"}
                 validated_data = {key: value for key, value in validated_data.items() if key in allowed_fields}
@@ -363,68 +362,44 @@ class UserTreeSerializer(serializers.ModelSerializer):
             else:
                 raise serializers.ValidationError("This tree has already been identified. Please refresh the app")
 
-        else:
-            if in_free_edit_window:
+        if not in_free_edit_window:
+            # Increment version
+            updated_instance.version = (updated_instance.version or 0) + 1
+            updated_instance.save(update_fields=['version'])
+            # Archive uploaded images
+            for img in images:
                 try:
-                    archive = UserTreeArchive.objects.filter(reference_id=updated_instance).latest('planted_on')
-                    created = False
-                except UserTreeArchive.DoesNotExist:
-                    archive = UserTreeArchive.objects.create(
-                        reference_id=updated_instance,
-                        owning_user=updated_instance.owning_user,
-                        tree_name=updated_instance.tree_name,
-                        tree_type=updated_instance.tree_type,
-                        tree_description=updated_instance.tree_description,
-                        # planted_on=new_planted_on,
-                        image=updated_instance.image,
-                        image_embedding=validated_data.get('image_embedding'),
-                    )
-                    created = True
+                    compressed_img = self.compress_image(img)
+                    embedding = get_image_embedding(compressed_img).tolist()
 
-                if not created:
-                    archive.tree_name = updated_instance.tree_name
-                    archive.tree_type = updated_instance.tree_type
-                    archive.tree_description = updated_instance.tree_description
-                    # archive.planted_on = new_planted_on
-                    archive.image = updated_instance.image
-                    if 'image_embedding' in validated_data:
-                        archive.image_embedding = validated_data['image_embedding']
-                    archive.save()
-            else:
-                # Outside free edit window: create a new archive entry only if unique
-                # Check if identical archive entry already exists
-                exists = UserTreeArchive.objects.filter(
-                    reference_id=updated_instance,
-                    tree_name=updated_instance.tree_name,
-                    tree_type=updated_instance.tree_type,
-                    tree_description=updated_instance.tree_description,
-                    planted_on=new_planted_on,
-                    image=updated_instance.image
-                ).exists()
-
-                if not exists:
-                    UserTreeArchive.objects.create(
+                    exists = UserTreeArchive.objects.filter(
                         reference_id=updated_instance,
-                        owning_user=updated_instance.owning_user,
-                        tree_name=updated_instance.tree_name,
-                        tree_type=updated_instance.tree_type,
-                        tree_description=updated_instance.tree_description,
-                        planted_on=new_planted_on,
-                        image=updated_instance.image,
-                        image_embedding=validated_data.get('image_embedding'),
-                    )
-                    
-                if action == "Planted":
-                    schedule_tree_reminder(updated_instance)
-                    # Award points if applicable
-                    user_info = updated_instance.owning_user
-                    if user_info:
-                        user_info.user_points = F('user_points') + 5
-                        user_info.save(update_fields=['user_points'])
-                        user_info.refresh_from_db()
+                        image__exact=compressed_img
+                    ).exists()
+
+                    if not exists:
+                        UserTreeArchive.objects.create(
+                            reference_id=updated_instance,
+                            owning_user=updated_instance.owning_user,
+                            planted_on=now,
+                            image=compressed_img,
+                            image_embedding=embedding,
+                        )
+                except Exception as e:
+                    print(f"Error processing image: {e}")
+                    continue
+
+            # Award points if planted
+            if action == "Planted":
+                schedule_tree_reminder(updated_instance)
+                user_info = updated_instance.owning_user
+                if user_info:
+                    user_info.user_points = F('user_points') + 5
+                    user_info.save(update_fields=['user_points'])
+                    user_info.refresh_from_db()
 
         return updated_instance
-    
+
     
     def validate_and_embed_image(self, image):
         user_tree_images = UserTreeArchive.objects.exclude(image='').exclude(image_embedding__isnull=True)

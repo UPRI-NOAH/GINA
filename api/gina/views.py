@@ -24,6 +24,7 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 import requests
 from django.conf import settings
+from rest_framework import serializers
 
 User = get_user_model()
 
@@ -333,3 +334,21 @@ class RegisterWithCaptchaView(APIView):
             user = serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+    
+
+class ValidateImageAPIView(APIView):
+    def post(self, request):
+        image = request.FILES.get('image')
+        if not image:
+            return Response({"detail": "No image uploaded"}, status=400)
+
+        # We only need the image field, so create a minimal serializer instance
+        serializer = UserTreeSerializer()
+
+        try:
+            serializer.validate_and_embed_image(image)
+            return Response({"valid": True})
+        except serializers.ValidationError as e:
+            return Response({"valid": False, "detail": str(e)}, status=400)
+        except Exception as e:
+            return Response({"valid": False, "detail": f"Unexpected error: {str(e)}"}, status=500)
