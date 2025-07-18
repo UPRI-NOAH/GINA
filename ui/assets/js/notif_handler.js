@@ -7,57 +7,9 @@ if (bellBtn) {
     notifDropdown.classList.toggle('show');
     
     if (authToken && notifDropdown.classList.contains('show')) {
-      try {
-        const res = await fetch(`${http}://${url}/api/notifications/`, {
-          headers: {
-            'Authorization': `Token ${authToken}`
-          }
-        });
-
-        const notifications = await res.json();
-        const list = document.getElementById("notification-list");
-        
-        // Always clear the list (except placeholder)
-        list.querySelectorAll("li:not(.text-gray-400)").forEach(el => el.remove());
-
-        let placeholder = list.querySelector("li.text-gray-400");
-
-        // If no placeholder exists, create it
-        if (!placeholder) {
-          placeholder = document.createElement("li");
-          placeholder.className = "text-gray-400 italic text-center py-2";
-          placeholder.textContent = "No notifications";
-          list.appendChild(placeholder);
-        }
-        if (!list) {
-          return;
-        }
-        // Handle empty or non-empty notifications
-        if (!notifications || notifications.length === 0) {
-          placeholder.classList.remove("hidden");
-          placeholder.textContent = "No notifications";
-        } else {
-          placeholder.classList.add("hidden");
-          notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          
-          notifications.forEach(n => {
-              addNotificationToList(
-                n.message,
-                !n.is_seen,
-                n.created_at,
-                n.related_tree,
-                n.tree_name,
-                n.notif_type,
-                n.is_passed,
-              );
-              
-            });
-        }
-
         await markAllNotificationsSeen();
-
-      } catch (err) {
-      }
+        const notifItems = document.querySelectorAll("#notification-list li.font-bold");
+        notifItems.forEach(item => item.classList.remove("font-bold"));
     }
   });
 }
@@ -91,7 +43,7 @@ if ('Notification' in window) {
   const wsScheme = location.protocol === "https:" ? "wss" : "ws";
   const socket = new WebSocket(`${wsScheme}://${url}/ws/tree-notifications/`);
 
-  socket.onmessage = (e) => {
+  socket.onmessage = async (e) => {
     if (!authToken) return;
     const data = JSON.parse(e.data);
     const isTreeOwner = (data.tree_owner === username);
@@ -104,9 +56,14 @@ if ('Notification' in window) {
     if ((isCommentForMe) || (isReminderForMe) || (isTreeHelpForExpert && isRecipient)) {
     
       addNotificationToList(data.message, true, data.timestamp, data.tree_id, data.tree_name, data.notif_type, data.is_passed);
-      if (!notifDropdown.classList.contains('show')) {
-        incrementBadge(); 
-      }
+
+          if (notifDropdown.classList.contains('show')) {
+            // Dropdown open: mark as seen immediately
+            await markAllNotificationsSeen();
+            updateBadge(0);
+          } else {
+            incrementBadge();
+          }
 
       if (isAppInFocus() && !notifDropdown.classList.contains('show')) {
         if(data.message != "Connected to WebSocket"){
@@ -193,7 +150,6 @@ function showInAppBanner(message, notifType, treeId) {
 let unreadCount = 0;
 
 function addNotificationToList(message, isUnseen = false, timestamp = null, treeId = null, treeName, notifType = null, isPassed) {
-  
   const list = document.getElementById("notification-list");
 
   const placeholder = list.querySelector("li.text-gray-400");
@@ -201,86 +157,69 @@ function addNotificationToList(message, isUnseen = false, timestamp = null, tree
 
   const item = document.createElement("li");
   item.className = "py-2 border-b border-gray-200";
-
   if (isUnseen) item.classList.add("font-bold");
+  item.dataset.timestamp = timestamp;
 
-  let datePart = timestamp
-    ? `<br><small class="text-gray-500">${new Date(timestamp).toLocaleString()}</small>`
-    : "";
+  const datePart = timestamp ? `<br><small class="text-gray-500">${new Date(timestamp).toLocaleString([], {
+      year: 'numeric',
+      month: 'short', // or 'long'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}</small>` : "";
 
-  // Message HTML
   item.innerHTML = `
-  <div class="flex justify-between items-start relative">
-    <div class="flex-1 cursor-pointer">
-      ${message} ${datePart}
+    <div class="flex justify-between items-start relative">
+      <div class="flex-1 cursor-pointer">${message} ${datePart}</div>
     </div>
-  </div>
   `;
 
-  // Handle click on notification (to focus tree)
   if (treeId && notifType) {
     item.querySelector(".flex-1").addEventListener("click", (e) => {
       e.stopPropagation();
-      const params = new URLSearchParams({
-        focus: treeId,
-        type: notifType,
-      });
-
+      const params = new URLSearchParams({ focus: treeId, type: notifType });
       if (!currentPath.includes("map.html")) {
         window.location.href = `/map.html?${params.toString()}`;
         return;
       }
-
       focusOnTree(treeId, notifType);
       markAllNotificationsSeen();
     });
   }
 
-  // Handle Pass button
+  // Tree help pass button logic
   if (notifType === "tree_help") {
-  const passBtn = document.createElement("button");
-  passBtn.className = "pass-btn text-sm";
-  const actuallyPassed = isPassed === true || isPassed === "true";
-  
-  if (actuallyPassed) {
-    passBtn.textContent = "Status: You passed it to another expert";
-    passBtn.classList.add("text-gray-500");
-    passBtn.disabled = true;
-  } 
-  else if (treeName != "TBD"){
-    passBtn.textContent = "Status: Tree already identified";
-    passBtn.disabled = true;
-  }
-  else {
-    passBtn.textContent = "Pass";
-    passBtn.classList.add(
-      "bg-green-700", "text-white", "px-2", "py-1", "rounded", 
-      "hover:opacity-90", "absolute", "bottom-0", "right-0"
-    );
+    const passBtn = document.createElement("button");
+    passBtn.className = "pass-btn text-sm";
+    const actuallyPassed = isPassed === true || isPassed === "true";
 
-    passBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
+    if (actuallyPassed) {
+      passBtn.textContent = "Status: You passed it to another expert";
+      passBtn.classList.add("text-gray-500");
       passBtn.disabled = true;
-      passBtn.textContent = "Passing...";
-
-      const csrfToken = await getCookie("csrftoken");
-
-      fetch(`${passToExpert}/${treeId}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
-          "Authorization": `Token ${authToken}`,
-        },
-      })
+    } else if (treeName !== "TBD") {
+      passBtn.textContent = "Status: Tree already identified";
+      passBtn.disabled = true;
+    } else {
+      passBtn.textContent = "Pass";
+      passBtn.classList.add("bg-green-700", "text-white", "px-2", "py-1", "rounded", "hover:opacity-90", "absolute", "bottom-0", "right-0");
+      passBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        passBtn.disabled = true;
+        passBtn.textContent = "Passing...";
+        const csrfToken = await getCookie("csrftoken");
+        fetch(`${passToExpert}/${treeId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+            "Authorization": `Token ${authToken}`,
+          },
+        })
         .then((res) => {
           if (res.ok) {
             passBtn.textContent = "Status: You passed it to another expert";
-            passBtn.classList.remove(
-              "bg-green-700", "text-white", "px-2", "py-1", "rounded", 
-              "hover:opacity-90", "absolute", "bottom-0", "right-0"
-            );
-            passBtn.classList.add("text-gray-500");
+            passBtn.className = "text-gray-500";
             passBtn.disabled = true;
           } else {
             return res.json().then((data) => {
@@ -289,36 +228,26 @@ function addNotificationToList(message, isUnseen = false, timestamp = null, tree
             });
           }
         })
-        .catch((err) => {
+        .catch(() => {
           passBtn.textContent = "Error";
           passBtn.classList.add("text-red-500");
         });
-    });
-  }
-
-  item.querySelector(".flex-1").appendChild(passBtn); // <== Append it inside the inner div
-}
-
-    const itemTime = new Date(timestamp).getTime();
-  const children = Array.from(list.children);
-  let inserted = false;
-
-  for (const child of children) {
-    const childTimestamp = child.getAttribute("data-timestamp");
-    if (!childTimestamp) continue;
-
-    const childTime = new Date(childTimestamp).getTime();
-    if (itemTime >= childTime) {
-      list.insertBefore(item, child);
-      inserted = true;
-      break;
+      });
     }
+    item.querySelector(".flex-1").appendChild(passBtn);
   }
 
-  if (!inserted) {
-    list.appendChild(item); // oldest at bottom
-  }
+  list.appendChild(item);
+
+  // Sort notifications (latest first)
+  const items = [...list.children];
+  items.sort((a, b) => new Date(b.dataset.timestamp) - new Date(a.dataset.timestamp));
+  items.forEach(i => list.appendChild(i));
+
+  // Limit to 50
+  if (list.children.length > 50) list.removeChild(list.lastChild);
 }
+
 
 
 function updateBadge(count) {
@@ -338,53 +267,6 @@ function incrementBadge() {
   const badge = document.getElementById("notification-count");
   let current = parseInt(badge.textContent || "0");
   updateBadge(current + 1);
-}
-
-
-async function unsubscribeUserFromPush() {
-  try {
-    
-    // Get the service worker registration (no waiting for .ready)
-    const registration = await navigator.serviceWorker.getRegistration();
-    // const registration = await navigator.serviceWorker.getRegistration('/assets/js/');
-
-    if (!registration) {
-      return;
-    }
-
-    if (!registration.pushManager) {
-      return;
-    }
-
-    // Get current push subscription
-    const subscription = await registration.pushManager.getSubscription();
-    if (!subscription) {
-      
-      return;
-    }
-
-
-    // Unsubscribe the subscription in the browser
-    const unsubscribed = await subscription.unsubscribe();
-
-    // Send unsubscribe request to server
-    const res = await fetch(`${http}://${url}/unsubscribe/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': await getCookie('csrftoken'),
-        'Authorization': `Token ${authToken}`,
-      },
-      body: JSON.stringify({ endpoint: subscription.endpoint }),
-    });
-
-    if (!res.ok) {
-      throw new Error(`Server responded with status ${res.status}`);
-    }
-
-    const data = await res.json();
-  } catch (err) {
-  }
 }
 
 async function focusOnTree(treeId, notifType, retries = 10) {
@@ -454,9 +336,6 @@ if (!marker) {
   map.on("moveend", onMoveEnd);
   map.setView(latlng, 20, { animate: true });
 }
-
-
-
 
 async function markAllNotificationsSeen() {
   try {
