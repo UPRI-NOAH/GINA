@@ -70,7 +70,7 @@ async function initPush() {
       body: JSON.stringify({ subscription: serializedSub }),
     });
 
-    console.log('Push subscription registered successfully.');
+    
   } catch (err) {
     console.error('Error during push registration:', err);
   }

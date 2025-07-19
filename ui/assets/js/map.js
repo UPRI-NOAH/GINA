@@ -626,12 +626,16 @@ window.markersLoaded = new Promise((resolve) => {
 });
 
 // window.addEventListener('DOMContentLoaded', () => {
-window.addEventListener('load', async () => {
-  const params = new URLSearchParams(window.location.search);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFocus);
+}
+
+async function initFocus() {
+const params = new URLSearchParams(window.location.search);
   const treeId = params.get('focus');
   const notifType = params.get('type');
-
-  if (treeId) {
+  
+if (treeId) {
     showLoading();
 
     await window.markersLoaded;
@@ -640,7 +644,23 @@ window.addEventListener('load', async () => {
 
     hideLoading();
   }
-});
+}
+
+// window.addEventListener('load', async () => {
+  // const params = new URLSearchParams(window.location.search);
+  // const treeId = params.get('focus');
+  // const notifType = params.get('type');
+  
+  // if (treeId) {
+  //   showLoading();
+
+  //   await window.markersLoaded;
+  //   await focusOnTree(treeId, notifType);
+  //   await markAllNotificationsSeen();
+
+  //   hideLoading();
+  // }
+// });
 
 // Hide and show the legend
  document.addEventListener("DOMContentLoaded", () => {
