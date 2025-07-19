@@ -626,7 +626,7 @@ window.markersLoaded = new Promise((resolve) => {
 });
 
 // window.addEventListener('DOMContentLoaded', () => {
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('load', async () => {
   const params = new URLSearchParams(window.location.search);
   const treeId = params.get('focus');
   const notifType = params.get('type');
