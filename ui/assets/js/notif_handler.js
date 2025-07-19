@@ -1,104 +1,98 @@
-if (bellBtn) {
+(function () {
+    function init() {
+        // Bell button click event
+        if (bellBtn) {
+            bellBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                userDropdown.classList.add('hidden');
+                notifDropdown.classList.toggle('hidden');
+                notifDropdown.classList.toggle('show');
 
-  bellBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    userDropdown.classList.add('hidden');
-    notifDropdown.classList.toggle('hidden');
-    notifDropdown.classList.toggle('show');
-    
-    if (authToken && notifDropdown.classList.contains('show')) {
-        await markAllNotificationsSeen();
-        const notifItems = document.querySelectorAll("#notification-list li.font-bold");
-        notifItems.forEach(item => item.classList.remove("font-bold"));
-    }
-  });
-}
-
-  // Hide both dropdowns when clicking outside
-  window.addEventListener('click', () => {
-    if (userDropdown) {
-    userDropdown.classList.add('hidden');
-  }
-  if (notifDropdown) {
-    notifDropdown.classList.add('hidden');
-  }
-  });
-
-window.addEventListener('DOMContentLoaded', async () => {
-  
-if ('Notification' in window) {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      // Optionally: trigger push subscription setup here
-    } else if (permission === 'denied') {
-      console.warn("Notification permission denied");
-    } else {
-      console.warn("Notification permission dismissed");
-    }
-  } else {
-    console.warn("This browser does not support notifications.");
-  }
-
-    // Setup WebSocket connection
-  const wsScheme = location.protocol === "https:" ? "wss" : "ws";
-  const socket = new WebSocket(`${wsScheme}://${url}/ws/tree-notifications/`);
-
-  socket.onmessage = async (e) => {
-    if (!authToken) return;
-    const data = JSON.parse(e.data);
-    const isTreeOwner = (data.tree_owner === username);
-    const isUserExpert = (userType === "Expert");
-    const isCommentForMe = data.notif_type === "comment" && isTreeOwner;
-    const isReminderForMe = data.notif_type === "reminder" && isTreeOwner;
-    const isTreeHelpForExpert = data.notif_type === "tree_help" && isUserExpert && !isTreeOwner;
-    const isRecipient = data.recipient === username;
-
-    if ((isCommentForMe) || (isReminderForMe) || (isTreeHelpForExpert && isRecipient)) {
-    
-      addNotificationToList(data.message, true, data.timestamp, data.tree_id, data.tree_name, data.notif_type, data.is_passed);
-
-          if (notifDropdown.classList.contains('show')) {
-            // Dropdown open: mark as seen immediately
-            await markAllNotificationsSeen();
-            updateBadge(0);
-          } else {
-            incrementBadge();
-          }
-
-      if (isAppInFocus() && !notifDropdown.classList.contains('show')) {
-        if(data.message != "Connected to WebSocket"){
-        showInAppBanner(data.message, data.notif_type, data.tree_id);
+                if (authToken && notifDropdown.classList.contains('show')) {
+                    await markAllNotificationsSeen();
+                    const notifItems = document.querySelectorAll("#notification-list li.font-bold");
+                    notifItems.forEach(item => item.classList.remove("font-bold"));
+                }
+            });
         }
-      }
-    }
-  };
 
-  
-  if (authToken) {
-      try {
-        const res = await fetch(`${http}://${url}/api/notifications/`, {
-          headers: {
-            'Authorization': `Token ${authToken}`
-          }
+        // Hide dropdowns when clicking outside
+        window.addEventListener('click', () => {
+            if (userDropdown) userDropdown.classList.add('hidden');
+            if (notifDropdown) notifDropdown.classList.add('hidden');
         });
 
-        if (res.ok) {
-          const notifs = await res.json();
-          let unseenCount = 0;
-          for (let notif of notifs) {
-            
-            addNotificationToList(notif.message, !notif.is_seen, notif.created_at, notif.related_tree, notif.tree_name, notif.notif_type, notif.is_passed);
-            
-            if (!notif.is_seen) unseenCount++;
-          }
-          updateBadge(unseenCount);
-        } 
-      } catch (err) {
-        
-      }
+        // Notifications permission
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                } else if (permission === 'denied') {
+                    console.warn("Notification permission denied");
+                } else {
+                    console.warn("Notification permission dismissed");
+                }
+            });
+        } else {
+            console.warn("This browser does not support notifications.");
+        }
+
+        // WebSocket setup
+        const wsScheme = location.protocol === "https:" ? "wss" : "ws";
+        const socket = new WebSocket(`${wsScheme}://${url}/ws/tree-notifications/`);
+
+        socket.onmessage = async (e) => {
+            if (!authToken) return;
+            const data = JSON.parse(e.data);
+            const isTreeOwner = (data.tree_owner === username);
+            const isUserExpert = (userType === "Expert");
+            const isCommentForMe = data.notif_type === "comment" && isTreeOwner;
+            const isReminderForMe = data.notif_type === "reminder" && isTreeOwner;
+            const isTreeHelpForExpert = data.notif_type === "tree_help" && isUserExpert && !isTreeOwner;
+            const isRecipient = data.recipient === username;
+
+            if ((isCommentForMe) || (isReminderForMe) || (isTreeHelpForExpert && isRecipient)) {
+                addNotificationToList(data.message, true, data.timestamp, data.tree_id, data.tree_name, data.notif_type, data.is_passed);
+
+                if (notifDropdown.classList.contains('show')) {
+                    await markAllNotificationsSeen();
+                    updateBadge(0);
+                } else {
+                    incrementBadge();
+                }
+
+                if (isAppInFocus() && !notifDropdown.classList.contains('show') && data.message !== "Connected to WebSocket") {
+                    showInAppBanner(data.message, data.notif_type, data.tree_id);
+                }
+            }
+        };
+
+        // Fetch notifications if logged in
+        if (authToken) {
+            fetch(`${http}://${url}/api/notifications/`, {
+                headers: { 'Authorization': `Token ${authToken}` }
+            })
+                .then(res => res.ok ? res.json() : null)
+                .then(notifs => {
+                    if (!notifs) return;
+                    let unseenCount = 0;
+                    for (let notif of notifs) {
+                        addNotificationToList(notif.message, !notif.is_seen, notif.created_at, notif.related_tree, notif.tree_name, notif.notif_type, notif.is_passed);
+                        if (!notif.is_seen) unseenCount++;
+                    }
+                    updateBadge(unseenCount);
+                })
+                .catch(() => { });
+        }
     }
 
-});
+    // Safe DOM ready check (handles Rocket Loader, AWS, etc.)
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
+})();
+
 
 function isAppInFocus() {
   return document.visibilityState === "visible";
