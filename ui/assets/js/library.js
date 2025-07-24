@@ -27,18 +27,18 @@ var treeLib = $.ajax({
       const pageData = filteredData.slice(startIndex, endIndex);
       pageData.forEach((data) => {
         const row = document.createElement("div");
-        row.className = "tree-container flex flex-col md:flex-row md:w-64 p-2 shadow-lg overflow-x-auto mx-auto transform hover:scale-105 transition duration-500";
+        row.className = "tree-container flex flex-col md:w-64 p-2 shadow-lg overflow-x-auto mx-auto transform hover:scale-105 transition duration-500 cursor-pointer";
+        row.setAttribute("onclick", `openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)`);
         row.innerHTML = `
-          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)" class="cursor-pointer">
-            <div class="flex-shrink">
-              <img src="${data.tree_image}" class="w-full h-48 object-cover rounded-xl">
-            </div>
-            <div class="flex flex-col justify-center detail-container w-full h-32">
-              <div class="text-xl font-bold" style="color:#047857"><p>${data.tree_name}</p></div>
-              <div class="text-sm" style="color:#303030"><p><b>Scientific Name: </b><i>${data.scientific_name}</i></p></div>
-              <div class="text-sm" style="color:#303030"><p><b>Family Name: </b><i>${data.family_name}</i></p></div>
-            </div>
+          <div class="flex-shrink">
+            <img src="${data.tree_image}" class="w-full h-48 object-cover rounded-xl">
           </div>
+          <div class="flex flex-col justify-center detail-container w-full h-32">
+            <div class="text-xl font-bold" style="color:#047857"><p>${data.tree_name}</p></div>
+            <div class="text-sm" style="color:#303030"><p><b>Scientific Name: </b><i>${data.scientific_name}</i></p></div>
+            <div class="text-sm" style="color:#303030"><p><b>Family Name: </b><i>${data.family_name}</i></p></div>
+          </div>
+        </div>
           
         `;
         treeGrid.appendChild(row);
@@ -47,16 +47,17 @@ var treeLib = $.ajax({
       treeListMobile.innerHTML = ''; // Clear old content
       pageData.forEach((data) => {
         const mobileRow = document.createElement("div");
-        mobileRow.className = "flex justify-between bg-white rounded-xl shadow-md p-4 gap-4 items-center transform hover:scale-105 transition duration-500";
+        mobileRow.className = "flex justify-between bg-white rounded-xl shadow-md p-4 gap-4 items-center transform hover:scale-105 transition duration-500 cursor-pointer";
+        mobileRow.setAttribute("onclick", `openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)`);
         mobileRow.innerHTML = `
-          <div onclick="openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)" class="cursor-pointer flex-1">
+          <div class="flex-1">
             <div class="text-xl sm:text-2xl font-bold text-green-700">${data.tree_name}</div>
             <div class="text-sm" style="color:#303030"><strong>Scientific Name:</strong> <i>${data.scientific_name}</i></div>
             <div class="text-sm" style="color:#303030"><strong>Family Name:</strong> <i>${data.family_name}</i></div>
             <div class="mt-2 text-xs text-gray-400 line-clamp-3">${data.tree_description || 'No description available.'}</div>
           </div>
           <div class="w-36 h-36 flex-shrink-0">
-            <img src="${data.tree_image}" class="w-full h-full object-cover rounded-lg cursor-pointer">
+            <img src="${data.tree_image}" class="w-full h-full object-cover rounded-lg">
           </div>
         `;
         treeListMobile.appendChild(mobileRow);
