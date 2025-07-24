@@ -25,7 +25,7 @@ from djoser.serializers import UserCreateSerializer
 import requests
 from django.conf import settings
 from rest_framework import serializers
-from djoser.email import ActivationEmail
+from api.gina.emails import CustomActivationEmail
 
 User = get_user_model()
 
@@ -155,6 +155,7 @@ def pass_tree_notif(request, reference_id):
             "user": tree.owning_user.user.username,
             "timestamp": timezone.now().isoformat(),
             "tree_id": str(tree.reference_id),
+            "tree_name": str(tree.tree_name),
             "notif_type": "tree_help",
             "recipient": next_expert.user.username,
             "is_passed": False,
@@ -340,7 +341,7 @@ class RegisterWithCaptchaView(APIView):
             if settings.DJOSER.get('SEND_ACTIVATION_EMAIL', False):
                 context = {'user': user}
                 to = [getattr(user, user.get_email_field_name())]
-                ActivationEmail(request, context).send(to)
+                CustomActivationEmail(request, context).send(to)
 
             return Response(serializer.data, status=201)
 
