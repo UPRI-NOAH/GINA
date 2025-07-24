@@ -433,24 +433,10 @@ function skip() {
   document.getElementById("expertoverlay").classList.add("invis");
   const emptyGallery = document.getElementById("empty");
   const editEmptyGallery = document.getElementById("edit-empty");
+  // Clear upload gallery
 
-    // Clear upload gallery
-  document.getElementById("gallery").innerHTML = "";
-  if (emptyGallery) {
-    emptyGallery.classList.remove("hidden");
-  }
-  document.getElementById("tree-photo").value = "";
-
-  // Clear edit gallery
-  document.getElementById("edit-gallery").innerHTML = "";
-  if (editEmptyGallery) {
-    editEmptyGallery.classList.remove("hidden");
-  }
-  document.getElementById("edit-tree-photo").value = "";
-
-  // Reset FILES array
-  FILES = [];
-  EDIT_FILES = [];
+  resetUploadModal();
+  resetEditModal();
 
 }
 
