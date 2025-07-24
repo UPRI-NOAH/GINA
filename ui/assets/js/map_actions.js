@@ -35,11 +35,11 @@ function dataURLtoBlob(dataurl) {
 }
 
 // Upload offline stored trees when back online
-function uploadOfflineTrees() {
+async function uploadOfflineTrees() {
   let offlineTrees = JSON.parse(localStorage.getItem('offlineTrees') || '[]');
   if (offlineTrees.length === 0) return;
 
-  const uploadPromises = offlineTrees.map((tree, index) => {
+  const uploadResults = await Promise.all(offlineTrees.map(async (tree, index) => {
     const formData = new FormData();
     formData.append('tree_name', tree.plantName);
     formData.append('tree_description', tree.description);
@@ -50,66 +50,93 @@ function uploadOfflineTrees() {
     formData.append('quantity', 1);
     formData.append('status', "PLT");
     formData.append('owning_user', tree.username);
+    formData.append('version', 1);
 
-    if (tree.image) {
-      const blob = dataURLtoBlob(tree.image);
-      formData.append('image', blob, 'offline-image.png');
+    const rejectedImages = [];
+    const validBlobs = [];
+
+    for (let i = 0; i < (tree.images || []).length; i++) {
+      const base64 = tree.images[i];
+      const blob = dataURLtoBlob(base64);
+
+      const validateForm = new FormData();
+      validateForm.append('image', blob, `offline-image-${i + 1}.jpg`);
+
+      try {
+        const res = await fetch(validateImage, {
+          method: 'POST',
+          body: validateForm
+        });
+        const result = await res.json();
+
+        if (result.valid) {
+          validBlobs.push(blob);
+        } else {
+          rejectedImages.push(`Image ${i + 1}`);
+        }
+      } catch (err) {
+        console.warn(`Validation error for tree #${index + 1}, image ${i + 1}:`, err);
+        rejectedImages.push(`Image ${i + 1} (error)`);
+      }
     }
 
-    return fetch(usertreeURL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${authToken}`,
-      },
-      body: formData
-    })
-    .then(response => {
-      if (!response.ok) {
-        // Return an object marking failure with reason
-        return response.json()
-          .then(errorData => {
-            let errMsg = 'Unknown error';
-            if (errorData.detail) {
-              errMsg = errorData.detail;
-            } else if (errorData.tree_name) {
-              errMsg = errorData.tree_name.join(', ');
-            } else if (typeof errorData === 'string') {
-              errMsg = errorData;
-            }
-            return { success: false, index, error: errMsg };
-          })
-          .catch(() => ({ success: false, index, error: 'Failed to parse error response' }));
-      }
-      return response.json().then(() => ({ success: true, index }));
-    })
-    .catch(error => ({ success: false, index, error: error.message }));
-  });
+    if (validBlobs.length === 0) {
+      return {
+        success: false,
+        index,
+        error: 'All images rejected.',
+        rejectedImages
+      };
+    }
 
-    Promise.all(uploadPromises)
-    .then(results => {
-      const failedUploads = results.filter(r => !r.success);
-      const successfulUploads = results.filter(r => r.success);
-
-      if (successfulUploads.length > 0) {
-        alert(`${successfulUploads.length} offline tree(s) uploaded successfully.`);
-      }
-      if (failedUploads.length > 0) {
-        let messages = failedUploads.map(f => `Tree #${f.index + 1}`).join('\n');
-        alert(`Some offline trees failed to upload:\n${messages}`);
-      }
-
-      // Always clear offline data no matter success or failure
-      localStorage.removeItem('offlineTrees');
-
-      location.reload();
-    })
-    .catch(err => {
-      console.error('Error uploading offline trees:', err);
-      alert('An unexpected error occurred while uploading offline trees.');
+    validBlobs.forEach((blob, i) => {
+      formData.append('images', blob, `offline-valid-${i + 1}.jpg`);
     });
+
+    try {
+      const response = await fetch(usertreeURL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${authToken}`,
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMsg = errorData?.detail || 'Upload failed';
+        return { success: false, index, error: errorMsg, rejectedImages };
+      }
+
+      return { success: true, index, rejectedImages };
+
+    } catch (err) {
+      return { success: false, index, error: err.message, rejectedImages };
+    }
+  }));
+
+  // Summarize results
+  const failed = uploadResults.filter(r => !r.success);
+  const success = uploadResults.filter(r => r.success);
+
+  if (success.length) {
+    alert(`${success.length} tree(s) uploaded successfully.`);
+    success.forEach(r => {
+      if (r.rejectedImages.length > 0) {
+        alert(`Tree #${r.index + 1}: ${r.rejectedImages.length} image(s) were rejected:\n${r.rejectedImages.join(', ')}`);
+      }
+    });
+  }
+
+  if (failed.length) {
+    const errorMsg = failed.map(f => `Tree #${f.index + 1} – ${f.error}`).join('\n');
+    alert(`Some tree(s) failed to upload:\n${errorMsg}`);
+  }
+
+  // Clear all offline trees once attempted
+  localStorage.removeItem('offlineTrees');
+  location.reload();
 }
-
-
 
 
 function isOnline() {
@@ -121,6 +148,7 @@ function resizeImage(file, maxSize = 800) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const reader = new FileReader();
+    
     reader.onload = () => {
       img.src = reader.result;
     };
@@ -147,38 +175,41 @@ function resizeImage(file, maxSize = 800) {
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
+
       canvas.toBlob(blob => {
+        if (!blob) {
+          reject(new Error("Canvas toBlob failed — could not create blob."));
+          return;
+        }
+
         const resizedReader = new FileReader();
         resizedReader.onload = () => resolve(resizedReader.result);
         resizedReader.onerror = reject;
         resizedReader.readAsDataURL(blob);
-      }, 'image/jpeg', 0.7); // Lower quality for size reduction
+      }, 'image/jpeg', 0.7);
     };
 
-    reader.readAsDataURL(file);
+    img.onerror = () => reject(new Error("Image failed to load"));
+    reader.readAsDataURL(file); // ✅ don't forget to trigger the reader
   });
 }
-
 
 
 function uploadTree() {
   const plantName = document.getElementById('plant-name').value;
   const description = document.getElementById('description').value;
   const treeType = document.getElementById('tree-type').value;
-  const image = document.getElementById('tree-photo').files[0];
+  const images = FILES.map(f => f.file);
   const latitude = Number(document.getElementById('latitude').value).toFixed(6);
   const longitude = Number(document.getElementById('longitude').value).toFixed(6);
   const username = localStorage.getItem('username') || sessionStorage.getItem('username');
-    // Reset Edit input
-    document.getElementById('tree-photo').value = '';
-    document.getElementById('file-name-add').textContent = 'Choose a file';
-    
-    document.getElementById('edit-tree-photo').value = '';
-    document.getElementById('file-name-edit').textContent = 'Choose a file';
-
+  if (isImageProcessing) {
+    alert("Please wait for images to finish validating...");
+    return;
+  }
   showLoading();
-
-  if (!plantName || !description || !image || !treeType) {
+  console.log(plantName, description, treeType,username)
+  if (!plantName || !description || !treeType || images.length === 0) {
     hideLoading();
     alert("Please fill in all fields and upload a photo before submitting.");
     return;
@@ -192,26 +223,38 @@ function uploadTree() {
   formData.append('longitude', longitude);
   formData.append('latitude', latitude);
   formData.append('quantity', 1);
-  formData.append('status', "PLT");
-  formData.append('image', image);
+  formData.append('status', "PLT")
   formData.append('owning_user', username);
+  formData.append('version', 1);
+
+  images.forEach(img => {
+    console.log(img)
+    formData.append('images', img);
+  });
+  console.log(images)
 
   checkInternetConnection().then(isOnline => {
     if (!isOnline) {
-      // ✅ Compress + convert image before saving offline
-      resizeImage(image).then(resizedBase64 => {
+      Promise.all(
+        images.map(file => {
+          if (!(file instanceof Blob)) {
+            console.warn("Skipping invalid image file:", file);
+            return Promise.resolve(null);  // or skip it completely if you prefer
+          }
+          return resizeImage(file);
+        })
+      ).then(resizedImages => {
         const offlineData = {
           plantName,
           description,
           treeType,
-          image: resizedBase64,
+          images: resizedImages,  // array of base64 images
           latitude,
           longitude,
           username,
           timestamp: Date.now(),
           action: picAction
         };
-
         saveTreeDataOffline(offlineData);
         hideLoading();
         alert("You're offline. Your data has been saved and will upload automatically once you're back online.");
@@ -219,18 +262,22 @@ function uploadTree() {
         // Reset form
         document.getElementById("uploadoverlay").classList.add("invis");
         document.getElementById("map").classList.remove("map-blurred");
-        document.getElementById('plant-name').value = '';
-        document.getElementById('description').value = '';
-        document.getElementById('tree-type').value = '';
-        document.getElementById('tree-photo').value = '';
-        document.getElementById('latitude').value = '';
-        document.getElementById('longitude').value = '';
-      }).catch(err => {
-        console.error('Error resizing image:', err);
-        hideLoading();
-        alert("Failed to process image for offline saving.");
-      });
+        const plantNameEl = document.getElementById('plant-name');
+        const descriptionEl = document.getElementById('description');
+        const treeTypeEl = document.getElementById('tree-type');
+        const latitudeEl = document.getElementById('latitude');
+        const longitudeEl = document.getElementById('longitude');
 
+        if (plantNameEl) plantNameEl.value = '';
+        if (descriptionEl) descriptionEl.value = '';
+        if (treeTypeEl) treeTypeEl.value = '';
+        if (latitudeEl) latitudeEl.value = '';
+        if (longitudeEl) longitudeEl.value = '';
+      }).catch(err => {
+        console.error('Error resizing images:', err);
+        hideLoading();
+        alert("Failed to process images for offline saving.");
+      });
     } else {
       // ✅ Online upload
       fetch(usertreeURL, {
@@ -245,6 +292,8 @@ function uploadTree() {
           let errorText = 'Upload failed';
           try {
             const errorData = await response.json();
+            console.error('Full error from backend:', errorData);
+
             if (errorData.detail) {
               errorText = errorData.detail;
             } else {
@@ -282,20 +331,21 @@ function editTree() {
   const description = document.getElementById('edit-description').value;
   const treeType = document.getElementById('edit-tree-type').value;
   const action = document.getElementById('edit-action').value;
-  const image = document.getElementById('edit-tree-photo').files[0];
+  const images = EDIT_FILES.map(f => f.file);
   const username = localStorage.getItem('username') || sessionStorage.getItem('username');
   const treeId = document.getElementById('edit-ref-id').value;
-
-    // Reset Edit input
-    document.getElementById('tree-photo').value = '';
-    document.getElementById('file-name-add').textContent = 'Choose a file';
-    
-    document.getElementById('edit-tree-photo').value = '';
-    document.getElementById('file-name-edit').textContent = 'Choose a file';
-
+  if (isImageProcessing) {
+    alert("Please wait for images to finish validating...");
+    return;
+  }
   showLoading();
-
   if (!plantName || !description || !treeId || !treeType) {
+    hideLoading();
+    alert("Please fill in all required fields before submitting.");
+    return;
+  }
+
+  if (uploadStatus === 'monthly' && images.length === 0) {
     hideLoading();
     alert("Please fill in all required fields before submitting.");
     return;
@@ -307,8 +357,12 @@ function editTree() {
   formData.append('tree_type', treeType);
   formData.append('action', action);
   formData.append('owning_user', username);
-  if (image) {
-    formData.append('image', image);
+  console.log(uploadStatus)
+  
+  if (uploadStatus === 'monthly' && images.length > 0) {
+    images.forEach(img => {
+      formData.append('images', img); // Must match backend getlist('images')
+    });
   }
 
   fetch(`${usertreeURL}${treeId}/`, {
@@ -593,3 +647,104 @@ function deleteComment(commentId, tree_identifier) {
 window.addEventListener('online', () => {
   uploadOfflineTrees();
 });
+
+
+async function validateImageWithBackend(file) {
+  showLoading()
+  
+  const isOnline = await checkInternetConnection();
+  
+    if (!isOnline) {
+      hideLoading()
+      console.warn("Offline mode detected — skipping backend validation.");
+      return true; 
+    }
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const res = await   fetch(validateImage, {
+      method: 'POST',
+      body: formData, 
+    });
+
+    const data = await res.json();
+    hideLoading()
+
+    return data.valid;
+  } catch (err) {
+    console.error("Validation failed", err);
+    hideLoading()
+    return false;
+  }
+}
+
+
+function updateTreeImage(treeId, formData, carouselItem, refId, saveButton, fileInput) {
+  fetch(`${treeArchiveURL}${treeId}/`, {
+    method: "PATCH",
+    headers: { 'Authorization': `Token ${authToken}` },
+    body: formData
+  })
+    .then(response => {
+      if (!response.ok) throw new Error(`Update failed: ${response.status}`);
+      return response.json();
+    })
+    .then(data => {
+      carouselItem.querySelector("img").src = data.image;
+
+      const popupImg = document.querySelector(`#tree-photo-${refId}`);
+      if (popupImg) {
+        const firstItemImg = document.querySelector('#carouselItems .relative img');
+        if (firstItemImg) popupImg.src = firstItemImg.src;
+      }
+
+      saveButton.style.display = "none";
+      saveButton.disabled = true;
+      fileInput.value = "";
+      alert("Image updated successfully!");
+    })
+    .catch(error => alert(error.message));
+}
+
+
+
+function deleteTreeImage(treeId, carouselItem, refId, treeGallJSON, updateCarouselAfterDelete) {
+  fetch(`${treeArchiveURL}${treeId}/`, {
+    method: "DELETE",
+    headers: {
+      'Authorization': `Token ${authToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => {
+      if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+
+      // Remove DOM element
+      const allItems = Array.from(document.querySelectorAll('#carouselItems .relative'));
+      const allIndicators = Array.from(document.querySelectorAll('#carouselIndicators button'));
+      const itemIndex = allItems.indexOf(carouselItem);
+
+      carouselItem.remove();
+
+      // Update popup image if it's the latest
+      const popupImg = document.querySelector(`#tree-photo-${refId}`);
+      if (popupImg) {
+        const remainingItems = document.querySelectorAll('#carouselItems .relative img');
+        popupImg.src = remainingItems.length > 0 ? remainingItems[0].src : '/static/img/no-image.png';
+      }
+
+      if (itemIndex !== -1 && allIndicators[itemIndex]) {
+        allIndicators[itemIndex].remove();
+      }
+
+      // Remove from local data
+      const idx = treeGallJSON.findIndex(t => t.id === treeId);
+      if (idx !== -1) treeGallJSON.splice(idx, 1);
+
+      // Refresh carousel UI
+      updateCarouselAfterDelete();
+    })
+    .catch(error => alert(error.message));
+}

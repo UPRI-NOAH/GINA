@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets, mixins
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
-from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer, SubscriptionSerializer
+from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer, SubscriptionSerializer, CustomUserCreateSerializer
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter, IdentifyTreeFilter, UserTreeArchiveTreeFilter, NotificationFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
@@ -24,6 +24,8 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 import requests
 from django.conf import settings
+from rest_framework import serializers
+from api.gina.emails import CustomActivationEmail
 
 User = get_user_model()
 
@@ -153,6 +155,7 @@ def pass_tree_notif(request, reference_id):
             "user": tree.owning_user.user.username,
             "timestamp": timezone.now().isoformat(),
             "tree_id": str(tree.reference_id),
+            "tree_name": str(tree.tree_name),
             "notif_type": "tree_help",
             "recipient": next_expert.user.username,
             "is_passed": False,
@@ -316,7 +319,7 @@ class RegisterWithCaptchaView(APIView):
         if not captcha_token:
             return Response({"error": "Missing hCaptcha token."}, status=400)
 
-        # Verify hCaptcha token
+        # Verify hCaptcha
         data = {
             'secret': settings.HCAPTCHA_SECRET_KEY,
             'response': captcha_token
@@ -328,8 +331,36 @@ class RegisterWithCaptchaView(APIView):
             return Response({"error": "Captcha verification failed."}, status=400)
 
         # Proceed to create user
-        serializer = UserCreateSerializer(data=request.data)
+        data = request.data.copy()
+        data.pop('hcaptcha_token', None)
+        serializer = CustomUserCreateSerializer(data=data)
         if serializer.is_valid():
             user = serializer.save()
+
+            # Send activation email manually (because we bypassed Djoser's default view)
+            if settings.DJOSER.get('SEND_ACTIVATION_EMAIL', False):
+                context = {'user': user}
+                to = [getattr(user, user.get_email_field_name())]
+                CustomActivationEmail(request, context).send(to)
+
             return Response(serializer.data, status=201)
+
         return Response(serializer.errors, status=400)
+    
+
+class ValidateImageAPIView(APIView):
+    def post(self, request):
+        image = request.FILES.get('image')
+        if not image:
+            return Response({"detail": "No image uploaded"}, status=400)
+
+        # We only need the image field, so create a minimal serializer instance
+        serializer = UserTreeSerializer()
+
+        try:
+            serializer.validate_and_embed_image(image)
+            return Response({"valid": True})
+        except serializers.ValidationError as e:
+            return Response({"valid": False, "detail": str(e)}, status=400)
+        except Exception as e:
+            return Response({"valid": False, "detail": f"Unexpected error: {str(e)}"}, status=500)

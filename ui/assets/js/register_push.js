@@ -23,52 +23,61 @@ function serializeSubscription(subscription) {
   };
 }
 
-window.addEventListener('load', async () => {
+async function initPush() {
   try {
     if (!authToken) {
       console.warn('Cannot subscribe: authToken is missing.');
       return;
     }
 
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      const registration = await navigator.serviceWorker.register('/service-worker-ghpages.js', {
-        scope: '/'
-      });
-      // const registration = await navigator.serviceWorker.register('/assets/js/service-worker.js', {
-      //   scope: '/' // not '/assets/js/'
-      // });
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        console.warn('Permission not granted for notifications');
-        return;
-      }
+    if (!('serviceWorker' in navigator && 'PushManager' in window)) {
+      console.warn('Push notifications are not supported in this browser.');
+      return;
+    }
 
-      const readyRegistration = await navigator.serviceWorker.ready;
+    // Register the service worker
+    const registration = await navigator.serviceWorker.register('/service-worker-ghpages.js', {
+      scope: '/'
+    });
 
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.warn('Permission not granted for notifications');
+      return;
+    }
 
-      const subscription = await readyRegistration.pushManager.subscribe({
+    const readyRegistration = await navigator.serviceWorker.ready;
+
+    // ✅ Check if already subscribed
+    let subscription = await readyRegistration.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await readyRegistration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: 'BPRvxQ24yz8iNO0uIYkS593ToRrv5l-HcEaR22LAzot22aa9pAOORQo1xVD2cpx0FPPMsnyT9ZEmo5pMai3N7rE'
       });
-
-      const serializedSub = serializeSubscription(subscription);
-
-      
-      const response = await fetch(`${http}://${url}/subscribe/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': await getCookie('csrftoken'),
-          'Authorization': `Token ${authToken}`,
-        },
-        body: JSON.stringify({ subscription: serializedSub }),
-      });
-
-    } else {
-      console.warn('Push notifications are not supported in this browser.');
     }
 
+    const serializedSub = serializeSubscription(subscription);
+
+    // Send subscription to server
+    await fetch(`${http}://${url}/subscribe/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': await getCookie('csrftoken'),
+        'Authorization': `Token ${authToken}`,
+      },
+      body: JSON.stringify({ subscription: serializedSub }),
+    });
+
+    
   } catch (err) {
-    console.error('Error in service worker load event:', err);
+    console.error('Error during push registration:', err);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPush);
+} else {
+  initPush();
+}

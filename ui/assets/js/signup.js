@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const formReg = document.getElementById('register-form');
-
+  // alert('wew')
   if (isLoggedIn === true) {
     window.location.href = 'profile.html';
     return;
@@ -19,12 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const userType = document.getElementsByName('user_type')[0].value;
-    if (!userType) {
-      alert("Please select a user type.");
-      hideLoading();
-      return;
-    }
+      const userTypeElement = document.getElementsByName('user_type')[0];
+      const userType = userTypeElement.value;
+
+      if (userType === "" || userType === "User Type:") {
+        alert("Please select a user type.");
+        hideLoading();
+        return;
+      }
 
     // Check hCaptcha
     const captchaResponse = hcaptcha.getResponse();

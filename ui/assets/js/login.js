@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = document.querySelector('input[name="uname"]').value;
         const password = document.querySelector('input[name="psw"]').value;
         const remember = document.querySelector('input[name="remember"]').checked;
-        const captchaToken = document.querySelector('[name="h-captcha-response"]').value;
+        const captchaToken = hcaptcha.getResponse();
 
         if (!captchaToken) {
             hideLoading();
@@ -49,12 +49,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const authToken = data.auth_token;
                 const userType = data.user_type;
 
+                localStorage.setItem('authToken', authToken);
+                localStorage.setItem('username', username);
+                localStorage.setItem('userType', userType);
                 // Store token
-                if (remember) {
+                if (rememberMe) {
+                    // Remember me is checked, store the auth token in local storage
                     localStorage.setItem('authToken', authToken);
                     localStorage.setItem('username', username);
-                    localStorage.setItem('userType', userType);
+                    localStorage.setItem('userType', userType); 
                 } else {
+                    // Remember me is not checked, store the auth token in session storage
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('userType', userType); 
                     sessionStorage.setItem('authToken', authToken);
                     sessionStorage.setItem('username', username);
                     sessionStorage.setItem('userType', userType);

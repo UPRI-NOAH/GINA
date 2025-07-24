@@ -77,7 +77,7 @@ class UserTreeInfo(models.Model):
     quantity = models.IntegerField()
     status = models.CharField(choices=TREE_STATUS)
     edited_by = models.CharField(max_length=100, null=True, blank=True)
-    image = models.ImageField(upload_to=PathAndRename('gina_trees/'), null=True, blank=True,)
+    version = models.IntegerField()
 
 
 class IdentifyTreeInfo(models.Model):
@@ -91,9 +91,6 @@ class IdentifyTreeInfo(models.Model):
 class UserTreeArchive(models.Model):
     reference_id = models.ForeignKey("UserTreeInfo", on_delete=models.SET_NULL, null=True, to_field="reference_id")
     owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
-    tree_name = models.CharField(max_length=100, null=False, blank=False)
-    tree_type = models.CharField(max_length=100, null=True, blank=True)
-    tree_description = models.TextField(null=False, blank=False)
     planted_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
     image = models.ImageField(upload_to=PathAndRename('gina_trees/'), null=True, blank=True,)
     image_embedding = ArrayField(models.FloatField(), null=True, blank=True)

@@ -38,6 +38,7 @@ class UserTreeFilter(django_filters.FilterSet):
             "owning_user__user": ["exact"],
             "quantity": ["exact"],
             "status": ["exact"],
+            "version": ["exact"],
         }
 
 class IdentifyTreeFilter(django_filters.FilterSet):
@@ -54,11 +55,9 @@ class UserTreeArchiveTreeFilter(django_filters.FilterSet):
     class Meta:
         model = UserTreeArchive
         fields = {
+            "id": ["exact"],
             "reference_id__reference_id": ["exact"],
             "owning_user__user": ["exact"],
-            "tree_name": ["exact"],
-            "tree_type": ["exact"],
-            "tree_description": ["exact"],
             "planted_on": ["exact"],
         }
 

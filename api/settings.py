@@ -297,7 +297,7 @@ AWS_DEFAULT_ACL = "public-read"
 AWS_S3_VERIFY = False
 AWS_QUERYSTRING_AUTH = False
 
-CORS_ALLOWED_ORIGINS = ['https://upri-noah.github.io',]
+CORS_ALLOWED_ORIGINS = ['https://upri-noah.github.io', 'https://gina.up.edu.ph',]
 
 # CORS_ALLOW_HEADERS = [
 CORS_ALLOW_HEADERS = list(default_headers) + [
