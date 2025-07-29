@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GINA - Grow and Identify Native trees in your Area</title>
-  <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+  <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon-white.png">
   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="assets/css/nav.css" rel="stylesheet">
@@ -62,8 +62,9 @@
         <div class="hidden md:flex ml-10 items-center ">
           <a class="px-5 md:text-sm lg:text-base" href="index.html">Home</a>
           <a class="px-5 md:text-sm lg:text-base" href="library.html">Library</a>
-          <a class="px-5 md:text-sm lg:text-base" href="leaderboard.html">Leaderboards</a>
-          <a class="px-5 md:text-sm lg:text-base text-green-800" href="#">Map</a>
+          <a class="px-5 md:text-sm lg:text-base text-green-800" href="#">Map a Tree!</a>
+          <a class="px-5 md:text-sm lg:text-base" href="leaderboard.html">Leaderboard</a>
+          <!-- <a class="px-5 md:text-sm lg:text-base" href="events.html">Events</a> -->
         </div>
       </div>
 
@@ -80,22 +81,22 @@
         </div>
         <div id="user-buttons" class="md:flex hidden invis">
           <div class="relative">
-            <button id="notification-bell" class="p-2 rounded-full">
-              <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
-              <span id="notification-count"
-                class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
-                0
-              </span>
-            </button>
+                    <button class="notification-bell relative p-2 rounded-full">
+                      <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
+                      <span class="notification-count absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 font-sans font-medium hidden">0</span>
+                    </button>
 
             <!-- Notification dropdown -->
-            <div id="notification-dropdown"
-              class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
-              <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
-              <ul id="notification-list" class="max-h-60 overflow-y-auto p-2 text-sm text-gray-600">
-                <li class="text-gray-400 italic text-center py-2">No notifications</li>
-              </ul>
-            </div>
+              <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
+                        <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
+                        
+                        <!-- This div controls the scroll -->
+                        <div class="overflow-y-auto" style="max-height: 16rem;">
+                            <ul id="notification-list" class="p-2 text-sm text-gray-600 space-y-2">
+                                <li class="text-gray-400 italic text-center py-2">No notifications</li>
+                            </ul>
+                        </div>
+                    </div>
           </div>
 
           <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
@@ -140,115 +141,110 @@
         </div>
       </div>
 
-
-      <!--  Mobile Menu    -->
-      <div class="md:hidden sm:flex items-center hidden">
-        <button class="menu-button focus:outline-none hover:bg-gray-300 hover:text-gray-800 
-                rounded-full transition duration-500  p-2" onclick="toggleNav()">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
-
     </nav>
 
-    <!-- Mobile menu -->
-    <div class="mt-3 md:hidden hidden px-10 flex-col divide-y divide-gray-600" class="invis" id="mobile-menu">
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="index.html">Home</a>
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="library.html">Library</a>
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="leaderboard.html">Leaderboards</a>
-      <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="#">Map</a>
-      <div class="invis" id="mobile-login">
-        <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="signup.html">Sign Up</a>
-        <a class="block px-3 py-3 text-sm hover:bg-gray-400" href="login.html">Login</a>
-      </div>
-
-      <div id="user-buttons" class="md:flex hidden invis">
-        <!-- user -->
-        <button class="mt-2" id="user-dropdown-toggle">
-          <img class="w-10 h-10" src="./assets/img/profile.svg">
-        </button>
-      </div>
-    </div>
   </div>
   </header>
 
 
   <!-- Mobile Footer Menu -->
-  <div class=" fixed z-50 w-full h-16 max-w-full -translate-x-1/2 bg-white border border-gray-200
-  dark:bg-gray-700 dark:border-gray-600 md:hidden block bottom-0 shadow-xl/30" style="justify-self: anchor-center;">
-    <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
+  
+  <div class="fixed z-50 w-full h-16 bg-white border md:hidden block bottom-0 shadow-xl/30">
+    <div id="mobile-nav" class="grid h-full max-w-lg grid-cols-5 mx-auto">
+        <!-- Home -->
+        <button class="inline-flex flex-col items-center justify-center px-1"
+            onclick="document.location='index.html'">
+            <i class="ri-home-5-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Home</span>
+        </button>
 
-      <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center
-         justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group"
-        onclick="document.location='index.html'">
-        <i class="ri-home-5-line ri-lg text-gray-500"></i>
-        <span class="text-xs text-gray-500 mt-1">Home</span>
-      </button>
+        <!-- Library -->
+        <button class="inline-flex flex-col items-center justify-center"
+            onclick="document.location='library.html'">
+            <i class="ri-book-2-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Library</span>
+        </button>
 
-      <button data-tooltip-target="tooltip-wallet" type="button" class="inline-flex flex-col items-center justify-center 
-         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='library.html'">
-        <i class="ri-book-2-line ri-lg text-gray-500"></i>
-        <span class="text-xs text-gray-500 mt-1">Library</span>
-      </button>
+        <!-- Map -->
+        <button class="inline-flex flex-col items-center justify-center px-1"
+            onclick="document.location='map.html'">
+            <i class="ri-map-pin-line ri-lg text-green-700"></i>
+            <span class="text-xs text-green-700 mt-1">Map a Tree!</span>
+        </button>
 
+        <!-- Leaderboards -->
+        <button class="inline-flex flex-col items-center justify-center px-1"
+            onclick="document.location='leaderboard.html'">
+            <i class="ri-trophy-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Leaderboard</span>
+        </button>
 
-      <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
-         hover:bg-gray-50 dark:hover:bg-gray-800 group" onclick="document.location='leaderboard.html'">
-        <i class="ri-trophy-line ri-lg text-gray-500"></i>
-        <span class="text-xs text-gray-500 mt-1">Leaderboards</span>
-      </button>
+        <!-- Events -->
+         <!-- <button class="inline-flex flex-col items-center justify-center px-1"
+            onclick="document.location='events.html'">
+            <i class="ri-calendar-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Events</span>
+        </button> -->
 
-      <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5
-         hover:bg-gray-50 dark:hover:bg-gray-800 group">
-        <i class="ri-map-pin-line ri-lg text-green-700"></i>
-        <span class="text-xs text-green-700 mt-1">Map</span>
-      </button>
+        <!-- LOGGED OUT BUTTON -->
+        <button id="notLoggedIn" class="inline-flex flex-col items-center justify-center px-1"
+            onclick="pleaseLogin()">
+            <i class="ri-user-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Profile</span>
+        </button>
 
-      <!-- not logged in show profile -->
-      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
-         dark:hover:bg-gray-800 group" onclick="pleaseLogin()" id="notLoggedIn">
-        <i class="ri-user-line ri-lg text-gray-500"></i>
-        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
-      </button>
+        <!-- LOGGED IN BUTTON WITH DROPDOWN -->
+        <button id="profileMenu" class="inline-flex flex-col items-center justify-center px-1 relative invis"
+                onclick="dropdownHandler(event, this)">
 
+                <!-- Profile Icon with relative positioning -->
+                <i class="ri-user-line ri-lg text-gray-500 relative">
+                    <!-- Notification badge anchored to icon -->
+                    <span class="notification-count absolute -top-0 -right-4 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center font-sans font-medium leading-4 hidden">
+                        0
+                    </span>
+                </i>
 
-      <button data-tooltip-target="tooltip-profile" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50
-         dark:hover:bg-gray-800 group" onclick="dropdownHandler(event, this)" id="profileMenu">
-        <i class="ri-user-line ri-lg text-gray-500"></i>
-        <span class="text-xs text-gray-500 mt-1 ">Profile</span>
+                <!-- Label -->
+                <span class="text-xs text-gray-500 mt-1">Profile</span>
 
-        <ul class=" w-28 border-r bg-white absolute rounded right-2 shadow bottom-16 mt-16 hidden pl-2"
-          style="justify-content: center;">
-          <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700 
-          focus:text-green-700 focus:outline-none" role="button" onclick="event.preventDefault(); document.location='profile.html'">
-            <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20"
-                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" />
-                <circle cx="12" cy="7" r="4" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-              </svg>
-              <span class="text-xs">My Profile</span>
-            </a>
-          </li>
-          <li
-            class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
-                                            hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
-            role="button" onclick="logOut()">
-            <a href="javascript:void(0)"
-              class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
-              <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
-              <span class="text-xs">Log Out</span>
-            </a>
-          </li>
-        </ul>
-      </button>
+            <!-- Dropdown -->
+            <ul class="w-25 border-r bg-white absolute rounded right-0 pr-2 shadow bottom-0 hidden pl-2"
+                style="justify-content: center; bottom: 63px;">
+                <li class="cursor-pointer text-gray-600 text-sm py-2 hover:text-green-700"
+                    onclick="event.preventDefault(); document.location='profile.html'">
+                    <a class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="currentColor" fill="none">
+                            <circle cx="12" cy="7" r="4" />
+                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                        </svg>
+                        <span class="text-xs ml-2">My Profile</span>
+                    </a>
+                </li>
+               <li class="notification-bell cursor-pointer text-gray-600 text-sm py-2 hover:text-green-700 relative">
+                <a href="javascript:void(0)" class="flex items-center">
+                  <i class="ri-notification-3-line ri-lg text-gray-500"></i>
 
+                  <!-- Wrap text in a span -->
+                  <span class="ml-2 text-xs">Alerts</span>
+
+                  <!-- Absolutely position the badge -->
+                  <span class="notification-count absolute right-0 transform translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 font-sans font-medium hidden">
+                    0
+                  </span>
+                </a>
+              </li>
+                <li class="cursor-pointer text-gray-600 text-sm py-2 hover:text-green-700 flex items-center"
+                    onclick="logOut()">
+                    <a href="javascript:void(0)" class="flex items-center">
+                        <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+                        <span class="text-xs">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+        </button>
     </div>
-  </div>
+</div>
 
 
 
@@ -275,6 +271,24 @@
   </nav> -->
 
   <body class="bg-teal-100 pt-20 pb-12" style="font-family: 'Poppins', sans-serif;">
+            <!-- Mobile Notification Modal -->
+<div id="mobile-notification-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+    <div class="bg-white rounded-lg shadow-lg w-11/12 max-h-[80vh] flex flex-col">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
+            <h2 class="text-lg font-semibold">Notifications</h2>
+            <button onclick="closeMobileNotif()" class="text-gray-500 hover:text-gray-800">&times;</button>
+        </div>
+        
+        <!-- Scrollable List -->
+        <div class="overflow-y-auto" style="max-height: calc(80vh - 60px);">
+            <ul id="mobile-notification-list" class="p-2 space-y-2">
+                <!-- Dynamic notifications go here -->
+            </ul>
+        </div>
+    </div>
+</div>
     <div id="loading-overlay" style="
     display: none;
     position: fixed;
@@ -360,7 +374,8 @@
             <button class="flex-1 bg-green-400 text-white py-3 px-4 rounded-md shadow-md flex items-center justify-center gap-2 
                         cursor-pointer hover:bg-secondary/90 transition-colors focus:border-green-500"
               id="mobile-idenTree" onclick="identifyTreeClick()">
-              <i class="ri-search-line ri-lg w-6 h-6 flex items-center justify-center"></i>
+              <!-- <i class="ri-search-line ri-lg w-6 h-6 flex items-center justify-center"></i> -->
+              <img class="w-5 h-5" src="./assets/img/indentify-tree.png" alt="Identify Tree Icon">
               <span class="font-medium">Identify Tree</span>
             </button>
 
@@ -368,7 +383,8 @@
             <button class="flex-1 bg-green-400 text-white py-3 px-4 rounded-md shadow-md flex items-center justify-center gap-2 
                         cursor-pointer hover:bg-secondary/90 transition-colors focus:border-green-500"
               id="notLoggedInIden" onclick="pleaseLoginAddtree()">
-              <i class="ri-search-line ri-lg w-6 h-6 flex items-center justify-center"></i>
+              <!-- <i class="ri-search-line ri-lg w-6 h-6 flex items-center justify-center"></i> -->
+              <img class="w-5 h-5" src="./assets/img/indentify-tree.png" alt="Identify Tree Icon">
               <span class="font-medium">Identify Tree</span>
             </button>
             <!-- Not logged in -->
@@ -401,7 +417,12 @@
 
   <div id="uploadoverlay" class="overlay invis fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
   <div class="bg-white p-4 rounded-xl w-full max-w-2xl max-h-screen overflow-y-auto">
-      <h2 id="modalTitle" class="text-2xl font-bold mb-4">Plant Your Tree</h2>
+     <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
+        <h2 id="modalTitle" class="text-2xl font-bold">Plant Your Tree</h2>
+        <button onclick="skip()" class="text-gray-500 hover:text-gray-800 text-2xl font-bold leading-none">
+          &times;
+        </button>
+      </div>
       <p id="modalDesc" class="text-lg mb-4">Please fill in the details of the tree you want to plant.</p>
 
     <label class="block text-md">Species:</label>
@@ -455,7 +476,7 @@
 
       <!-- Actions -->
     <div class="flex justify-end gap-2">
-      <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Close</button>
       <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl" onclick="uploadTree()">Upload</button>
     </div>
     
@@ -492,7 +513,13 @@
         <input type="hidden" id="identify-ref-id" name="identify-ref-id">
 
         <!-- Modal Header -->
+        <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
         <h3 class="font-bold text-xl mb-2">Discussion</h3>
+              
+        <button onclick="skip()" class="text-gray-500 hover:text-gray-800 text-2xl font-bold leading-none">
+          &times;
+        </button>
+      </div>
 
         <!-- Scrollable Communityent section -->
         <div id="comment-section" class="flex-1 overflow-y-auto pr-2">
@@ -507,7 +534,7 @@
               placeholder="Type Your Comment" required></textarea>
           </div>
           <div class="flex justify-end gap-2">
-            <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Close</button>
             <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl"
               onclick="commentIdentify()">Comment</button>
           </div>
@@ -518,7 +545,12 @@
 
   <div class="overlay invis" id="editoverlay">
   <div class="bg-white p-4 rounded-xl w-full max-w-2xl max-h-screen overflow-y-auto">
-    <h2 id="modalEditTitle" class="text-2xl font-bold mb-4">Edit Your Tree</h2>
+    <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
+      <h2 id="modalEditTitle" class="text-2xl font-bold mb-4">Edit Your Tree</h2>     
+          <button onclick="skip()" class="text-gray-500 hover:text-gray-800 text-2xl font-bold leading-none">
+            &times;
+          </button>
+      </div>
     <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
 
     <label class="block text-md">Species:</label>
@@ -572,7 +604,7 @@
         </section>
       </article>
       <div class="flex justify-end gap-2">
-        <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Skip</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded-xl" onclick="skip()">Close</button>
         <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-xl" onclick="editTree()">Update</button>
       </div>
     </div>
@@ -648,7 +680,12 @@
 
   <div class="overlay invis" id="expertoverlay">
     <div class="bg-white p-4 rounded-xl">
-      <h2 id="modalEditTitleExpert" class="text-2xl font-bold mb-4">Expert: Identify Tree</h2>
+      <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
+        <h2 id="modalEditTitleExpert" class="text-2xl font-bold mb-4">Expert: Identify Tree</h2>
+        <button onclick="skip()" class="text-gray-500 hover:text-gray-800 text-2xl font-bold leading-none">
+          &times;
+        </button>
+      </div>
       <p id="modalEditExpertDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
       Species:
       <select class="w-full p-1 mb-4" id="expert-plant-name" name="expert-plant-name">
@@ -666,30 +703,48 @@
 
       <div class="float-right">
         <button class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl"
-          onclick="skip()">Skip</button>
+          onclick="skip()">Close</button>
         <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
-          onclick="editExpertTree()">Edit</button>
+          onclick="editExpertTree()">Save</button>
       </div>
     </div>
   </div>
 
 
+      <!-- Plant a Tree Button -->
+      <!-- <button class="hidden md:flex flex-col items-center justify-center fixed mb-4 mr-4 bottom-4 right-0 bg-green-700 hover:bg-green-500 w-20 h-20 rounded-full z-0 text-black"
+        id="addTree" onclick="addTreeClick()">
+        <img class="rounded-full w-8 h-8" src="./assets/img/addtree.svg">
+        <span class="text-[10px] text-center leading-tight px-1">Plant a Tree</span>
+      </button> -->
 
-  <button class="hidden md:block  fixed mb-4 mr-4 bottom-4 right-0 bg-white hover:bg-green-700  p-1 rounded-full z-0"
-    id="addTree" onclick="addTreeClick()">
-    <img class="rounded-full w-10 h-10" src="./assets/img/addtree.svg">
-  </button>
+      <!-- Identify a Tree Button -->
+      <!-- <button class="hidden md:flex flex-col items-center justify-center fixed mb-16 mr-4 bottom-14 right-0 bg-green-700 hover:bg-green-500 w-20 h-20 rounded-full z-0 text-black"
+        id="idenTree" onclick="identifyTreeClick()">
+        <img class="rounded-full w-8 h-8" src="./assets/img/indentify-tree.png">
+        <span class="text-[10px] text-center leading-tight px-1">Identify a Tree</span>
+      </button> -->
 
-    <button
-      class="hidden md:block fixed mb-16 mr-4 bottom-6 right-0 bg-green-500 hover:bg-green-700 p-1 rounded-full z-0"
-      id="idenTree" onclick="identifyTreeClick()">
-      <img class="rounded-full w-10 h-10" src="./assets/img/indentify-tree.png">
+
+      <!-- Plant a Tree Button -->
+    <button class="hidden md:flex items-center justify-center gap-2 fixed bottom-4 right-4 w-[170px] bg-green-700 text-white py-2 px-3 rounded-md shadow-md
+      hover:bg-green-600 transition-colors z-50"
+      id="idenTree" onclick="addTreeClick()">
+      <i class="ri-seedling-line text-lg w-5 h-5 flex items-center justify-center"></i>
+      <span class="text-sm font-medium">&nbsp;Plant Tree&nbsp;&nbsp;&nbsp;</span>
     </button>
 
-       <div id="in-app-banner"
-         class="hidden fixed bottom-0 sm:bottom-0 left-0 mb-16 ml-10 sm:mb-16 sm:ml-6 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
-     
-      </div>
+    <!-- Identify Tree Button -->
+    <button class="hidden md:flex items-center justify-center gap-2 fixed bottom-16 right-4 w-[170px] bg-green-400 text-white py-2 px-3 rounded-md shadow-md
+      hover:bg-green-500 transition-colors z-50"
+      id="addTree" onclick="identifyTreeClick()">
+      <img class="w-5 h-5" src="./assets/img/indentify-tree.png" alt="Identify Tree Icon">
+      <span class="text-sm font-medium">Identify Tree</span>
+    </button>
+
+    <div id="in-app-banner"
+    class="hidden fixed bottom-0 sm:bottom-0 left-0 mb-16 ml-4 sm:mb-16 sm:ml-16 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
+    </div>
 
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tw-elements@1.0.0/dist/js/index.min.js"></script>

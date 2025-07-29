@@ -17,7 +17,6 @@ if (isLoggedIn) {
   identify_button.classList.remove('invis');
   mobileAddtree_button.classList.remove('invis');
   mobileIden_button.classList.remove('invis');
-  document.getElementById('mobile-login').classList.add('invis');
   document.getElementById('notLoggedInAdd').classList.add('invis');
   document.getElementById('notLoggedInIden').classList.add('invis');
   if (rememberMe === 'true') {
@@ -40,7 +39,6 @@ if (isLoggedIn) {
   document.getElementById("overlay").classList.add("invis");
   document.getElementById("uploadoverlay").classList.add("invis");
   document.getElementById("map").classList.remove("map-blurred");
-  document.getElementById('mobile-login').classList.remove('invis');
   // document.getElementById('user-buttons').classList.remove('mobile-visible');
 }
 

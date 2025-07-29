@@ -1,25 +1,53 @@
 (function () {
+    let isNotifOpen = false;
+
     function init() {
         // Bell button click event
-        if (bellBtn) {
-            bellBtn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                userDropdown.classList.add('hidden');
-                notifDropdown.classList.toggle('hidden');
-                notifDropdown.classList.toggle('show');
+        bellBtns.forEach(bellBtn => {
+            if (bellBtn) {
+                bellBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.add('hidden');
 
-                if (authToken && notifDropdown.classList.contains('show')) {
-                    await markAllNotificationsSeen();
-                    const notifItems = document.querySelectorAll("#notification-list li.font-bold");
-                    notifItems.forEach(item => item.classList.remove("font-bold"));
-                }
-            });
-        }
+                    const isMobile = window.innerWidth < 768; // Tailwind md breakpoint
+
+                    if (isMobile) {
+                        // Move notification list to modal
+                        const notifList = document.getElementById('notification-list');
+                        const mobileList = document.getElementById('mobile-notification-list');
+                        if (notifList && mobileList) {
+                            mobileList.innerHTML = '';
+                            mobileList.append(...notifList.children);
+                        }
+
+                        document.getElementById('mobile-notification-modal').classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                        isNotifOpen = true;
+                    } else {
+                        // Desktop behavior
+                        notifDropdown.classList.toggle('hidden');
+                        notifDropdown.classList.toggle('show');
+                        isNotifOpen = notifDropdown.classList.contains('show');
+                    }
+
+                    // Mark as seen if dropdown/modal is open
+                    if (authToken && isNotifOpen) {
+                        await markAllNotificationsSeen();
+                        document.querySelectorAll("#notification-list li.font-bold, #mobile-notification-list li.font-bold")
+                            .forEach(item => item.classList.remove("font-bold"));
+                    }
+                });
+            }
+        });
 
         // Hide dropdowns when clicking outside
         window.addEventListener('click', () => {
             if (userDropdown) userDropdown.classList.add('hidden');
-            if (notifDropdown) notifDropdown.classList.add('hidden');
+            if (notifDropdown) {
+                notifDropdown.classList.add('hidden');
+                notifDropdown.classList.remove('show');
+                isNotifOpen = false;
+            }
         });
 
         // Notifications permission
@@ -53,14 +81,15 @@
             if ((isCommentForMe) || (isReminderForMe) || (isTreeHelpForExpert && isRecipient)) {
                 addNotificationToList(data.message, true, data.timestamp, data.tree_id, data.tree_name, data.notif_type, data.is_passed);
 
-                if (notifDropdown.classList.contains('show')) {
-                    await markAllNotificationsSeen();
-                    updateBadge(0);
+                if (!isNotifOpen) {
+                  incrementBadge();
                 } else {
-                    incrementBadge();
+                  document.querySelectorAll("#notification-list li.font-bold, #mobile-notification-list li.font-bold")
+                    .forEach(item => item.classList.remove("font-bold"));
+                  await markAllNotificationsSeen();  //  mark as seen server-side too
                 }
 
-                if (isAppInFocus() && !notifDropdown.classList.contains('show') && data.message !== "Connected to WebSocket") {
+                if (isAppInFocus() && !isNotifOpen && data.message !== "Connected to WebSocket") {
                     showInAppBanner(data.message, data.notif_type, data.tree_id);
                 }
             }
@@ -85,7 +114,6 @@
         }
     }
 
-    // Safe DOM ready check (handles Rocket Loader, AWS, etc.)
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", init);
     } else {
@@ -144,125 +172,136 @@ function showInAppBanner(message, notifType, treeId) {
 let unreadCount = 0;
 
 function addNotificationToList(message, isUnseen = false, timestamp = null, treeId = null, treeName, notifType = null, isPassed) {
-  const list = document.getElementById("notification-list");
+  const desktopList = document.getElementById("notification-list");
+  const mobileList = document.getElementById("mobile-notification-list");
 
-  const placeholder = list.querySelector("li.text-gray-400");
-  if (placeholder) placeholder.remove();
+  // Create the notification item
+  const createItem = () => {
+    const item = document.createElement("li");
+    item.className = "py-2 border-b border-gray-200";
+    if (isUnseen) item.classList.add("font-bold");
+    item.dataset.timestamp = timestamp;
 
-  const item = document.createElement("li");
-  item.className = "py-2 border-b border-gray-200";
-  if (isUnseen) item.classList.add("font-bold");
-  item.dataset.timestamp = timestamp;
+    const datePart = timestamp ? `<br><small class="text-gray-500">${new Date(timestamp).toLocaleString([], {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}</small>` : "";
 
-  const datePart = timestamp ? `<br><small class="text-gray-500">${new Date(timestamp).toLocaleString([], {
-      year: 'numeric',
-      month: 'short', // or 'long'
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })}</small>` : "";
+    item.innerHTML = `
+      <div class="flex justify-between items-start relative">
+        <div class="flex-1 cursor-pointer">${message} ${datePart}</div>
+      </div>
+    `;
 
-  item.innerHTML = `
-    <div class="flex justify-between items-start relative">
-      <div class="flex-1 cursor-pointer">${message} ${datePart}</div>
-    </div>
-  `;
-
-  if (treeId && notifType) {
-    item.querySelector(".flex-1").addEventListener("click", (e) => {
-      e.stopPropagation();
-      const params = new URLSearchParams({ focus: treeId, type: notifType });
-      if (!currentPath.includes("map.html")) {
-        window.location.href = `/map.html?${params.toString()}`;
-        return;
-      }
-      focusOnTree(treeId, notifType);
-      markAllNotificationsSeen();
-    });
-  }
-
-  // Tree help pass button logic
-  if (notifType === "tree_help") {
-    const passBtn = document.createElement("button");
-    passBtn.className = "pass-btn text-sm";
-    const actuallyPassed = isPassed === true || isPassed === "true";
-
-    if (actuallyPassed) {
-      passBtn.textContent = "Status: You passed it to another expert";
-      passBtn.classList.add("text-gray-500");
-      passBtn.disabled = true;
-    } else if (treeName !== "TBD") {
-      passBtn.textContent = "Status: Tree already identified";
-      passBtn.disabled = true;
-    } else {
-      passBtn.textContent = "Pass";
-      passBtn.classList.add("bg-green-700", "text-white", "px-2", "py-1", "rounded", "hover:opacity-90", "absolute", "bottom-0", "right-0");
-      passBtn.addEventListener("click", async (e) => {
+    if (treeId && notifType) {
+      item.querySelector(".flex-1").addEventListener("click", (e) => {
         e.stopPropagation();
-        passBtn.disabled = true;
-        passBtn.textContent = "Passing...";
-        const csrfToken = await getCookie("csrftoken");
-        fetch(`${passToExpert}/${treeId}/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-            "Authorization": `Token ${authToken}`,
-          },
-        })
-        .then((res) => {
-          if (res.ok) {
-            passBtn.textContent = "Status: You passed it to another expert";
-            passBtn.className = "text-gray-500";
-            passBtn.disabled = true;
-          } else {
-            return res.json().then((data) => {
-              passBtn.textContent = data?.detail || "Failed to pass";
-              passBtn.classList.add("text-red-500");
-            });
-          }
-        })
-        .catch(() => {
-          passBtn.textContent = "Error";
-          passBtn.classList.add("text-red-500");
-        });
+        const params = new URLSearchParams({ focus: treeId, type: notifType });
+        if (!currentPath.includes("map.html")) {
+          window.location.href = `/map.html?${params.toString()}`;
+          return;
+        }
+        focusOnTree(treeId, notifType);
+        markAllNotificationsSeen();
       });
     }
-    item.querySelector(".flex-1").appendChild(passBtn);
-  }
 
-  list.appendChild(item);
+    // Add "Pass" button for tree help notifications
+    if (notifType === "tree_help") {
+      const passBtn = document.createElement("button");
+      passBtn.className = "pass-btn text-sm";
+      const actuallyPassed = isPassed === true || isPassed === "true";
 
-  // Sort notifications (latest first)
-  const items = [...list.children];
-  items.sort((a, b) => new Date(b.dataset.timestamp) - new Date(a.dataset.timestamp));
-  items.forEach(i => list.appendChild(i));
+      if (actuallyPassed) {
+        passBtn.textContent = "Status: You passed it to another expert";
+        passBtn.classList.add("text-gray-500");
+        passBtn.disabled = true;
+      } else if (treeName !== "TBD") {
+        passBtn.textContent = "Status: Tree already identified";
+        passBtn.disabled = true;
+      } else {
+        passBtn.textContent = "Pass";
+        passBtn.classList.add("bg-green-700", "text-white", "px-2", "py-1", "rounded", "hover:opacity-90", "absolute", "bottom-0", "right-0");
+        passBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          passBtn.disabled = true;
+          passBtn.textContent = "Passing...";
+          const csrfToken = await getCookie("csrftoken");
+          fetch(`${passToExpert}/${treeId}/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+              "Authorization": `Token ${authToken}`,
+            },
+          })
+          .then((res) => {
+            if (res.ok) {
+              passBtn.textContent = "Status: You passed it to another expert";
+              passBtn.className = "text-gray-500";
+              passBtn.disabled = true;
+            } else {
+              return res.json().then((data) => {
+                passBtn.textContent = data?.detail || "Failed to pass";
+                passBtn.classList.add("text-red-500");
+              });
+            }
+          })
+          .catch(() => {
+            passBtn.textContent = "Error";
+            passBtn.classList.add("text-red-500");
+          });
+        });
+      }
+      item.querySelector(".flex-1").appendChild(passBtn);
+    }
 
-  // Limit to 50
-  if (list.children.length > 50) list.removeChild(list.lastChild);
+    return item;
+  };
+
+  const itemDesktop = createItem();
+  const itemMobile = createItem();
+
+  // Remove "no notifications" placeholder
+  desktopList?.querySelector("li.text-gray-400")?.remove();
+  mobileList?.querySelector("li.text-gray-400")?.remove();
+
+  // Append to both
+  if (desktopList) desktopList.appendChild(itemDesktop);
+  if (mobileList) mobileList.appendChild(itemMobile);
+
+  // Sort both lists
+  [desktopList, mobileList].forEach(list => {
+    if (!list) return;
+    const items = [...list.children];
+    items.sort((a, b) => new Date(b.dataset.timestamp) - new Date(a.dataset.timestamp));
+    items.forEach(i => list.appendChild(i));
+    if (list.children.length > 50) list.removeChild(list.lastChild);
+  });
 }
+
 
 
 
 function updateBadge(count) {
-  const badge = document.getElementById("notification-count");
-  if (!badge) return;
-
-  if (count > 0) {
-    badge.textContent = count;
-    badge.classList.remove("hidden");
-  } else {
-    badge.textContent = "";
-    badge.classList.add("hidden");
-  }
+  document.querySelectorAll('.notification-count').forEach(badge => {
+    badge.textContent = count > 0 ? count : "";
+    badge.classList.toggle('hidden', count === 0);
+  });
 }
+
 
 function incrementBadge() {
-  const badge = document.getElementById("notification-count");
-  let current = parseInt(badge.textContent || "0");
+  let current = 0;
+  const firstBadge = document.querySelector('.notification-count');
+  if (firstBadge) {
+    current = parseInt(firstBadge.textContent || "0");
+  }
   updateBadge(current + 1);
 }
-
 async function focusOnTree(treeId, notifType, retries = 10) {
   await window.markersLoaded;
 
@@ -349,4 +388,26 @@ async function markAllNotificationsSeen() {
     updateBadge(0);
   } catch (err) {
   }
+}
+
+const modal = document.getElementById('mobile-notification-modal');
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeMobileNotif();
+        }
+    });
+}
+
+function closeMobileNotif() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+
+    // Move notifications back to desktop dropdown
+    const notifList = document.getElementById('notification-list');
+    const mobileList = document.getElementById('mobile-notification-list');
+    if (notifList && mobileList) {
+        notifList.innerHTML = '';
+        notifList.append(...mobileList.children);
+    }
 }

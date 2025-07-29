@@ -39,6 +39,7 @@ class TreeInfo(models.Model):
     tree_image = models.ImageField(upload_to='tree_library/', null=True, blank=True)
     scientific_name = models.CharField(max_length=100, unique=True)
     family_name = models.CharField(max_length=100)
+    source = models.CharField(max_length=100)
     image_embedding = ArrayField(models.FloatField(), null=True, blank=True)
 
 class UserInfo(models.Model):

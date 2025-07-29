@@ -118,6 +118,7 @@ for tree in tree_list:
             'tree_description': tree['tree_description'],
             'tree_image': tree['tree_image'],
             'family_name': tree['family_name'],
+            'source': "BINHI",
             'tree_type': treeType,
         }
     )

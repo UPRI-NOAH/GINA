@@ -28,7 +28,7 @@ var treeLib = $.ajax({
       pageData.forEach((data) => {
         const row = document.createElement("div");
         row.className = "tree-container flex flex-col md:w-64 p-2 shadow-lg overflow-x-auto mx-auto transform hover:scale-105 transition duration-500 cursor-pointer";
-        row.setAttribute("onclick", `openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)`);
+        row.setAttribute("onclick", `openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.source}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)`);
         row.innerHTML = `
           <div class="flex-shrink">
             <img src="${data.tree_image}" class="w-full h-48 object-cover rounded-xl">
@@ -37,6 +37,8 @@ var treeLib = $.ajax({
             <div class="text-xl font-bold" style="color:#047857"><p>${data.tree_name}</p></div>
             <div class="text-sm" style="color:#303030"><p><b>Scientific Name: </b><i>${data.scientific_name}</i></p></div>
             <div class="text-sm" style="color:#303030"><p><b>Family Name: </b><i>${data.family_name}</i></p></div>
+            <p class="mt-2 text-center sm:text-left text-xs text-gray-700">
+            <strong class="text-black">Source:</strong> <i>${data.source}</i></p>
           </div>
         </div>
           
@@ -48,14 +50,16 @@ var treeLib = $.ajax({
       pageData.forEach((data) => {
         const mobileRow = document.createElement("div");
         mobileRow.className = "flex justify-between bg-white rounded-xl shadow-md p-4 gap-4 items-center transform hover:scale-105 transition duration-500 cursor-pointer";
-        mobileRow.setAttribute("onclick", `openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)`);
+        mobileRow.setAttribute("onclick", `openModal('${data.tree_name}', '${data.scientific_name}', '${data.family_name}', '${data.source}', '${data.tree_image}', \`${data.tree_description || 'No description available.'}\`)`);
         mobileRow.innerHTML = `
           <div class="flex-1">
             <div class="text-xl sm:text-2xl font-bold text-green-700">${data.tree_name}</div>
             <div class="text-sm" style="color:#303030"><strong>Scientific Name:</strong> <i>${data.scientific_name}</i></div>
             <div class="text-sm" style="color:#303030"><strong>Family Name:</strong> <i>${data.family_name}</i></div>
             <div class="mt-2 text-xs text-gray-400 line-clamp-3">${data.tree_description || 'No description available.'}</div>
-          </div>
+            <p class="mt-2 text-center sm:text-left text-xs text-gray-700">
+            <strong class="text-black">Source:</strong> <i>${data.source}</i></p>
+            </div>
           <div class="w-36 h-36 flex-shrink-0">
             <img src="${data.tree_image}" class="w-full h-full object-cover rounded-lg">
           </div>
@@ -169,15 +173,38 @@ var treeLib = $.ajax({
   });
 
 
-function openModal(name, scientific, family, image, description) {
+function openModal(name, scientific, family, source, image, description) {
+const sourceLinks = {
+    'BINHI': 'https://binhi.ph/',
+    'iNaturalist': 'https://www.inaturalist.org/',
+    '10 Million in 10 Years': 'https://www.facebook.com/10min10'
+  };
+
+  // Replace known sources with anchor links
+  let linkedSource = source;
+  for (const [name, url] of Object.entries(sourceLinks)) {
+    const anchor = `<a href="${url}" target="_blank" class="underline text-green-700 hover:text-green-800">${name}</a>`;
+    // Replace whole word matches (case-sensitive)
+    linkedSource = linkedSource.replace(new RegExp(`\\b${name}\\b`, 'g'), anchor);
+  }
+
+  // Detect if multiple sources exist
+  const label = source.includes(' and ') || source.includes(',') ? 'Sources:' : 'Source:';
+  document.getElementById("modalSourceLabel").textContent = label;
+  // Set modal content
   document.getElementById("modalImage").src = image;
   document.getElementById("modalName").textContent = name;
   document.getElementById("modalScientific").textContent = scientific;
   document.getElementById("modalFamily").textContent = family;
   document.getElementById("modalDescription").textContent = description || "No description available.";
+
+  // Insert source as HTMLconst label 
+  document.getElementById("modalSource").innerHTML = linkedSource;
+
+  // Show modal
   document.getElementById("treeModal").classList.remove("hidden");
   document.getElementById("treeModal").classList.add("flex");
-  document.body.style.overflow = 'hidden'
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {

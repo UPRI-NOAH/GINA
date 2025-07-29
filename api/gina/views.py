@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets, mixins
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
-from api.gina.serializer import TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer, NotificationSerializer, SubscriptionSerializer, CustomUserCreateSerializer
+from api.gina.serializer import (TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, 
+                                 IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer,NotificationSerializer, 
+                                 SubscriptionSerializer, CustomUserCreateSerializer, CustomAuthTokenSerializer)
 from api.gina.filters import TreeInfoFilter, TreeTypeFilter, UserInfoFilter, UserTreeFilter, IdentifyTreeFilter, UserTreeArchiveTreeFilter, NotificationFilter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema_view, extend_schema
@@ -275,8 +277,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
 
 class CustomTokenCreateView(TokenCreateView):
-    def post(self, request, *args, **kwargs):
+    serializer_class = CustomAuthTokenSerializer
 
+    def post(self, request, *args, **kwargs):
         captcha_token = request.data.get("hcaptcha_token")
         if not captcha_token:
             return Response({"error": "Missing hCaptcha token."}, status=400)
@@ -294,7 +297,7 @@ class CustomTokenCreateView(TokenCreateView):
         # login
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.user
+        user = serializer.validated_data['user']
 
         token, _ = Token.objects.get_or_create(user=user)
 
