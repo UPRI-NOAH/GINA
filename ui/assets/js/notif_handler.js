@@ -131,7 +131,7 @@ function showInAppBanner(message, notifType, treeId) {
   if (!banner) return;
 
   banner.textContent = message;
-  banner.dataset.refid = treeId;        // 👈 Set it for click handler
+  banner.dataset.refid = treeId;        // Set it for click handler
   banner.dataset.notifType = notifType;
 
   banner.classList.remove("hidden");

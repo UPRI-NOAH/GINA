@@ -1,4 +1,4 @@
-let url = "3b0347f92d14.ngrok-free.app";
+let url = "punla.up.edu.ph";
 let http = "https";
 let usertreeURL = `${http}://${url}/api/user-tree-info/`;
 let username = localStorage.getItem('username') || sessionStorage.getItem('username');

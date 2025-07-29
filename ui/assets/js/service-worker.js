@@ -9,8 +9,8 @@ self.addEventListener('push', function(event) {
     const title = data.title || 'New Notification';
     const options = {
       body: data.body || '',
-      icon: '/assets/img/gina.png',
-      badge: '/assets/img/gina.png',
+      icon: '/assets/img/gina-icon-white.png',
+      badge: '/assets/img/gina-icon-white.png',
       data: {
         url: data.url || '/map.html',
         notification_id: data.notification_id || null,
