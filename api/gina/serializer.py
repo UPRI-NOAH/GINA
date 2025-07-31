@@ -4,7 +4,7 @@ from api.gina.tree_image_utils import check_image_similarity_against_embeddings,
 from PIL import Image
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.mail import send_mail
@@ -105,7 +105,7 @@ class IdentifyTreeInfoSerializer(serializers.ModelSerializer):
         owner = tree.owning_user.user
         tree_name = tree.tree_name
         if commenter.id != owner.id:
-            message = f"{commenter.username} commented on your tree: {tree_name}"
+            message = f"💬 {commenter.username} commented on your tree: {tree_name}"
 
             Notification.objects.create(
                 recipient=owner,
@@ -323,7 +323,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
             if original_tree_name == "TBD":
                 allowed_fields = {"tree_name", "tree_type", "edited_by"}
                 validated_data = {key: value for key, value in validated_data.items() if key in allowed_fields}
-                message = f"{sender_user} identified your tree: {updated_instance.tree_name}"
+                message = f"🔎 {sender_user} identified your tree: {updated_instance.tree_name}"
                 
                 Notification.objects.create(
                     recipient=updated_instance.owning_user.user,
@@ -430,7 +430,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
         random_experts = random.sample(expert_users, min(len(expert_users), 2))
 
-        message = f"{instance.owning_user.user} needs help identifying a tree"
+        message = f"📝 {instance.owning_user.user} needs help identifying a tree"
         for expert in random_experts:
             Notification.objects.create(
                 recipient=expert.user,
@@ -498,3 +498,30 @@ class SubscriptionSerializer(serializers.Serializer):
     
     def validate(self, data):
         return data
+    
+
+class CustomAuthTokenSerializer(serializers.Serializer):
+    username = serializers.CharField(label="Username or Email")
+    password = serializers.CharField(label="Password", style={'input_type': 'password'}, trim_whitespace=False)
+
+    def validate(self, attrs):
+        username_or_email = attrs.get('username')
+        password = attrs.get('password')
+
+        user = None
+        if '@' in username_or_email:
+            try:
+                user_obj = User.objects.get(email__iexact=username_or_email)
+                username = user_obj.username
+            except User.DoesNotExist:
+                raise serializers.ValidationError("No user found with this email address.")
+        else:
+            username = username_or_email
+
+        user = authenticate(request=self.context.get('request'), username=username, password=password)
+
+        if not user:
+            raise serializers.ValidationError("Unable to log in with provided credentials.")
+
+        attrs['user'] = user
+        return attrs

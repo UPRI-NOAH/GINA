@@ -15,14 +15,15 @@ function clickTreeImg(name, refId) {
     .then(res => res.json())
     .then(data => {
       hideLoading();
-      const indicators = document.getElementById('carouselIndicators') || createIndicatorsContainer();
-      indicators.style.bottom = '-10px'
-      indicators.innerHTML = '';
+      // indicators.innerHTML = '';
+      const counter = document.createElement('div');
+      counter.className = 'absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded z-50';
+      counter.style.fontFamily = 'Arial, sans-serif';
+      counter.dataset.role = 'counter';
       const itemsContainer = document.getElementById('carouselItems');
       itemsContainer.innerHTML = '';
 
       data.forEach((tree, idx) => {
-        indicators.appendChild(createIndicator(idx));
         itemsContainer.appendChild(createCarouselItem(tree, data, refId));
       });
 
@@ -32,32 +33,7 @@ function clickTreeImg(name, refId) {
     });
 }
 
-// Indicator container
-function createIndicatorsContainer() {
-  const el = document.createElement('div');
-  el.id = 'carouselIndicators';
-  el.className = `
-    absolute bottom-0 left-0 right-0 z-[2]
-    mx-[15%] mb-4 flex list-none justify-center p-0
-  `;
-  el.setAttribute('data-twe-carousel-indicators', '');
-  document.getElementById('carouselExampleCaptions').appendChild(el);
-  return el;
-}
 
-// Indicator
-function createIndicator(i) {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.setAttribute('data-twe-slide-to', i);
-  btn.className = `
-  mx-1 h-2 w-2 rounded-full bg-green-600 opacity-50
-  border border-white z-50
-`;
-  if (i === 0) btn.classList.replace('opacity-50', 'opacity-100');
-  btn.onclick = () => { currentIndex = i; updateCarousel(); };
-  return btn;
-}
 
 // Carousel item
 function createCarouselItem(tree, data, refId) {
@@ -65,7 +41,8 @@ function createCarouselItem(tree, data, refId) {
   const now = new Date();
   const plantDate = new Date(tree.planted_on);
   const canEdit = currentUser === tree.owning_user && now <= new Date(plantDate.getTime() + 3600000);
-  const item = document.createElement('div');
+
+  const item = document.createElement('div');  // ← Make sure this is defined BEFORE any use
   item.className = 'relative float-left hidden w-60';
   item.innerHTML = `
     <img src="${tree.image}" class="block w-full h-80 object-cover mx-auto" />
@@ -74,10 +51,18 @@ function createCarouselItem(tree, data, refId) {
     </div>
   `;
 
+  // Add 1/5 counter at the top-right
+  const counter = document.createElement('div');
+  counter.className = 'absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded z-50';
+  counter.style.fontFamily = 'Arial, sans-serif';
+  counter.dataset.role = 'counter';
+  item.appendChild(counter);
+
   if (canEdit) {
     const { editBtn, deleteBtn, saveBtn, fileInput } = createControls(tree, refId, item, data);
     item.append(editBtn, deleteBtn, saveBtn, fileInput);
   }
+
   return item;
 }
 
@@ -98,17 +83,17 @@ function createControls(tree, refId, item, data) {
   const editBtn = createBtn(
     'edit',
     'https://cdn-icons-png.flaticon.com/128/481/481874.png',
-    `top:5px; left:${shiftRight('20px')}; background-color:#0095ff;`
+    `top:5px; left:${shiftRight('30px')}; background-color:#0095ff;`
   );
   const deleteBtn = createBtn(
     'delete',
     'https://cdn-icons-png.flaticon.com/128/6861/6861362.png',
-    `top:5px; left:${shiftRight('50px')}; background-color:#ff4d4f;`
+    `top:5px; left:${shiftRight('60px')}; background-color:#ff4d4f;`
   );
   const saveBtn = createBtn(
     'save',
     '',
-    `top:5px; left:${shiftRight('80px')}; background-color:#4CAF50;`,
+    `top:5px; left:${shiftRight('90px')}; background-color:#4CAF50;`,
     'Save'
   );
 
@@ -181,11 +166,10 @@ function createBtn(role, iconUrl, extraStyle, text = '') {
 // Update carousel state
 function updateCarousel() {
   const items = document.querySelectorAll('#carouselItems .relative');
-  const indicators = document.querySelectorAll('#carouselIndicators button');
+  const total = items.length;
 
   if (!items.length) {
     document.getElementById('carouselItems').innerHTML = `<div class="p-4 text-center text-gray-500">No images available.</div>`;
-    document.getElementById('carouselIndicators').innerHTML = '';
     return;
   }
 
@@ -197,11 +181,20 @@ function updateCarousel() {
     currentIndex = 0;
   }
 
-  items.forEach(i => i.classList.add('hidden'));
-  indicators.forEach(i => i.classList.replace('opacity-100', 'opacity-50'));
+  items.forEach((item, i) => {
+    // hide all by default
+    item.classList.add('hidden');
+    item.style.transform = 'translateX(0)';
+    item.style.transition = 'none';
 
+    // update counter
+    const counter = item.querySelector('[data-role="counter"]');
+    if (counter) {
+      counter.textContent = `${i + 1}/${total}`;
+    }
+  });
+  
   items[currentIndex].classList.remove('hidden');
-  indicators[currentIndex].classList.replace('opacity-50', 'opacity-100');
 
   // Recalculate dateCounts dynamically
   const dateCounts = {};
@@ -300,7 +293,7 @@ function initCarouselDrag() {
 //---------------------------------IMAGE INPUT HANDLER---------------------------------------------------------------//
 
 
-const MAX_FILES = 3;
+const MAX_FILES = 5;
 
 // Templates
 const fileTempl = document.getElementById("file-template"),
@@ -501,6 +494,13 @@ function closeUploadModal() {
 function closeEditModal() {
   document.getElementById("editoverlay").classList.add("invis");
   resetEditModal();
+}
+
+function hideDragOverlay(ev) {
+  if (!ev || !ev.currentTarget || !ev.currentTarget.querySelector) return;
+  const overlay = ev.currentTarget.querySelector("div[id^='overlay-drag']");
+  if (overlay) overlay.classList.add("hidden");
+  counter = 0;
 }
 
 // Trigger file input on button click

@@ -27,6 +27,7 @@ redis = "*"
 pywebpush = "*"
 channels = "*"
 channels-redis = "*"
+cloudscraper = "*"
 
 [dev-packages]
 

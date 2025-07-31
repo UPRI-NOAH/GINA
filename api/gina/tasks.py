@@ -16,11 +16,10 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
     User = get_user_model()
     user = User.objects.get(id=user_id)
     subscriptions = PushSubscription.objects.filter(user=user)
-    
+
     for sub in subscriptions:
         try:
-            subscription_data = sub.subscription  # No .get("subscription")
-            # subscription_data = sub.subscription.get("subscription", {})
+            subscription_data = sub.subscription
             endpoint = subscription_data.get("endpoint")
 
             if not endpoint:
@@ -45,7 +44,12 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
             print(f"Notification sent to {user.username}")
 
         except WebPushException as e:
+            status_code = getattr(e.response, "status_code", None)
             print(f"Push failed for {user.username}: {str(e)}")
+
+            if status_code == 410:  # Subscription expired or user unsubscribed
+                print(f"Removing expired subscription for {user.username}: {endpoint}")
+                sub.delete()  # Delete the invalid subscription record
 
 
 def get_audience(endpoint):
@@ -61,7 +65,7 @@ def send_tree_reminder(user_id, tree_ref_id, tree_name):
     User = get_user_model()
     user = User.objects.get(id=user_id)
     tree = UserTreeInfo.objects.get(reference_id=tree_ref_id)
-    message = f"It's time to update the photo of your tree: {tree_name}"
+    message = f"📅 It's time to update the photo of your tree: {tree_name}"
 
     # Save to Notification model (for badge + dropdown)
     Notification.objects.create(

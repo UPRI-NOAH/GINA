@@ -15,7 +15,7 @@ var ph = $.ajax({
 showLoading();
 $.when(ph).done(function () {
     hideLoading();
-    bound = ph.responseJSON;
+    bound = ph.responseJSON.filter(player => player.user_points > 0);
     bound.sort((a, b) => b.user_points - a.user_points); // Sort in descending order
     renderPodium();
     renderLeaderboard();  

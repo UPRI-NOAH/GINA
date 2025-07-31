@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      alert('User registered successfully');
+      alert('User registered successfully! Please check your email to activate your account.');
       window.location.href = 'login.html';
     } catch (error) {
       hideLoading();

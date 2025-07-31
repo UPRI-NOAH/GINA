@@ -1,84 +1,263 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GINA - Grow and Idetinfy Native trees in your Area</title>
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-        <link href="assets/css/nav.css" rel="stylesheet">
-        <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
-        <script src="assets/js/nav.js"></script>
-        <style>
-            .invis {
-                    display: none;
-                  }
-          </style>
-    </head>
-    <body class="bg-teal-100 pt-20 pb-12">
-        <header class="bg-green-200 py-4 z-10 fixed top-0 inset-x-0 h-20"> <!-- Navigation Header -->
-            <div class="flex justify-between items-center mx-4 h-full">
-              <div class="md:hidden">
-                <button onclick="toggleNav()">
-                    <img src="assets/img/hamburger-menu.svg" class="w-8" id="menu-button">
-                </button>
-              </div>
-        
-        
-              <div id="logo-container" class="md:flex">
-                <a href="index.html"><img src="assets/img/gina.png" class="w-20"></a>
-        
-                <nav class="hidden md:flex items-center ml-4">
-                  <ul class="flex font-bold">
-                      <li><a href="index.html">Home</a></li>
-                      <li><a href="events.html" class="bg-gray-200">Events</a></li>
-                      <li><a href="library.html">Library</a></li>
-                      <li><a href="leaderboard.html">Leaderboards</a></li>
-                      <li><a href="map.html">Map</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <!-- Sign Up/Login Button, icon for user and cart -->
-              <div class="flex items-center"> 
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GINA - Grow and Identify Native trees in your Area</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link href="assets/css/nav.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon.ico">
+    <script src="assets/js/nav.js"></script>
+    <style>
+        .invis {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-teal-100 pb-12" style="font-family: 'Poppins', sans-serif;">
+<div id="loading-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+  ">
+  <img src="./assets/img/gina-loading(1).gif" alt="Computer man" style="width:100px;height:100px;">
+</div>
+
+    <!-- main nav  -->
+    <div class="hidden md:block bg-nav py-4 shadow fixed top-0 left-0 w-full z-50 transition duration-300">
+
+        <nav class=" hidden max-w-6xl mx-auto md:flex justify-between px-10">
+            <!--  logo     -->
+            <div class="flex items-center">
+                <div class="font-bold flex items-center uppercase">
+                    <img src="assets/img/gina.png" class="w-20">
+
+                </div>
+
+                <!--  primary navigation  -->
+                <div class="hidden md:flex ml-10 items-center ">
+                    <a class="px-5 md:text-sm lg:text-base" href="index.html">Home</a>
+                    <a class="px-5 md:text-sm lg:text-base" href="library.html">Library</a>
+                    <a class="px-5 md:text-sm lg:text-base" href="map.html">Map a Tree!</a>
+                    <a class="px-5 md:text-sm lg:text-base" href="leaderboard.html">Leaderboard</a>
+                    <a class="px-5 md:text-sm lg:text-base text-green-800" href="#">Events</a>
+                </div>
+            </div>
+
+     <!-- Sign Up/Login Button, icon for user and cart -->
+             <div class="flex items-center">
                 <div id="auth-buttons" class="md:flex hidden invis">
-                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"><a href="login.html">Login</a></button>
-                  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl ml-4"><a href="signup.html">Sign Up</a></button>
+                                   <button class="mx-2 my-2 transition duration-150 ease-in-out hover:bg-green-300 
+                hover:text-black rounded-2xl border border-green-700 text-black px-6 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              focus:ring-green-700 md:text-sm lg:text-base"><a href="signup.html">Sign Up</a></button>
+                             <button class="mx-2 my-2 bg-green-700 transition duration-150 ease-in-out 
+                    hover:bg-green-600 rounded-2xl
+            text-white px-6 py-2  focus:outline-none focus:ring-2 focus:ring-offset-2 
+             focus:ring-green-600 md:text-sm lg:text-base"><a href="login.html">Login</a></button>
                 </div>
                 <div id="user-buttons" class="md:flex hidden invis">
-                  <!-- Cart -->
-                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/cart.png">
-                  </button>
-                  <!-- user -->
-                  <button class="bg-green-500 hover:bg-green-700 p-1 rounded-full ml-2" id="user-dropdown-toggle">
-                    <img class="rounded-full w-10 h-10" src="./assets/img/user.png">
-                  </button>
-                </div>
-              </div>
-          </header>
-        
-          <nav id="mobile-menu" class="hidden md:hidden bg-green-200 z-10 fixed top-20 inset-x-0">
-            <ul class="flex flex-col font-bold p-4">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="events.html" class="bg-gray-200">Events</a></li>
-                <li><a href="library.html">Library</a></li>
-                <li><a href="leaderboard.html">Leaderboards</a></li>
-                <li><a href="map.html">Map</a></li>
-                <div class="invis" id="mobile-login">
-                    <hr class="border-black border-t-2 mb-4">
-                    <li><a href="login.html">Log in</a></li>
-                    <li><a href="signup.html">Sign up</a></li>
-                </div>
-            </ul>
-          </nav>
-          <!-- Drop-down menu for user -->
-          <div class="invis" id="user-dropdown">
-            <div class="bg-white p-2 rounded-xl w-48 absolute right-0 z-1">
-              <!-- <button class="hover:text-green-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mb-2" onclick="viewProfile()">User Profile</button> -->
-              <button class="hover:text-red-800 hover:bg-gray-300 hover:rounded-2xl text-black font-bold py-2 px-4 rounded-xl w-full mt-2" onclick="logOut()">Log Out</button>
-            </div>
-          </div>
+                   <div class="relative">
+                    <button class="notification-bell relative p-2 rounded-full">
+                      <img class="w-10 h-10" src="./assets/img/bell.svg" alt="Notifications">
+                      <span class="notification-count absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 font-sans font-medium hidden">0</span>
+                    </button>
 
-        <main>
+                      <!-- Notification dropdown -->
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50">
+                        <div class="p-2 border-b font-semibold text-gray-700">Notifications</div>
+                        
+                        <!-- This div controls the scroll -->
+                        <div class="overflow-y-auto" style="max-height: 16rem;">
+                            <ul id="notification-list" class="p-2 text-sm text-gray-600 space-y-2">
+                                <li class="text-gray-400 italic text-center py-2">No notifications</li>
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                <button aria-label="dropdown" class="focus:outline-none border-b-2 border-transparent 
+                        focus:border-green-700 focus:text-green-700 text-gray-600
+                        hover:text-green-700 py-1.5 flex items-center relative" onclick="dropdownHandler(event, this)">
+                          <ul id="user-dropdown" class="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 hidden">
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-green-700
+                               focus:text-green-700 focus:outline-none" role="button" onclick="event.preventDefault(); document.location='profile.html'">
+                                  <a href="" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" 
+                                      width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" />
+                                          <circle cx="12" cy="7" r="4" />
+                                          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                      </svg>
+                                      <span class="ml-2">My Profile</span>
+                                  </a>
+                              </li>
+                              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 
+                              hover:text-green-700 focus:text-green-700 focus:outline-none flex items-center"
+                              role="button" onclick="logOut()">
+                                  <a href="javascript:void(0)" class="focus:underline focus:text-green-700 focus:outline-none flex items-center">
+                                  <img class="rounded-full object-cover" 
+                                          src="./assets/img/logout.svg" alt="log out" />
+                                      <span class="ml-2">Log Out</span>
+                              </a>
+                              </li>
+                          </ul>
+                          <div class="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none 
+                          focus:border-white transition duration-150 ease-in-out">
+                              <img class="rounded-full h-10 w-10 object-cover" 
+                              src="./assets/img/profile.svg" alt="logo" />
+                          </div>
+                          <div class="ml-2 ">
+                              <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer" 
+                              src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
+                          </div>
+                </button>
+                </div>
+            </div>
+
+        </nav>
+
+    </div>
+    <!-- // end main nav  -->
+
+    <!-- Mobile Bottom Navigation -->
+<div class="fixed z-50 w-full h-16 bg-white border md:hidden block bottom-0 shadow-xl/30">
+    <div id="mobile-nav" class="grid h-full max-w-lg grid-cols-6 mx-auto">
+        <!-- Home -->
+        <button class="inline-flex flex-col items-center justify-center px-5"
+            onclick="document.location='index.html'">
+            <i class="ri-home-5-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-green-700 mt-1">Home</span>
+        </button>
+
+        <!-- Library -->
+        <button class="inline-flex flex-col items-center justify-center"
+            onclick="document.location='library.html'">
+            <i class="ri-book-2-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Library</span>
+        </button>
+
+        <!-- Map -->
+        <button class="inline-flex flex-col items-center justify-center px-5"
+            onclick="document.location='map.html'">
+            <i class="ri-map-pin-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Map a Tree!</span>
+        </button>
+
+        <!-- Leaderboards -->
+        <button class="inline-flex flex-col items-center justify-center px-5"
+            onclick="document.location='leaderboard.html'">
+            <i class="ri-trophy-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Leaderboard</span>
+        </button>
+
+
+        <!-- Events -->
+        <button class="inline-flex flex-col items-center justify-center px-5"
+            onclick="document.location='events.html'">
+            <i class="ri-calendar-line ri-lg text-green-700"></i>
+            <span class="text-xs text-gray-500 mt-1">Events</span>
+        </button>
+        
+        <!-- <button id="mobile-alerts" class="notification-bell inline-flex flex-col items-center justify-center px-5">
+            <div class="relative">
+                <i class="ri-notification-3-line ri-lg text-gray-500"></i>
+                <span class="notification-count absolute top-1 right-1 translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 hidden">
+                    0
+                </span>
+            </div>
+            <span class="text-xs text-gray-500 mt-1">Alerts</span>
+        </button> -->
+        <!-- LOGGED OUT BUTTON -->
+        <button id="notLoggedIn" class="inline-flex flex-col items-center justify-center px-5"
+            onclick="pleaseLogin()">
+            <i class="ri-user-line ri-lg text-gray-500"></i>
+            <span class="text-xs text-gray-500 mt-1">Profile</span>
+        </button>
+
+        <!-- LOGGED IN BUTTON WITH DROPDOWN -->
+             <button id="profileMenu" class="inline-flex flex-col items-center justify-center px-1 relative invis"
+            onclick="dropdownHandler(event, this)">
+
+            <!-- Profile Icon with relative positioning -->
+            <i class="ri-user-line ri-lg text-gray-500 relative">
+                <!-- Notification badge anchored to icon -->
+                <span class="notification-count absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center font-sans font-medium leading-4 hidden">
+                    0
+                </span>
+            </i>
+
+            <!-- Label -->
+            <span class="text-xs text-gray-500 mt-1">Profile</span>
+
+            <!-- Dropdown -->
+            <ul class="w-28 border-r bg-white absolute rounded right-2 pr-2 shadow bottom-0 hidden pl-2"
+                style="justify-content: center; bottom: 63px;">
+                <li class="cursor-pointer text-gray-600 text-sm py-2 hover:text-green-700"
+                    onclick="event.preventDefault(); document.location='profile.html'">
+                    <a class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="currentColor" fill="none">
+                            <circle cx="12" cy="7" r="4" />
+                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                        </svg>
+                        <span class="text-xs ml-2">My Profile</span>
+                    </a>
+                </li>
+<li class="notification-bell cursor-pointer text-gray-600 text-sm py-2 hover:text-green-700 relative">
+                <a href="javascript:void(0)" class="flex items-center">
+                  <i class="ri-notification-3-line ri-lg text-gray-500"></i>
+
+                  <!-- Wrap text in a span -->
+                  <span class="ml-2 text-xs">Alerts</span>
+
+                  <!-- Absolutely position the badge -->
+                  <span class="notification-count absolute right-0 transform translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-red-500 text-white text-xs rounded-full text-center leading-4 font-sans font-medium hidden">
+                    0
+                  </span>
+                </a>
+              </li>
+                <li class="cursor-pointer text-gray-600 text-sm py-2 hover:text-green-700 flex items-center"
+                    onclick="logOut()">
+                    <a href="javascript:void(0)" class="flex items-center">
+                        <img class="rounded-full object-cover" src="./assets/img/logout.svg" alt="log out" />
+                        <span class="text-xs ml-2">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+        </button>
+    </div>
+</div>
+    <main class="md:pt-24">
+
+                <div id="mobile-notification-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+            <div class="bg-white rounded-lg shadow-lg w-11/12 max-h-[80vh] flex flex-col">
+                
+                <!-- Header -->
+                <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
+                    <h2 class="text-lg font-semibold">Notifications</h2>
+                    <button onclick="closeMobileNotif()" class="text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
+                
+                <!-- Scrollable List -->
+                <div class="overflow-y-auto" style="max-height: calc(80vh - 60px);">
+                    <ul id="mobile-notification-list" class="p-2 space-y-2">
+                        <!-- Dynamic notifications go here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
             <section class="max-w-screen-xl mx-auto rounded-3xl my-6">
                 <div class="w-full rounded-3xl">
                     <h1 class="text-2xl ml-4 font-bold rounded-3xl">Events</h1>
@@ -196,8 +375,12 @@
             </section>
 
         </main>
+    <div id="in-app-banner"
+    class="hidden fixed bottom-0 sm:bottom-0 left-0 mb-16 ml-4 sm:mb-16 sm:ml-16 bg-white shadow-lg rounded-lg p-4 text-sm font-medium text-gray-800 z-50 opacity-0 transition-opacity duration-500">
+    </div>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/notif_handler.js"></script>
+    <script src="assets/js/register_push.js"></script>
+</body>
 
-        <script src="assets/js/config.js"></script>
-        <script src="assets/js/events.js"></script>
-    </body>
 </html>

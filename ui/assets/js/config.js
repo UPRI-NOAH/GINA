@@ -25,7 +25,8 @@ const treeMarkers = {};
 
 // Dropdown toggles
 
-const bellBtn = document.getElementById('notification-bell');
+// const bellBtn = document.getElementById('notification-bell');
+const bellBtns = document.querySelectorAll('.notification-bell');
 const userDropdown = document.getElementById('user-dropdown');
 const notifDropdown = document.getElementById('notification-dropdown');
 const notifCount = document.getElementById('notification-count');
@@ -40,37 +41,42 @@ function hideLoading() {
   loadingOverlay.style.display = 'none';
 }
 
-  
-var isLoggedIn = true;
-// authentication checking
-if (authToken){
-  isLoggedIn = true;
-} else {
-  isLoggedIn = false;
-}
-// User buttons checking if user is logged in (logged in = icon, else = login/signup buttons)
-if (isLoggedIn) {
-  document.getElementById('user-buttons')?.classList.remove('invis');
-  document.getElementById('mobile-login')?.classList.add('invis');
-  document.getElementById('user-buttons')?.classList.add('mobile-visible');
-  document.getElementById('profileMenu')?.classList.remove('invis');
-  document.getElementById('notLoggedIn')?.classList.add('invis');
-} else {
-  document.getElementById('auth-buttons')?.classList.remove('invis');
-  document.getElementById('mobile-login')?.classList.remove('invis');
-  document.getElementById('user-buttons')?.classList.remove('mobile-visible');
-  document.getElementById('notLoggedIn')?.classList.remove('invis');
-  document.getElementById('profileMenu')?.classList.add('invis');
-}
-// View Profile Function
-function viewProfile() {
-    document.getElementById("user-dropdown").classList.add("invis");
-}
+let isLoggedIn = !!authToken;
 
+
+const mobileNav = document.getElementById('mobile-nav');
+// const alertsButton = document.getElementById('mobile-alerts');
+
+if (isLoggedIn) {
+    document.getElementById('user-buttons')?.classList.remove('invis');
+    document.getElementById('mobile-login')?.classList.add('invis');
+    document.getElementById('profileMenu')?.classList.remove('invis');
+    document.getElementById('notLoggedIn')?.classList.add('invis');
+
+    // Add Alerts button visually
+    // alertsButton?.classList.remove('hidden');
+
+    // Change grid to 6 columns
+    // mobileNav?.classList.remove('grid-cols-5');
+    // mobileNav?.classList.add('grid-cols-6');
+
+} else {
+    document.getElementById('auth-buttons')?.classList.remove('invis');
+    document.getElementById('mobile-login')?.classList.remove('invis');
+    document.getElementById('user-buttons')?.classList.add('invis');
+    document.getElementById('profileMenu')?.classList.add('invis');
+    document.getElementById('notLoggedIn')?.classList.remove('invis');
+
+    // Remove Alerts button
+    // alertsButton?.classList.add('hidden');
+
+    // Change grid back to 5 columns
+    mobileNav?.classList.remove('grid-cols-6');
+    mobileNav?.classList.add('grid-cols-5');
+}
 // Log Out Function
 async function logOut() {
   try {
-    
     showLoading(); // Show loading overlay
 
     await unsubscribeUserFromPush(); // Ensure proper unsubscribe
@@ -83,14 +89,19 @@ async function logOut() {
     localStorage.removeItem('userType');
     sessionStorage.removeItem('userType');
 
-    location.reload(); // Or redirect to login if you prefer
+    // Broadcast logout to other tabs
+    localStorage.setItem('isLoggedIn', 'false');
+
+    // Small delay so storage event propagates before reload
+    setTimeout(() => {
+      location.reload(); // Or redirect to login.html
+    }, 100);
   } catch (error) {
-    
+    console.error('Logout error:', error);
   } finally {
-    hideLoading(); // Always hide loading overlay
+    hideLoading();
   }
 }
-
 
 // USER DROPDOWN
 function dropdownHandler(event, element) {
@@ -210,3 +221,33 @@ async function unsubscribeUserFromPush() {
   } catch (err) {
   }
 }
+
+window.addEventListener('storage', function (event) {
+  if (event.key === 'isLoggedIn') {
+    if (event.newValue === 'false') {
+      // Logged out from another tab
+      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      sessionStorage.removeItem('username');
+      localStorage.removeItem('userType');
+      sessionStorage.removeItem('userType');
+      location.reload(); // Or redirect to login.html
+    } else if (event.newValue === 'true') {
+      location.reload(); // Optional: refresh UI on login from another tab
+    }
+  }
+});
+
+  document.addEventListener('click', function (event) {
+  const profileButton = document.getElementById('profileMenu');
+    if (!profileButton) return; // Avoid error if element doesn't exist
+
+    const dropdown = profileButton.querySelector('ul');
+    if (!dropdown) return;
+
+    // If the click is outside the profile button and its dropdown
+    if (!profileButton.contains(event.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });

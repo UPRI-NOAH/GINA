@@ -48,27 +48,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const authToken = data.auth_token;
                 const userType = data.user_type;
+                const actualUsername = data.username;
 
-                localStorage.setItem('authToken', authToken);
-                localStorage.setItem('username', username);
-                localStorage.setItem('userType', userType);
                 // Store token
                 if (rememberMe) {
                     // Remember me is checked, store the auth token in local storage
                     localStorage.setItem('authToken', authToken);
-                    localStorage.setItem('username', username);
+                    localStorage.setItem('username', actualUsername);
                     localStorage.setItem('userType', userType); 
                 } else {
                     // Remember me is not checked, store the auth token in session storage
                     localStorage.setItem('authToken', authToken);
-                    localStorage.setItem('username', username);
+                    localStorage.setItem('username', actualUsername);
                     localStorage.setItem('userType', userType); 
                     sessionStorage.setItem('authToken', authToken);
-                    sessionStorage.setItem('username', username);
+                    sessionStorage.setItem('username', actualUsername);
                     sessionStorage.setItem('userType', userType);
                 }
 
                 hideLoading();
+                localStorage.setItem('isLoggedIn', 'true');
+
                 window.location.href = 'index.html';
             } else {
                 let errorMessage = 'An unexpected error occurred.';
