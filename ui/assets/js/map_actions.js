@@ -186,11 +186,11 @@ function resizeImage(file, maxSize = 800) {
         resizedReader.onload = () => resolve(resizedReader.result);
         resizedReader.onerror = reject;
         resizedReader.readAsDataURL(blob);
-      }, 'image/jpeg', 0.7);
+      }, 'image/jpeg', 1.0);
     };
 
     img.onerror = () => reject(new Error("Image failed to load"));
-    reader.readAsDataURL(file); // ✅ don't forget to trigger the reader
+    reader.readAsDataURL(file);
   });
 }
 

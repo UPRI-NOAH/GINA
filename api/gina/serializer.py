@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
 from api.gina.tree_image_utils import check_image_similarity_against_embeddings, get_image_embedding, schedule_tree_reminder
-from PIL import Image
+from PIL import Image, ExifTags
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from django.contrib.auth import get_user_model, authenticate
@@ -210,33 +210,47 @@ class UserTreeSerializer(serializers.ModelSerializer):
     #     user_tree_count = UserTreeArchive.objects.filter(reference_id=obj.reference_id).count()
 
     #     return f"{user_tree_count}" #  user_tree_count to be changed to the album model
-
     def compress_image(self, image):
         try:
-            # Open the image using PIL
             img = Image.open(image)
 
-            # Ensure the image is in RGB mode (JPEG requires RGB)
+            # Handle EXIF orientation tag (auto-rotate)
+            try:
+                exif = img._getexif()
+                if exif:
+                    orientation_key = next(
+                        (k for k, v in ExifTags.TAGS.items() if v == 'Orientation'), None
+                    )
+                    if orientation_key and orientation_key in exif:
+                        orientation = exif[orientation_key]
+                        if orientation == 3:
+                            img = img.rotate(180, expand=True)
+                        elif orientation == 6:
+                            img = img.rotate(270, expand=True)
+                        elif orientation == 8:
+                            img = img.rotate(90, expand=True)
+            except Exception:
+                pass  # If EXIF handling fails, just skip it
+
+            # Convert to RGB if needed (JPEG requires RGB)
             if img.mode != 'RGB':
                 img = img.convert('RGB')
 
             # Optional: Resize the image to a thumbnail size (you can adjust this as needed)
-            # img.thumbnail((1024, 1024))  # Uncomment if you want to resize
-
+            # img.thumbnail((1024, 1024))
+                
             # Create a buffer to save the compressed image
             buffer = io.BytesIO()
-
+            
             # Save the image to the buffer in JPEG format with reduced quality
             img.save(buffer, format='JPEG', quality=60)
 
             # Seek to the beginning of the buffer after saving the image
             buffer.seek(0)
 
-            # Return the image as a ContentFile that Django can save to the model
             return ContentFile(buffer.read(), name=image.name)
 
         except Exception as e:
-            # Catch any exceptions related to image processing and raise a validation error
             raise serializers.ValidationError(f"Invalid image: {str(e)}")
 
 
