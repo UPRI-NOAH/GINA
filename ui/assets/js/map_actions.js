@@ -637,12 +637,22 @@ function deleteComment(commentId, tree_identifier) {
     });
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    if (isOnline()) {
+window.addEventListener('DOMContentLoaded', async () => {
+  const isOnline = await checkInternetConnection();
+  if (isOnline) {
+    uploadOfflineTrees();
+  }
+});
+
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible') {
+    const isOnline = await checkInternetConnection();
+    const offlineTrees = localStorage.getItem("offlineTrees");
+    if (isOnline && offlineTrees && JSON.parse(offlineTrees).length > 0 && authToken) {
       uploadOfflineTrees();
     }
-  });
-
+  }
+});
   // Listen for coming back online and trigger upload of saved data
 window.addEventListener('online', () => {
   uploadOfflineTrees();
