@@ -10,7 +10,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
     <link href="assets/css/nav.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./assets/img/gina-icon-white.png">
-    <script src="assets/js/nav.js"></script>
+    <!-- <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.js" defer></script> -->
+    <!-- <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.page.js" defer></script>
+    <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(function (OneSignal) {
+        OneSignal.init({
+        appId: "e4d56bc3-648f-4d6f-a1df-42814fc81659",
+        notifyButton: {
+            enable: true, // optional floating bell
+        },
+        promptOptions: {
+            slidedown: {
+            enabled: true, // REQUIRED to show prompt
+            actionMessage: "We’d like to send you notifications for updates.",
+            acceptButtonText: "Allow",
+            cancelButtonText: "No thanks"
+            }
+        }
+        });
+
+        // Optional: manually trigger the prompt
+        setTimeout(() => {
+        OneSignal.showSlidedownPrompt(); // <-- this is the trigger
+        }, 1000);
+    });
+    </script> -->
+    <!-- Then load your script that uses OneSignal -->
+    <script src="/assets/js/nav.js"></script>
     <style>
         .invis {
             display: none;
@@ -310,7 +337,7 @@
                         <img src="assets/img/up.png" alt="up" class="h-full w-full overflow-hidden object-cover" />
                     </a>
                     <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32 ml-2">
-                        <img src="assets/img/up-uw.gif" alt="upuw" class="h-full w-full overflow-hidden object-cover" />
+                        <img src="assets/img/pauw.webp" alt="upuw" class="h-full w-full overflow-hidden object-cover" />
                     </a>
                     <a tabindex="0" class="focus:outline-none  w-24 h-24 sm:w-32 sm:h-32  bg-center ml-2">
                         <img src="assets/img/upri.png" alt="upri" class="h-full w-full overflow-hidden object-cover" />

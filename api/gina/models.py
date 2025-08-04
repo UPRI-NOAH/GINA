@@ -70,7 +70,7 @@ class UserTreeInfo(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     model_tree = models.ForeignKey("TreeInfo", on_delete=models.SET_NULL, null=True, to_field="tree_name")
-    owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
+    owning_user = models.ForeignKey("UserInfo", on_delete=models.CASCADE, null=True, to_field="user")
     tree_name = models.CharField(max_length=100, null=False, blank=False)
     tree_type = models.CharField(max_length=100, null=True, blank=True)
     tree_description = models.TextField(null=False, blank=False)
@@ -85,13 +85,13 @@ class IdentifyTreeInfo(models.Model):
     tree_identifier = models.ForeignKey("UserTreeInfo", on_delete=models.SET_NULL, null=True, to_field="reference_id")
     tree_comment = models.TextField(null=False, blank=False)
     identified_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    identified_by = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
+    identified_by = models.ForeignKey("UserInfo", on_delete=models.CASCADE, null=True, to_field="user")
     edited_on = models.DateTimeField(null=True, blank=True)
 
 
 class UserTreeArchive(models.Model):
     reference_id = models.ForeignKey("UserTreeInfo", on_delete=models.SET_NULL, null=True, to_field="reference_id")
-    owning_user = models.ForeignKey("UserInfo", on_delete=models.SET_NULL, null=True, to_field="user")
+    owning_user = models.ForeignKey("UserInfo", on_delete=models.CASCADE, null=True, to_field="user")
     planted_on = models.DateTimeField(default=timezone.now, null=True, blank=True)
     image = models.ImageField(upload_to=PathAndRename('gina_trees/'), null=True, blank=True,)
     image_embedding = ArrayField(models.FloatField(), null=True, blank=True)

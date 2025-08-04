@@ -149,3 +149,55 @@ function submitEditPassword() {
       }
   });
 }
+
+
+function openDeleteModal() {
+  document.getElementById('deleteAccountModal').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteAccountModal').style.display = 'none';
+}
+
+
+function handleDeleteAccount() {
+  const pw1 = document.getElementById('confirmPassword1').value.trim();
+  const pw2 = document.getElementById('confirmPassword2').value.trim();
+
+  if (!pw1 || !pw2) {
+    alert("Please fill in both password fields.");
+    return;
+  }
+
+  if (pw1 !== pw2) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  // Ask for final confirmation
+  const confirmed = confirm("Are you sure you want to permanently delete your account? This cannot be undone.");
+  if (!confirmed) return;
+
+  // Proceed with request
+  fetch(deleteAccount, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Token ${authToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ password: pw1 })
+  })
+  .then(response => {
+    if (response.status === 204) {
+      alert("Account deleted successfully.");
+      (async () => await logOut())();
+    } else {
+      return response.json().then(data => {
+        throw new Error(data.detail || "Failed to delete account.");
+      });
+    }
+  })
+  .catch(err => {
+    alert("Error: " + err.message);
+  });
+}

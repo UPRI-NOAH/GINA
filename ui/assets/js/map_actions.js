@@ -279,7 +279,7 @@ function uploadTree() {
         alert("Failed to process images for offline saving.");
       });
     } else {
-      // ✅ Online upload
+      // Online upload
       fetch(usertreeURL, {
         method: 'POST',
         headers: {

@@ -16,6 +16,8 @@ let passwordChangeURL = `${http}://${url}/auth/users/set_password/`;
 let resetPassUrl = `${http}://${url}/auth/users/reset_password/`;
 let passToExpert = `${http}://${url}/api/tree-help/pass`;
 let validateImage = `${http}://${url}/api/validate-image/`;
+// let oneSignalIdentifyUrl = `${http}://${url}/api/onesignal-identity/`;
+let deleteAccount = `${http}://${url}/api/user-info/delete_account/`;
 
 // api/tree-help/pass/${treeId
 var authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
@@ -52,7 +54,7 @@ if (isLoggedIn) {
     document.getElementById('mobile-login')?.classList.add('invis');
     document.getElementById('profileMenu')?.classList.remove('invis');
     document.getElementById('notLoggedIn')?.classList.add('invis');
-
+    // oneSignalIdentify()
     // Add Alerts button visually
     // alertsButton?.classList.remove('hidden');
 
@@ -81,6 +83,16 @@ async function logOut() {
 
     await unsubscribeUserFromPush(); // Ensure proper unsubscribe
 
+    // OneSignalDeferred.push(function (OneSignal) {
+    //   OneSignal.removeExternalUserId();
+
+    //   // Optional: clear tags or user data
+    //   OneSignal.User.removeTag("plan");
+    //   OneSignal.User.removeTag("role");
+
+    //   // Optional: unsubscribe from notifications
+    //   OneSignal.User.PushSubscription.unsubscribe();
+    // });
     // Clear all tokens and user info
     localStorage.removeItem('authToken');
     sessionStorage.removeItem('authToken');
@@ -101,6 +113,7 @@ async function logOut() {
   } finally {
     hideLoading();
   }
+
 }
 
 // USER DROPDOWN
@@ -251,3 +264,22 @@ window.addEventListener('storage', function (event) {
       dropdown.classList.add('hidden');
     }
   });
+
+
+// function oneSignalIdentify(){
+//   fetch(oneSignalIdentifyUrl, {
+//     headers: {
+//       'Authorization': `Token ${authToken}`,
+//     }
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     const userId = data.external_user_id;
+//     const userHash = data.user_hash;
+
+//     OneSignalDeferred.push(function (OneSignal) {
+//       OneSignal.setExternalUserId(userId, userHash);
+//     });
+//   });
+// }
+

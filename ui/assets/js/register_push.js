@@ -48,7 +48,7 @@ async function initPush() {
 
     const readyRegistration = await navigator.serviceWorker.ready;
 
-    // ✅ Check if already subscribed
+    // Check if already subscribed
     let subscription = await readyRegistration.pushManager.getSubscription();
     if (!subscription) {
       subscription = await readyRegistration.pushManager.subscribe({
