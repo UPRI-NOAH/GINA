@@ -73,10 +73,10 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_RENDERER_CLASSES': [  # for local only
-    #     'rest_framework.renderers.JSONRenderer',
-    #     'rest_framework.renderers.BrowsableAPIRenderer',
-    # ],
+    'DEFAULT_RENDERER_CLASSES': [  # for local only
+        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -100,6 +100,9 @@ DJOSER = {
     }
 }
 
+
+ONESIGNAL_APP_ID = get_str("ONESIGNAL_APP_ID")
+ONESIGNAL_API_KEY = get_str("ONESIGNAL_API_KEY")
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

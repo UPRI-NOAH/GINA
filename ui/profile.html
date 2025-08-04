@@ -234,7 +234,79 @@
 </div>
 
   <main>
+    <!-- Delete Account Confirmation Modal -->
+<div id="deleteAccountModal" style="display:none; position:fixed; top:0; left:0; 
+  width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:10px; max-width:400px; width:90%;">
+    <h2 class="text-lg font-semibold">Confirm Account Deletion</h2>
+    
+    <p>This will permanently delete your account. Please type your password twice to confirm.</p>
 
+    <div style="position: relative; margin-top:10px;">
+  <input type="password" id="confirmPassword1" placeholder="Enter password"
+         style="width:100%; padding:8px; padding-right:40px;">
+  <button type="button" onclick="togglePassword('confirmPassword1', this)"
+          style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;">
+    <!-- Eye open -->
+    <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5
+               c4.478 0 8.268 2.943 9.542 7
+               -1.274 4.057 -5.064 7 -9.542 7
+               -4.477 0 -8.268 -2.943 -9.542 -7z" />
+    </svg>
+    <!-- Eye off -->
+    <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13.875 18.825A10.05 10.05 0 0112 19
+               c-4.478 0 -8.268 -2.943 -9.542 -7
+               a9.964 9.964 0 012.042 -3.368
+               m1.846 -1.88A9.955 9.955 0 0112 5
+               c4.478 0 8.268 2.943 9.542 7
+               a9.956 9.956 0 01-4.043 5.097M3 3l18 18" />
+    </svg>
+  </button>
+</div>
+
+<!-- Repeat the above block for confirmPassword2 -->
+<div style="position: relative; margin-top:10px;">
+  <input type="password" id="confirmPassword2" placeholder="Re-enter password"
+         style="width:100%; padding:8px; padding-right:40px;">
+  <button type="button" onclick="togglePassword('confirmPassword2', this)"
+          style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;">
+    <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5
+               c4.478 0 8.268 2.943 9.542 7
+               -1.274 4.057 -5.064 7 -9.542 7
+               -4.477 0 -8.268 -2.943 -9.542 -7z" />
+    </svg>
+    <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13.875 18.825A10.05 10.05 0 0112 19
+               c-4.478 0 -8.268 -2.943 -9.542 -7
+               a9.964 9.964 0 012.042 -3.368
+               m1.846 -1.88A9.955 9.955 0 0112 5
+               c4.478 0 8.268 2.943 9.542 7
+               a9.956 9.956 0 01-4.043 5.097M3 3l18 18" />
+    </svg>
+  </button>
+</div>
+
+    <div style="margin-top:15px; text-align:right;">
+      <button onclick="closeDeleteModal()" style="margin-right:10px;">Cancel</button>
+      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl" onclick="handleDeleteAccount()">Delete</button>
+    </div>
+  </div>
+</div>
             <!-- Mobile Notification Modal -->
 <div id="mobile-notification-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
     <div class="bg-white rounded-lg shadow-lg w-11/12 max-h-[80vh] flex flex-col">
@@ -284,6 +356,7 @@
                             <br>
                             <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="showEditProfile()">Edit Profile</button>
                             <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="showChangePassword()">Change Password</button>
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl" onclick="openDeleteModal()">Delete Account</button>
         
                         <!-- Use https://simpleicons.org/ to find the svg for your preferred product -->
         

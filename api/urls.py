@@ -21,10 +21,12 @@ from api.gina.views import (UserInfoViewset, UserTreeViewset, IdentifyTreeInfoVi
                              ValidateImageAPIView)
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from api.gina.views import (TreeInfoViewset, TreeTypeViewset, 
                             activate_page, reset_password, unsubscribe, 
-                            mark_all_notifications_seen, pass_tree_notif)
+                            mark_all_notifications_seen, pass_tree_notif,)
+                            # onesignal_identity)
 
 router = DefaultRouter()
 
@@ -52,6 +54,9 @@ urlpatterns = [
     path("api/tree-help/pass/<uuid:reference_id>/", pass_tree_notif),
     path('hcaptcha-register/', RegisterWithCaptchaView.as_view(), name='hcaptcha-register'),
     path("api/validate-image/", ValidateImageAPIView.as_view(), name="validate-image"),
+    # path("api/onesignal-identity/", onesignal_identity),
+    # path('OneSignalSDKWorker.js', serve, {'path': 'OneSignalSDKWorker.js', 'document_root': settings.BASE_DIR}),
+    # path('OneSignalSDK.sw.js', serve, {'path': 'OneSignalSDK.sw.js', 'document_root': settings.BASE_DIR}),
 
     # path('api-auth/', include('rest_framework.urls')), # for local only
 

@@ -9,12 +9,20 @@ from django.utils import timezone
 from datetime import timedelta
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+import requests
 
 @shared_task
 def send_push_notification(user_id, title, body, notif_type, tree_id=None):
     print(user_id, title, body, tree_id)
     User = get_user_model()
-    user = User.objects.get(id=user_id)
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        print(f"User {user_id} no longer exists. Skipping push notification.")
+        return
+    
+    url_path = f"/map.html?focus={tree_id}&type={notif_type}" if tree_id else "/"
+
     subscriptions = PushSubscription.objects.filter(user=user)
 
     for sub in subscriptions:
@@ -33,7 +41,7 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
                 data=json.dumps({
                     "title": title,
                     "body": body,
-                    "url": f"/map.html?focus={tree_id}&type={notif_type}" if tree_id else "/"
+                    "url": url_path
                 }),
                 vapid_private_key=settings.VAPID_PRIVATE_KEY,
                 vapid_claims={
@@ -51,6 +59,22 @@ def send_push_notification(user_id, title, body, notif_type, tree_id=None):
                 print(f"Removing expired subscription for {user.username}: {endpoint}")
                 sub.delete()  # Delete the invalid subscription record
 
+    # onesignal_headers = {
+    #     "Authorization": f"Basic {settings.ONESIGNAL_API_KEY}",
+    #     "Content-Type": "application/json"
+    # }
+
+    # onesignal_payload = {
+    #     "app_id": settings.ONESIGNAL_APP_ID,
+    #     "include_external_user_ids": [str(user.id)],
+    #     "headings": {"en": title},
+    #     "contents": {"en": body},
+    #     "url": f"https://gina.up.edu.ph{url_path}",
+    # }
+
+    # res = requests.post("https://onesignal.com/api/v1/notifications", json=onesignal_payload, headers=onesignal_headers)
+    # print(f"[OneSignal] Sent to {user.username}: {res.status_code} {res.text}")
+
 
 def get_audience(endpoint):
     print("Raw endpoint received:", endpoint)
@@ -63,8 +87,16 @@ def get_audience(endpoint):
 @shared_task
 def send_tree_reminder(user_id, tree_ref_id, tree_name):
     User = get_user_model()
-    user = User.objects.get(id=user_id)
-    tree = UserTreeInfo.objects.get(reference_id=tree_ref_id)
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        print(f"User {user_id} no longer exists. Skipping reminder.")
+        return
+    try:
+        tree = UserTreeInfo.objects.get(reference_id=tree_ref_id)
+    except UserTreeInfo.DoesNotExist:
+        print(f"Tree {tree_ref_id} no longer exists. Skipping reminder.")
+        return
     message = f"📅 It's time to update the photo of your tree: {tree_name}"
 
     # Save to Notification model (for badge + dropdown)

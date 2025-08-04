@@ -28,8 +28,15 @@ import requests
 from django.conf import settings
 from rest_framework import serializers
 from api.gina.emails import CustomActivationEmail
+import hmac
+import hashlib
+from rest_framework.decorators import action
+from django.db import transaction
+import redis
+from api.gina.celery_app import app as celery_app
 
 User = get_user_model()
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 class SaveSubscriptionView(APIView):
@@ -197,6 +204,33 @@ class UserInfoViewset(viewsets.ModelViewSet):
     serializer_class = UserInfoSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = UserInfoFilter
+
+    @action(detail=False, methods=['delete'], permission_classes=[IsAuthenticated])
+    def delete_account(self, request):
+        user = request.user
+        password = request.data.get('password')
+
+        # Check if password is correct
+        if not user.check_password(password):
+            return Response(
+                {"detail": "Incorrect password."},
+                status=400
+            )
+
+        with transaction.atomic():
+            # Delete related data
+            UserTreeInfo.objects.filter(owning_user__user=user).delete()
+            IdentifyTreeInfo.objects.filter(identified_by__user=user).delete()
+            UserTreeArchive.objects.filter(owning_user__user=user).delete()
+            PushSubscription.objects.filter(user=user).delete()
+            Notification.objects.filter(recipient=user).delete()
+            UserInfo.objects.filter(user=user).delete()
+            user.delete()
+
+        return Response(
+            {"detail": "Your account and all associated data have been permanently deleted."},
+            status=204
+        )
 
 @extend_schema_view(
     list=extend_schema(description="Returns a list of all planted trees"),
@@ -367,3 +401,23 @@ class ValidateImageAPIView(APIView):
             return Response({"valid": False, "detail": str(e)}, status=400)
         except Exception as e:
             return Response({"valid": False, "detail": f"Unexpected error: {str(e)}"}, status=500)
+        
+
+# def generate_onesignal_hash(user_id: str, api_key: str) -> str:
+#     return hmac.new(
+#         key=api_key.encode(),
+#         msg=user_id.encode(),
+#         digestmod=hashlib.sha256
+#     ).hexdigest()
+
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def onesignal_identity(request):
+#     user_id = str(request.user.id)  # or use username if you prefer
+#     api_key = settings.ONESIGNAL_API_KEY
+#     user_hash = generate_onesignal_hash(user_id, api_key)
+#     return Response({
+#         "external_user_id": user_id,
+#         "user_hash": user_hash,
+#     })
