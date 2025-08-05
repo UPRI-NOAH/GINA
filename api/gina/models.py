@@ -115,7 +115,13 @@ class Notification(models.Model):
     notif_type = models.CharField(max_length=20, choices=NOTIF_TYPES)
     message = models.TextField()
     related_tree = models.ForeignKey("UserTreeInfo", null=True, blank=True, on_delete=models.CASCADE)
-    related_comment = models.ForeignKey("IdentifyTreeInfo", null=True, blank=True, on_delete=models.CASCADE)
+    related_comment = models.ForeignKey("IdentifyTreeInfo", null=True, blank=True, on_delete=models.SET_NULL)
     is_seen = models.BooleanField(default=False)
     is_passed = models.BooleanField(default=False) 
     created_at = models.DateTimeField(default=timezone.now)
+    commenters = ArrayField(
+        models.JSONField(),
+        default=list,
+        null=True,
+        help_text='List of commenter info dicts. Each dict: {"username": str, "seen": bool, "comment_id": int}'
+    )

@@ -106,19 +106,69 @@ class IdentifyTreeInfoSerializer(serializers.ModelSerializer):
         tree_name = tree.tree_name
         if commenter.id != owner.id:
             message = f"💬 {commenter.username} commented on your tree: {tree_name}"
-
-            Notification.objects.create(
-                recipient=owner,
-                sender=commenter,
-                notif_type="comment",
-                message=message,
-                related_tree=tree,
-                related_comment=instance,
-            )
             
-            # send_push_notification.delay(owner.id, "New Comment", message)
-            send_push_notification.delay(owner.id, "New Comment", message, "comment", tree.reference_id,)
+            notif = Notification.objects.filter(
+                recipient=owner,
+                notif_type="comment",
+                related_tree=tree,
+            ).first()
+            if notif:
+                # Extract usernames safely
+                existing_usernames = [
+                    c["username"] if isinstance(c, dict) else c
+                    for c in notif.commenters
+                ]
 
+                already_exists = any(
+                    str(c.get("comment_id")) == str(instance.id) for c in notif.commenters
+                )
+
+                if not already_exists:
+                    notif.commenters.append({
+                        "username": commenter.username,
+                        "seen": False,
+                        "comment_id": instance.id
+                    })
+
+                unique_usernames = set(
+                    c["username"] for c in notif.commenters if isinstance(c, dict)
+                )
+
+                # Exclude the latest commenter (so we only count "others")
+                unique_usernames.discard(commenter.username)
+
+                others_count = len(unique_usernames)
+
+                if others_count == 0:
+                    notif.message = f"💬 {commenter.username} commented on your tree: {tree_name}"
+                elif others_count == 1:
+                    notif.message = f"💬 {commenter.username} and 1 other commented on your tree: {tree_name}"
+                else:
+                    notif.message = f"💬 {commenter.username} and {others_count} others commented on your tree: {tree_name}"
+
+                notif.related_comment = instance
+                notif.is_seen = False
+                notif.created_at = timezone.now()
+                notif.save()
+            else:
+                notif = Notification.objects.create(
+                    recipient=owner,
+                    sender=commenter,
+                    notif_type="comment",
+                    message=f"💬 {commenter.username} commented on your tree: {tree_name}",
+                    related_tree=tree,
+                    related_comment=instance,
+                    commenters=[{
+                        "username": commenter.username,
+                        "seen": False,
+                        "comment_id": instance.id
+                    }],
+                )
+
+            # Push Notification
+            send_push_notification.delay(owner.id, "New Comment", message, "comment", tree.reference_id)
+
+            # WebSocket (Channel Layer)
             channel_layer = get_channel_layer()
             try:
                 async_to_sync(channel_layer.group_send)(

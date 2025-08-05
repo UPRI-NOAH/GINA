@@ -34,6 +34,7 @@ from rest_framework.decorators import action
 from django.db import transaction
 import redis
 from api.gina.celery_app import app as celery_app
+from copy import deepcopy
 
 User = get_user_model()
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -96,10 +97,38 @@ def unsubscribe(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def mark_all_notifications_seen(request):
-    user = request.user
+    user = request.user  # This is the recipient
     unseen = user.notifications.filter(is_seen=False)
-    unseen.update(is_seen=True)
-    return Response({'message': f'{unseen.count()} notifications marked as seen'})
+
+    updated_count = 0
+
+    for notif in unseen:
+        changed = False
+
+        # Mark notification itself as seen
+        if not notif.is_seen:
+            notif.is_seen = True
+            changed = True
+
+        # Mark ALL commenters as seen (because recipient has now seen them)
+        if notif.commenters:
+            new_commenters = []
+            print(new_commenters)
+            for c in notif.commenters:
+                if isinstance(c, dict):
+                    if not c.get("seen", False):
+                        c["seen"] = True
+                        changed = True
+                new_commenters.append(c)
+            print(new_commenters)
+
+            notif.commenters = new_commenters  # Replace with updated list
+
+        if changed:
+            notif.save()
+            updated_count += 1
+
+    return Response({'message': f'{updated_count} notifications marked as seen'})
 
 
 def reset_password(request):
@@ -268,6 +297,82 @@ class IdentifyTreeInfoViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user_info = UserInfo.objects.get(user=self.request.user)
         serializer.save(identified_by=user_info)
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        tree = instance.tree_identifier
+
+        comment_id = instance.id  # Save the ID before deletion
+        instance.delete()
+
+        notif = Notification.objects.filter(
+            recipient=tree.owning_user.user,
+            notif_type="comment",
+            related_tree=tree,
+        ).order_by('-created_at').first()
+
+        if notif:
+            import json
+            parsed_commenters = []
+            for c in notif.commenters:
+                if isinstance(c, str):
+                    try:
+                        parsed_commenters.append(json.loads(c))
+                    except json.JSONDecodeError:
+                        continue
+                elif isinstance(c, dict):
+                    parsed_commenters.append(c)
+
+            # Remove the deleted comment
+            filtered_commenters = [
+                c for c in parsed_commenters
+                if c.get("comment_id") != comment_id
+            ]
+
+            notif.commenters = filtered_commenters
+
+            if not notif.commenters:
+                notif.delete()
+                return
+
+            remaining_comments = IdentifyTreeInfo.objects.filter(tree_identifier=tree)
+
+            if not remaining_comments.exists():
+                notif.delete()
+                return
+
+            tree_owner_username = tree.owning_user.user.username
+
+            # Find latest commenter who is NOT the owner
+            latest_non_owner_comment = remaining_comments.exclude(
+                identified_by__user__username=tree_owner_username
+            ).order_by('-identified_on').first()
+
+            if not latest_non_owner_comment:
+                # Only owner has commented, remove notif
+                notif.delete()
+                return
+
+            latest_user = latest_non_owner_comment.identified_by.user.username
+
+            # Compute "others" excluding latest user AND owner
+            unique_usernames = set(
+                c["username"] for c in notif.commenters if isinstance(c, dict)
+            )
+            unique_usernames.discard(latest_user)
+            unique_usernames.discard(tree_owner_username)
+
+            others_count = len(unique_usernames)
+
+            if others_count == 0:
+                notif.message = f"💬 {latest_user} commented on your tree: {tree.tree_name}"
+            elif others_count == 1:
+                notif.message = f"💬 {latest_user} and 1 other commented on your tree: {tree.tree_name}"
+            else:
+                notif.message = f"💬 {latest_user} and {others_count} others commented on your tree: {tree.tree_name}"
+
+            notif.is_seen = all(c.get("seen", False) for c in notif.commenters)
+            notif.save(update_fields=["commenters", "is_seen", "message", "created_at"])
 
 
 @extend_schema_view(
