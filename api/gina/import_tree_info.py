@@ -19,15 +19,15 @@ for index, row in df.iterrows():
     treeType, created = TreeType.objects.get_or_create(
         type_name='default',
     )
-    
+    img_fname = row['tree_name']+'.png'
     defaults = {"tree_description" : row['tree_description']}
     create_defaults = {
         "family_name": row['family_name'], 
-        "tree_image": "static_tress/" + row['image'],
+        "tree_image": "tree_library/" + img_fname,
         "tree_description" : row['tree_description'],
-        "tree_type" : treeType
+        "tree_type" : treeType,
+        "source" : "Forest Foundation Philippines",
     }
-    
     try:
         treeinfo = TreeInfo.objects.get( 
             scientific_name=row['scientific_name'])
