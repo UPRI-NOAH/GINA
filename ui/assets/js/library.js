@@ -177,7 +177,8 @@ function openModal(name, scientific, family, source, image, description) {
 const sourceLinks = {
     'BINHI': 'https://binhi.ph/',
     'iNaturalist': 'https://www.inaturalist.org/',
-    '10 Million in 10 Years': 'https://www.facebook.com/10min10'
+    '10 Million in 10 Years': 'https://www.facebook.com/10min10',
+    'Forest Foundation Philippines': 'https://www.forestfoundation.ph/',
   };
 
   // Replace known sources with anchor links
