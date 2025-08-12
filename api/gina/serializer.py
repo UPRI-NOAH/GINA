@@ -229,6 +229,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     latest_tree_update = serializers.SerializerMethodField()
     planted_on = serializers.SerializerMethodField()
+    scientific_name = serializers.SerializerMethodField()
 
     class Meta:
         model = UserTreeInfo
@@ -244,6 +245,10 @@ class UserTreeSerializer(serializers.ModelSerializer):
         if latest_archive:
             return latest_archive.planted_on
         return None
+    
+    def get_scientific_name(self, obj):
+        tree = TreeInfo.objects.filter(tree_name=obj.tree_name).first()
+        return tree.scientific_name if tree else None
     
     def get_image(self, obj):
         latest = (

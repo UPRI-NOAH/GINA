@@ -7,7 +7,6 @@ function clickTreeImg(name, refId) {
   const treeTitle = document.getElementById('treeTitle');
   overlay?.classList.remove("invis");
   map?.classList.add("map-blurred");
-  treeTitle.innerText = name;
 
   fetch(`${treeArchiveURL}?reference_id__reference_id=${refId}`, {
     headers: { 'ngrok-skip-browser-warning': 'true' }
@@ -22,8 +21,9 @@ function clickTreeImg(name, refId) {
       counter.dataset.role = 'counter';
       const itemsContainer = document.getElementById('carouselItems');
       itemsContainer.innerHTML = '';
-
+      treeTitle.innerText = name;
       data.forEach((tree, idx) => {
+
         itemsContainer.appendChild(createCarouselItem(tree, data, refId));
       });
 
