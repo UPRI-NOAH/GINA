@@ -337,7 +337,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
         # Points and reminders
         if action != "Identified":
             schedule_tree_reminder(instance)
-            give_points = 5 if instance.tree_name == "TBD" else 10
+            give_points = 10 if instance.tree_name == "TBD" else 20
             if instance.tree_name == "TBD":
                 self.notify_experts_tree_help(instance)
         elif action == "Identified" and instance.tree_name == "TBD":
@@ -471,8 +471,10 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
     
     def validate_and_embed_image(self, image):
-        user_tree_images = UserTreeArchive.objects.exclude(image='').exclude(image_embedding__isnull=True)
-        reference_tree_images = TreeInfo.objects.exclude(tree_image='').exclude(image_embedding__isnull=True)
+        user_tree_images = UserTreeArchive.objects.exclude(image='').exclude(image_embedding__isnull=True)[:100]
+        print(user_tree_images)
+        print(len(user_tree_images))
+        reference_tree_images = TreeInfo.objects.exclude(tree_image='').exclude(image_embedding__isnull=True)[:150]
         combined_entries = list(user_tree_images) + list(reference_tree_images)
         print(f"Checking similarity against {len(combined_entries)} images")
 
