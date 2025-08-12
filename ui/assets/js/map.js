@@ -444,6 +444,7 @@ function buildPopupContent(feature, username) {
     reference_id: refId,
     tree_name: name,
     owning_user: user,
+    scientific_name: scientific_name,
     tree_type: treeTypeRaw,
     tree_description: treeDescription,
     planted_on: plantDateStr,
@@ -488,9 +489,10 @@ function buildPopupContent(feature, username) {
   infoDiv.innerHTML = `
     <img id="${photoId}" data-name="${name}" data-ref-id="${refId}" src="${photoUrl}" class="w-full h-56 object-cover" />
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <div><b>Species:</b> ${name}</div>
+      <div><b>Common Name:</b> ${name}</div>
       <div id="edit-inline-container"></div>
     </div>
+    <b>Scientific Name:</b> ${scientific_name}<br>
     <b>Description:</b> ${treeDescription}<br>
     <b>Tree Type:</b> ${treeType}<br>
     <b>Date Planted:</b> ${plantDateStr}<br>
@@ -505,14 +507,14 @@ function buildPopupContent(feature, username) {
 
   const editButton = document.createElement("button");
   editButton.id = "popup-button";
-  editButton.innerHTML = `<img src="${editIconUrl}" style="width: 15px; height: 15px;">`;
+  editButton.innerHTML = `<img src="${editIconUrl}" style="width: 12px; height: 12px;">`;
 
   editButton.style.cssText = `
     background-color: #0095ff;
     border: none;
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
+    padding: 4px;
+    border-radius: 15px;
+    cursor: pointer;s
     vertical-align: middle;
     display: inline-flex;
     align-items: center;

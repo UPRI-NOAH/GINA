@@ -234,77 +234,113 @@
 </div>
 
   <main>
+    
+  <div id="treesModal" 
+    style="position: fixed; inset: 0; z-index: 2147483647;"
+    class="bg-black bg-opacity-50 hidden flex justify-center items-center">
+  <div class="bg-white p-6 rounded-lg w-full max-w-lg relative"
+       style="height: 90vh; position: relative;">
+    <button onclick="closeTreesModal()" 
+        style="position: absolute; top: 0.5rem; right: 0.5rem; line-height: 1; font-size: 1.5rem; font-weight: bold; color: gray; cursor: pointer;"
+        onmouseover="this.style.color='black'" 
+        onmouseout="this.style.color='gray'">&times;</button>
+    <h2 class="text-xl font-semibold mb-4">My Trees</h2>
+
+    <!-- Tabs -->
+    <div id="treeTabs" class="flex gap-4 mb-4 cursor-pointer">
+      <div data-filter="All" class="font-bold border-b-2 border-green-700 text-green-700">All</div>
+      <div data-filter="Planted" class="text-gray-500">Planted</div>
+      <div data-filter="Identified" class="text-gray-500">Identified</div>
+    </div>
+
+    <div id="treesList" class="space-y-2" style="max-height: calc(95vh - 170px); overflow-y: auto;"></div> <!-- scroll only this -->
+  </div>
+</div>
+
+
     <!-- Delete Account Confirmation Modal -->
 <div id="deleteAccountModal" style="display:none; position:fixed; top:0; left:0; 
   width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-  <div style="background:white; padding:20px; border-radius:10px; max-width:400px; width:90%;">
+  
+  <div style="background:white; padding:20px; border-radius:10px; max-width:400px; width:90%; position: relative;">
+    
+    <!-- Close button now positioned relative to modal box -->
+    <button onclick="closeDeleteModal()" 
+      style="position: absolute; top: 0.5rem; right: 0.5rem; line-height: 1; font-size: 1.5rem; font-weight: bold; color: gray; cursor: pointer;"
+      onmouseover="this.style.color='black'" 
+      onmouseout="this.style.color='gray'">
+      &times;
+    </button>
+
     <h2 class="text-lg font-semibold">Confirm Account Deletion</h2>
     
     <p>This will permanently delete your account. Please type your password twice to confirm.</p>
 
+    <!-- First password -->
     <div style="position: relative; margin-top:10px;">
-  <input type="password" id="confirmPassword1" placeholder="Enter password"
-         style="width:100%; padding:8px; padding-right:40px;">
-  <button type="button" onclick="togglePassword('confirmPassword1', this)"
-          style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;">
-    <!-- Eye open -->
-    <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      <input type="password" id="confirmPassword1" placeholder="Enter password"
+        style="width:100%; padding:8px; padding-right:40px;">
+      <button type="button" onclick="togglePassword('confirmPassword1', this)"
+        style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;">
+        <!-- Eye icons -->
+        <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M2.458 12C3.732 7.943 7.523 5 12 5
                c4.478 0 8.268 2.943 9.542 7
                -1.274 4.057 -5.064 7 -9.542 7
                -4.477 0 -8.268 -2.943 -9.542 -7z" />
-    </svg>
-    <!-- Eye off -->
-    <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        </svg>
+        <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M13.875 18.825A10.05 10.05 0 0112 19
                c-4.478 0 -8.268 -2.943 -9.542 -7
                a9.964 9.964 0 012.042 -3.368
                m1.846 -1.88A9.955 9.955 0 0112 5
                c4.478 0 8.268 2.943 9.542 7
                a9.956 9.956 0 01-4.043 5.097M3 3l18 18" />
-    </svg>
-  </button>
-</div>
+        </svg>
+      </button>
+    </div>
 
-<!-- Repeat the above block for confirmPassword2 -->
-<div style="position: relative; margin-top:10px;">
-  <input type="password" id="confirmPassword2" placeholder="Re-enter password"
-         style="width:100%; padding:8px; padding-right:40px;">
-  <button type="button" onclick="togglePassword('confirmPassword2', this)"
-          style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;">
-    <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    <!-- Second password -->
+    <div style="position: relative; margin-top:10px;">
+      <input type="password" id="confirmPassword2" placeholder="Re-enter password"
+        style="width:100%; padding:8px; padding-right:40px;">
+      <button type="button" onclick="togglePassword('confirmPassword2', this)"
+        style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;">
+        <svg class="eye w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M2.458 12C3.732 7.943 7.523 5 12 5
                c4.478 0 8.268 2.943 9.542 7
                -1.274 4.057 -5.064 7 -9.542 7
                -4.477 0 -8.268 -2.943 -9.542 -7z" />
-    </svg>
-    <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        </svg>
+        <svg class="eye-off w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M13.875 18.825A10.05 10.05 0 0112 19
                c-4.478 0 -8.268 -2.943 -9.542 -7
                a9.964 9.964 0 012.042 -3.368
                m1.846 -1.88A9.955 9.955 0 0112 5
                c4.478 0 8.268 2.943 9.542 7
                a9.956 9.956 0 01-4.043 5.097M3 3l18 18" />
-    </svg>
-  </button>
-</div>
+        </svg>
+      </button>
+    </div>
 
+    <!-- Action buttons -->
     <div style="margin-top:15px; text-align:right;">
-      <button onclick="closeDeleteModal()" style="margin-right:10px;">Cancel</button>
+      <button onclick="closeDeleteModal()" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-xl">Cancel</button>
       <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl" onclick="handleDeleteAccount()">Delete</button>
     </div>
+  
   </div>
 </div>
             <!-- Mobile Notification Modal -->
@@ -328,7 +364,7 @@
             <!-- <div class="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0"> -->
               <!-- <div class="max-w-4xl flex justify-center items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0"> -->
                 <!-- <div class="max-w-4xl flex justify-center items-start h-auto lg:h-auto flex-wrap mx-auto -my-16/ lg:my-0"> -->
-                  <div class="max-w-4xl flex justify-center items-start h-auto lg:h-auto flex-wrap mx-auto mt-16">
+                <div class="max-w-5xl flex justify-center items-start h-auto lg:h-auto flex-wrap mx-auto mt-16">
 
                 <!--Main Col-->
                 <div id="profile"
@@ -354,9 +390,9 @@
                                 
                             </p>
                             <br>
-                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="showEditProfile()">Edit Profile</button>
-                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl" onclick="showChangePassword()">Change Password</button>
-                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl" onclick="openDeleteModal()">Delete Account</button>
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold mt-2 py-2 px-4 rounded-xl" onclick="showEditProfile()">Edit Profile</button>
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold mt-2 py-2 px-4 rounded-xl" onclick="showChangePassword()">Change Password</button>
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 py-2 px-4 rounded-xl" onclick="openDeleteModal()">Delete Account</button>
         
                         <!-- Use https://simpleicons.org/ to find the svg for your preferred product -->
         

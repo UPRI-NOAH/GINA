@@ -80,7 +80,7 @@ class UserTreeInfo(models.Model):
     edited_by = models.CharField(max_length=100, null=True, blank=True)
     version = models.IntegerField()
 
-
+# IdentifyTreeInfo Model is the Comment/Discussion Database
 class IdentifyTreeInfo(models.Model):
     tree_identifier = models.ForeignKey("UserTreeInfo", on_delete=models.SET_NULL, null=True, to_field="reference_id")
     tree_comment = models.TextField(null=False, blank=False)
