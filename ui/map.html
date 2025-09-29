@@ -133,10 +133,15 @@
                                         focus:border-white transition duration-150 ease-in-out">
               <img class="rounded-full h-10 w-10 object-cover" src="./assets/img/profile.svg" alt="logo" />
             </div>
-            <div class="ml-2 ">
-              <img class="icon icon-tabler icon-tabler-chevron-down cursor-pointer"
-                src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg8.svg" alt="chevron down" />
-            </div>
+                <div class="inline-flex ml-1 cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                            class="icon icon-tabler icon-tabler-chevron-down w-5 h-5" 
+                            viewBox="0 0 24 24" stroke-width="2" 
+                            stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <path d="M6 9l6 6l6-6"/>
+                        </svg>
+                        </div>
           </button>
         </div>
       </div>
@@ -553,15 +558,15 @@
       </div>
     <p id="modalEditDesc" class="text-lg mb-4">Please fill in the details of the tree you want to edit.</p>
 
-    <label class="block text-md">Species:</label>
+    <label id="label-species" class="block text-md">Species:</label>
     <select class="w-full border-2 rounded-md px-4 py-2 mb-3" id="edit-plant-name" name="edit-plant-name">
       <option value="">Select species</option>
     </select>
 
-    <label class="block text-md">Description:</label>
+    <label id="label-description" class="block text-md">Description:</label>
     <textarea id="edit-description" class="w-full border-2 rounded-md px-4 py-2 mb-3" placeholder="Description"></textarea>
 
-    <label class="block text-md">Tree Type:</label>
+    <label id="label-tree-type" class="block text-md">Tree Type:</label>
     <select class="w-full border-2 rounded-md px-4 py-2 mb-3" id="edit-tree-type" name="edit-tree-type">
       <option value="">Select tree type</option>
       <option value="Indigenous Tree">Indigenous Tree</option>
@@ -571,7 +576,7 @@
 
     <!-- Image Upload (same UI as upload overlay) -->
     <div class="mb-6">
-      <label id="edit-photo-title" class="block text-md mb-2">Edit a photo:</label>
+      <label id="edit-photo-title" class="block text-md mb-2">Add a photo:</label>
 
       <article id="edit-upload-block" aria-label="File Upload Modal"
         class="relative h-64 flex flex-col bg-white shadow-md rounded-md border border-gray-300"
