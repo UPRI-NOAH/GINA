@@ -344,10 +344,27 @@ function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, 
     document.getElementById('edit-tree-type').value = treeType
     document.getElementById('edit-date').value = plantDate
     if (uploadStatus === "oneHour") {
+      document.getElementById("edit-plant-name").classList.remove("invis");
+      document.getElementById("edit-description").classList.remove("invis");
+      document.getElementById("edit-tree-type").classList.remove("invis");
+      document.getElementById("label-species").classList.remove("invis");
+      document.getElementById("label-description").classList.remove("invis");
+      document.getElementById("label-tree-type").classList.remove("invis");
+      document.getElementById("label-species").classList.remove("invis");
       document.getElementById("edit-upload-block").classList.add("invis");
       document.getElementById("edit-photo-title").classList.add("invis");
     }
     else if (uploadStatus === "monthly") {
+      modalTitle.innerHTML = "Update the Tree you Planted"
+
+      modalDesc.innerHTML = "Click/Tap below to add photos"
+      document.getElementById("edit-plant-name").classList.add("invis");
+      document.getElementById("edit-description").classList.add("invis");
+      document.getElementById("edit-tree-type").classList.add("invis");
+      document.getElementById("label-species").classList.add("invis");
+      document.getElementById("label-description").classList.add("invis");
+      document.getElementById("label-tree-type").classList.add("invis");
+      document.getElementById("label-species").classList.add("invis");
       document.getElementById("edit-upload-block").classList.remove("invis");
       document.getElementById("edit-photo-title").classList.remove("invis");
     }
@@ -472,12 +489,13 @@ function buildPopupContent(feature, username) {
   sixMonthsLater.setDate(sixMonthsLater.getDate() + 180);
 
   // Determine edit icon URL
-  const canEdit = (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate || userType === "Expert");
+  const canEdit = (userType === "Expert");
   const isBlueEdit = canEdit;
-  const editIconUrl = isBlueEdit
-    ? "https://cdn-icons-png.flaticon.com/128/481/481874.png"
-    : "https://cdn-icons-png.flaticon.com/128/992/992651.png";
-
+  // const editIconUrl = isBlueEdit
+  //   ? "https://cdn-icons-png.flaticon.com/128/481/481874.png"
+  //   : "https://cdn-icons-png.flaticon.com/128/992/992651.png";
+  const addIconUrl = "https://cdn-icons-png.flaticon.com/128/992/992651.png"
+  const editIconUrl = "https://cdn-icons-png.flaticon.com/128/481/481874.png"
   const popupContent = document.createElement("div");
   popupContent.style.position = "relative";
 
@@ -506,8 +524,10 @@ function buildPopupContent(feature, username) {
   const inlineContainer = infoDiv.querySelector("#edit-inline-container");
 
   const editButton = document.createElement("button");
+  const addImgButton = document.createElement("button");
   editButton.id = "popup-button";
   editButton.innerHTML = `<img src="${editIconUrl}" style="width: 12px; height: 12px;">`;
+  addImgButton.innerHTML = `<img src="${addIconUrl}" style="width: 12px; height: 12px;">`;
 
   editButton.style.cssText = `
     background-color: #0095ff;
@@ -523,27 +543,18 @@ function buildPopupContent(feature, username) {
 
   // Control visibility
   if (username !== user) {
-    editButton.style.display = 'none';
+      editButton.style.display = 'none';
+      addImgButton.style.display = 'none';
     if (userType === "Expert" && name === "TBD") {
       editButton.style.display = 'inline-block';
     }
   }
 
-  editButton.addEventListener("click", (event) => {
+  addImgButton.addEventListener("click", (event) => {
     event.stopPropagation();
-
-    if (userType === "Expert" && name === "TBD" && user !== username) {
-      expertEditClick(refId, name, user, treeType, action);
-      return;
-    }
-
+    
     if (action !== "Identified") {  
-      if (now <= oneHourAfterPlanting || now <= oneHourAfterLastUpdate) {
-        uploadStatus = 'oneHour';
-        editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
-        return;
-      }
-
+      
       if (now >= oneMonthLater && now < threeYearsLater) {
         uploadStatus = 'monthly';
         editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
@@ -556,34 +567,41 @@ function buildPopupContent(feature, username) {
           editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
           return;
         } else {
-          alert("After 3 years, you can only edit this tree every 180 days.");
+          alert("After 3 years, you can only add every 180 days.");
           return;
         }
       }
 
-      alert("Tree edits are locked. You can only edit it within 1 hour of planting or update after 30 days.");
-    } else {
-      uploadStatus = 'oneHour';
-      editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
-    }
+      alert("Add tree images are locked. You can only add after 30 days.");
+    } 
   });
 
+    editButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      uploadStatus = 'oneHour';
+      editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
 
-  if (action === "Identified" && now > oneHourAfterPlanting && userType !== "Expert") {
+      if (userType === "Expert" && name === "TBD" && user !== username) {
+        expertEditClick(refId, name, user, treeType, action);
+        return;
+      }
+  });
+
+  inlineContainer.appendChild(editButton); // Inline beside species
+
+  if (action === "Identified") {
   // Do not append the button
   }
-  // Placement logic
-  else if (isBlueEdit) {
-    inlineContainer.appendChild(editButton); // Inline beside species
-  } else {
+  else {
     // Gray lock icon stays top-left corner
-    editButton.style.position = 'absolute';
-    editButton.style.top = '5px';
-    editButton.style.left = '5px';
-    editButton.style.backgroundColor = '#0095ff';
-    editButton.style.borderRadius = '10px';
-    editButton.style.padding = '5px';
-    popupContent.appendChild(editButton);
+    addImgButton.style.position = 'absolute';
+    addImgButton.style.top = '5px';
+    addImgButton.style.left = '5px';
+    addImgButton.style.backgroundColor = '#0095ff';
+    addImgButton.style.borderRadius = '10px';
+    addImgButton.style.padding = '5px';
+    popupContent.appendChild(addImgButton);
+    
   }
 
   popupContent.appendChild(infoDiv);

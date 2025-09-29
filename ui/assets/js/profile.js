@@ -248,10 +248,10 @@ function renderTrees(filter = 'All') {
       treeItem.innerHTML = `
         <a href="map.html?focus=${tree.reference_id}&type=view" class="flex items-center gap-3">
           <img src="${tree.image}" alt="${tree.tree_name || 'Tree'}"
-              class="w-16 h-16 object-cover rounded-md border" />
+              class="w-24 h-24 object-cover rounded-md border" />
           <div>
             <p class="font-semibold">${tree.tree_name || 'Unnamed Tree'}</p>
-            <p class="text-sm text-gray-600">Planted on: ${tree.planted_on || 'Unknown date'}</p>
+            <p class="text-sm text-gray-600">${tree.action} on: ${tree.planted_on || 'Unknown date'}</p>
             <p class="text-xs text-gray-500 italic">${tree.scientific_name || ''}</p>
             <p class="text-sm text-gray-600">Action: ${tree.action || 'Unknown action'}</p>
           </div>

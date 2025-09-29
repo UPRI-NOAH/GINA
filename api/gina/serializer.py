@@ -342,7 +342,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
                 self.notify_experts_tree_help(instance)
         elif action == "Identified" and instance.tree_name == "TBD":
             self.notify_experts_tree_help(instance)
-            give_points = 0
+            give_points = 5
         else:
             give_points = 10
 
@@ -433,8 +433,10 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
         if not in_free_edit_window:
             # Increment version
-            updated_instance.version = (updated_instance.version or 0) + 1
-            updated_instance.save(update_fields=['version'])
+            print('action', action)
+            if (str(action) != "Expert" or str(action) == "Identified") and images:
+                updated_instance.version = (updated_instance.version or 0) + 1
+                updated_instance.save(update_fields=['version'])
             # Archive uploaded images
             for img in images:
                 try:
