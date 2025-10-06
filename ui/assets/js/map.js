@@ -319,57 +319,41 @@ function expertEditClick(refId, name, user, treeType, action) {
 
 
 
-function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action, uploadStatus) {
-  if (user == username) {
-    const modalTitle = document.getElementById('modalEditTitle');
-    const modalDesc = document.getElementById('modalEditDesc');
-    let selectElement = document.getElementById('edit-plant-name');
+function editTreeClick(refId, name, user, treeType, treeDescription, plantDate, action) {
+    if (user == username) {
+      const modalTitle = document.getElementById('modalEditTitle');
+      const modalDesc = document.getElementById('modalEditDesc');
+      let selectElement = document.getElementById('edit-plant-name');
 
-    modalTitle.innerHTML = "Edit The Tree You Planted"
-    if (action == "Identified") {
-      modalTitle.innerHTML = "Edit the tree you identified"
-    }
-    modalDesc.innerHTML = "Please fill in the details of the tree you want to edit"
-    document.getElementById("editoverlay").classList.remove("invis");
-    document.getElementById("map").classList.add("map-blurred");
+      modalTitle.innerHTML = "Edit The Tree You Planted"
+      if (action == "Identified") {
+        modalTitle.innerHTML = "Edit the tree you Identified"
+      }
+      modalDesc.innerHTML = "Please fill in the details of the tree you want to edit"
+      document.getElementById("editoverlay").classList.remove("invis");
+      document.getElementById("map").classList.add("map-blurred");
 
-    if (name === 'Ask an expert' || name === 'TBD') {
-      selectElement.value = '';
-    } else {
-      selectElement.value = name;
-    }
-    document.getElementById('edit-action').value = action
-    document.getElementById('edit-ref-id').value = refId
-    document.getElementById('edit-description').value = treeDescription
-    document.getElementById('edit-tree-type').value = treeType
-    document.getElementById('edit-date').value = plantDate
-    if (uploadStatus === "oneHour") {
-      document.getElementById("edit-plant-name").classList.remove("invis");
-      document.getElementById("edit-description").classList.remove("invis");
-      document.getElementById("edit-tree-type").classList.remove("invis");
-      document.getElementById("label-species").classList.remove("invis");
-      document.getElementById("label-description").classList.remove("invis");
-      document.getElementById("label-tree-type").classList.remove("invis");
-      document.getElementById("label-species").classList.remove("invis");
-      document.getElementById("edit-upload-block").classList.add("invis");
-      document.getElementById("edit-photo-title").classList.add("invis");
-    }
-    else if (uploadStatus === "monthly") {
-      modalTitle.innerHTML = "Update the Tree you Planted"
+      if (name === 'Ask an expert' || name === 'TBD') {
+        selectElement.value = '';
+      } else {
+        selectElement.value = name;
+      }
 
-      modalDesc.innerHTML = "Click/Tap below to add photos"
-      document.getElementById("edit-plant-name").classList.add("invis");
-      document.getElementById("edit-description").classList.add("invis");
-      document.getElementById("edit-tree-type").classList.add("invis");
-      document.getElementById("label-species").classList.add("invis");
-      document.getElementById("label-description").classList.add("invis");
-      document.getElementById("label-tree-type").classList.add("invis");
-      document.getElementById("label-species").classList.add("invis");
-      document.getElementById("edit-upload-block").classList.remove("invis");
-      document.getElementById("edit-photo-title").classList.remove("invis");
+      document.getElementById('edit-action').value = action
+      document.getElementById('edit-ref-id').value = refId
+      document.getElementById('edit-description').value = treeDescription
+      document.getElementById('edit-tree-type').value = treeType
+      document.getElementById('edit-date').value = plantDate
+      
     }
-  }
 
+}
+
+function uploadArchiveTreeClick(refId, user){
+   if (user == username) {
+      document.getElementById("updatearchiveoverlay").classList.remove("invis");
+      document.getElementById("updatearchive-ref-id").value = refId;
+    }
 }
 
 
@@ -446,8 +430,7 @@ function skip() {
   document.getElementById("identifyoverlay").classList.add("invis");
   document.getElementById("treeArchiveTitleOverlay").classList.add("invis");
   document.getElementById("expertoverlay").classList.add("invis");
-  const emptyGallery = document.getElementById("empty");
-  const editEmptyGallery = document.getElementById("edit-empty");
+  document.getElementById("updatearchiveoverlay").classList.add("invis");
   // Clear upload gallery
 
   resetUploadModal();
@@ -557,14 +540,14 @@ function buildPopupContent(feature, username) {
       
       if (now >= oneMonthLater && now < threeYearsLater) {
         uploadStatus = 'monthly';
-        editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
+        uploadArchiveTreeClick(refId, user);
         return;
       }
 
       if (now >= threeYearsLater) {
         if (now >= sixMonthsLater) {
           uploadStatus = 'monthly';
-          editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
+          uploadArchiveTreeClick(refId, user);
           return;
         } else {
           alert("After 3 years, you can only add every 180 days.");
@@ -579,7 +562,7 @@ function buildPopupContent(feature, username) {
     editButton.addEventListener("click", (event) => {
       event.stopPropagation();
       uploadStatus = 'oneHour';
-      editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action, uploadStatus);
+      editTreeClick(refId, name, user, treeType, treeDescription, plantDateStr, action);
 
       if (userType === "Expert" && name === "TBD" && user !== username) {
         expertEditClick(refId, name, user, treeType, action);

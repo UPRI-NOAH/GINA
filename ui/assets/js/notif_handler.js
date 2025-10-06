@@ -361,11 +361,28 @@ if (!marker) {
   const onMoveEnd = () => {
     map.off("moveend", onMoveEnd);
     marker.openPopup();
+
+    setTimeout(() => {
+      const popupEl = document.querySelector(".leaflet-popup");
+      if (popupEl) {
+        let offsetY = 0;
+
+        if (window.innerWidth < 768) {
+          // Mobile/tablet → shift up by half popup height
+          offsetY = -popupEl.offsetHeight / 2;
+        } else {
+          // Desktop → shift up just a little (optional)
+          offsetY = -30;
+        }
+
+        map.panBy([0, offsetY], { animate: true });
+      }
+    }, 200);
+
     if (notifType === "comment") {
       showComments(treeId);
     }
   };
-
   map.on("moveend", onMoveEnd);
   map.setView(latlng, 20, { animate: true });
 }

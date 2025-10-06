@@ -208,7 +208,6 @@ function uploadTree() {
     return;
   }
   showLoading();
-  console.log(plantName, description, treeType,username)
   if (!plantName || !description || !treeType || images.length === 0) {
     hideLoading();
     alert("Please fill in all fields and upload a photo before submitting.");
@@ -331,21 +330,11 @@ function editTree() {
   const description = document.getElementById('edit-description').value;
   const treeType = document.getElementById('edit-tree-type').value;
   const action = document.getElementById('edit-action').value;
-  const images = EDIT_FILES.map(f => f.file);
   const username = localStorage.getItem('username') || sessionStorage.getItem('username');
   const treeId = document.getElementById('edit-ref-id').value;
-  if (isImageProcessing) {
-    alert("Please wait for images to finish validating...");
-    return;
-  }
+  
   showLoading();
   if (!plantName || !description || !treeId || !treeType) {
-    hideLoading();
-    alert("Please fill in all required fields before submitting.");
-    return;
-  }
-
-  if (uploadStatus === 'monthly' && images.length === 0) {
     hideLoading();
     alert("Please fill in all required fields before submitting.");
     return;
@@ -357,13 +346,7 @@ function editTree() {
   formData.append('tree_type', treeType);
   formData.append('action', action);
   formData.append('owning_user', username);
-  console.log(uploadStatus)
   
-  if (uploadStatus === 'monthly' && images.length > 0) {
-    images.forEach(img => {
-      formData.append('images', img); // Must match backend getlist('images')
-    });
-  }
 
   fetch(`${usertreeURL}${treeId}/`, {
     method: 'PATCH',
@@ -396,7 +379,7 @@ function editTree() {
       alert("Tree updated successfully");
 
       document.getElementById("map").classList.remove("map-blurred");
-      document.getElementById("uploadoverlay").classList.add("invis");
+      document.getElementById("editoverlay").classList.add("invis");
       hideLoading();
       location.reload();
     })
@@ -405,6 +388,164 @@ function editTree() {
       hideLoading();
       alert(error.message);
     });
+}
+
+function saveArchiveDataOffline(archiveData) {
+  const offlineArchives = JSON.parse(localStorage.getItem('offlineArchives') || '[]');
+  offlineArchives.push(archiveData);
+  localStorage.setItem('offlineArchives', JSON.stringify(offlineArchives));
+}
+
+
+async function uploadOfflineArchives() {
+  let offlineArchives = JSON.parse(localStorage.getItem('offlineArchives') || '[]');
+  if (offlineArchives.length === 0) return;
+
+  const uploadResults = await Promise.all(offlineArchives.map(async (archive, index) => {
+    const formData = new FormData();
+    formData.append('owning_user', archive.username);
+    formData.append('reference_id', archive.treeId);
+
+    const rejectedImages = [];
+    const validBlobs = [];
+
+    // Validate each image with backend, same as trees
+    for (let i = 0; i < (archive.images || []).length; i++) {
+      const base64 = archive.images[i];
+      const blob = dataURLtoBlob(base64);
+
+      const validateForm = new FormData();
+      validateForm.append('image', blob, `offline-image-${i + 1}.jpg`);
+
+      try {
+        const res = await fetch(validateImage, {
+          method: 'POST',
+          body: validateForm
+        });
+        const result = await res.json();
+
+        if (result.valid) {
+          validBlobs.push(blob);
+        } else {
+          rejectedImages.push(`Image ${i + 1}`);
+        }
+      } catch (err) {
+        console.warn(`Validation error for archive #${index + 1}, image ${i + 1}:`, err);
+        rejectedImages.push(`Image ${i + 1} (error)`);
+      }
+    }
+
+    if (validBlobs.length === 0) {
+      return { success: false, index, error: 'All images rejected.', rejectedImages, totalImages: archive.images?.length || 0 };
+    }
+
+    validBlobs.forEach((blob, i) => {
+      formData.append('images', blob, `offline-valid-${i + 1}.jpg`);
+    });
+
+    try {
+      const response = await fetch(treeArchiveURL, {
+        method: 'POST',
+        headers: { 'Authorization': `Token ${authToken}` },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMsg = errorData?.detail || 'Upload failed';
+        return { success: false, index, error: errorMsg, rejectedImages, totalImages: archive.images?.length || 0 };
+      }
+
+      return { success: true, index, rejectedImages, totalImages: archive.images?.length || 0 };
+    } catch (err) {
+      return { success: false, index, error: err.message, rejectedImages, totalImages: archive.images?.length || 0 };
+    }
+  }));
+
+  // Summarize results
+  const failed = uploadResults.filter(r => !r.success);
+  const success = uploadResults.filter(r => r.success);
+  
+  let totalImagesUploaded = 0;
+
+  if (success.length) {
+    success.forEach(r => {
+      totalImagesUploaded += (r.totalImages || 0) - (r.rejectedImages.length || 0);
+
+      if (r.rejectedImages.length > 0) {
+        alert(`Tree #${r.index + 1}: ${r.rejectedImages.length} image(s) were rejected:\n${r.rejectedImages.join(', ')}`);
+      }
+    });
+
+    alert(`${totalImagesUploaded} image(s) uploaded successfully across ${success.length} archive(s).`);
+  }
+
+  if (failed.length) {
+    const errorMsg = failed.map(f => `Tree #${f.index + 1} – ${f.error}`).join('\n');
+    alert(`Some tree(s) failed to upload:\n${errorMsg}`);
+  }
+  
+  localStorage.removeItem('offlineArchives');
+  location.reload();
+}
+
+
+async function updateTreeArchive() {
+  const images = EDIT_FILES.map(f => f.file);
+  const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+  const treeId = document.getElementById('updatearchive-ref-id').value;
+
+  if (isImageProcessing) { alert("Please wait for images to finish validating..."); return; }
+  showLoading();
+
+  if (images.length === 0) {
+    hideLoading();
+    alert("Please fill in all required fields before submitting.");
+    return;
+  }
+
+  const isOnlineNow = await checkInternetConnection();
+
+  if (!isOnlineNow) {
+    // Save offline
+    const resizedImages = await Promise.all(images.map(file => resizeImage(file)));
+    const offlineData = { username, treeId, images: resizedImages, timestamp: Date.now() };
+    saveArchiveDataOffline(offlineData);
+
+    hideLoading();
+    alert("You're offline. Your update has been saved and will upload automatically once you're back online.");
+    document.getElementById("updatearchiveoverlay").classList.add("invis");
+    return;
+  }
+
+  // Online upload (existing code)
+  const formData = new FormData();
+  formData.append('owning_user', username);
+  formData.append('reference_id', treeId);
+  images.forEach(img => formData.append('images', img));
+
+  fetch(treeArchiveURL, {
+    method: 'POST',
+    headers: { 'Authorization': `Token ${authToken}` },
+    body: formData
+  })
+  .then(async response => {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      let errorMessage = 'Failed to edit tree data.';
+      if (errorData && typeof errorData === 'object') errorMessage = Object.values(errorData).flat().join('\n');
+      throw new Error(errorMessage);
+    }
+    return response.json();
+  })
+  .then(data => {
+    alert("Tree updated successfully");
+    document.getElementById("map").classList.remove("map-blurred");
+    document.getElementById("updatearchiveoverlay").classList.add("invis");
+    hideLoading();
+    location.reload();
+  })
+  .catch(error => { console.error(error); hideLoading(); alert(error.message); });
 }
 
 
@@ -641,6 +782,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const isOnline = await checkInternetConnection();
   if (isOnline) {
     uploadOfflineTrees();
+    uploadOfflineArchives();
   }
 });
 
@@ -651,11 +793,16 @@ document.addEventListener('visibilitychange', async () => {
     if (isOnline && offlineTrees && JSON.parse(offlineTrees).length > 0 && authToken) {
       uploadOfflineTrees();
     }
+
+    if (offlineArchives && JSON.parse(offlineArchives).length > 0 && authToken) {
+      uploadOfflineArchives();
+    }
   }
 });
   // Listen for coming back online and trigger upload of saved data
 window.addEventListener('online', () => {
   uploadOfflineTrees();
+  uploadOfflineArchives();
 });
 
 
