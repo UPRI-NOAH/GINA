@@ -11,6 +11,9 @@ from datetime import timedelta
 from django.utils import timezone
 import redis
 from api.gina.celery_app import app as celery_app
+from PIL import Image, ExifTags
+import io
+from django.core.files.base import ContentFile
 
 
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
@@ -107,4 +110,47 @@ def schedule_tree_reminder(tree):
     redis_client.set(redis_key, task.id, ex=ttl_seconds)
     #  "Set Redis key {redis_key} = {task.id} for {ttl_seconds} seconds"
 
+
+def compress_image(image):
+    try:
+        img = Image.open(image)
+
+        # Handle EXIF orientation tag (auto-rotate)
+        try:
+            exif = img._getexif()
+            if exif:
+                orientation_key = next(
+                    (k for k, v in ExifTags.TAGS.items() if v == 'Orientation'), None
+                )
+                if orientation_key and orientation_key in exif:
+                    orientation = exif[orientation_key]
+                    if orientation == 3:
+                        img = img.rotate(180, expand=True)
+                    elif orientation == 6:
+                        img = img.rotate(270, expand=True)
+                    elif orientation == 8:
+                        img = img.rotate(90, expand=True)
+        except Exception:
+            pass  # If EXIF handling fails, just skip it
+
+        # Convert to RGB if needed (JPEG requires RGB)
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+
+        # Optional: Resize the image to a thumbnail size (you can adjust this as needed)
+        # img.thumbnail((1024, 1024))
+
+        # Create a buffer to save the compressed image
+        buffer = io.BytesIO()
+
+        # Save the image to the buffer in JPEG format with reduced quality
+        img.save(buffer, format='JPEG', quality=60)
+
+        # Seek to the beginning of the buffer after saving the image
+        buffer.seek(0)
+
+        return ContentFile(buffer.read(), name=image.name)
+
+    except Exception as e:
+        raise serializers.ValidationError(f"Invalid image: {str(e)}")
   

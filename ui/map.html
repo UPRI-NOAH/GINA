@@ -576,9 +576,38 @@
 
     <!-- Image Upload (same UI as upload overlay) -->
     <div class="mb-6">
-      <label id="edit-photo-title" class="block text-md mb-2">Add a photo:</label>
+      <div class="flex justify-end gap-2">
+        <button class="bg-gray-200 hover:bg-gray-300 mt-4 text-black py-2 px-4 rounded-xl" onclick="skip()">Close</button>
+        <button class="bg-green-500 hover:bg-green-700 mt-4 text-white py-2 px-4 rounded-xl" onclick="editTree()">Update</button>
+      </div>
+    </div>
+      
+    <!-- Hidden Inputs -->
+    <input type="hidden" id="edit-action" name="edit-action">
+    <input type="hidden" id="edit-ref-id" name="edit-ref-id">
+    <input type="hidden" id="edit-latitude" name="edit-latitude">
+    <input type="hidden" id="edit-longitude" name="edit-longitude">
+    <input type="hidden" id="edit-date" name="edit-date">
 
-      <article id="edit-upload-block" aria-label="File Upload Modal"
+  </div>
+</div>
+
+
+<div class="overlay invis" id="updatearchiveoverlay">
+  <div class="bg-white p-4 rounded-xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex justify-between items-center p-4 border-b flex-shrink-0">
+      <h2 id="modalUpdateArchiveTitle" class="text-2xl font-bold mb-4">Update the Tree you Planted</h2>     
+          <button onclick="skip()" class="text-gray-500 hover:text-gray-800 text-2xl font-bold leading-none">
+            &times;
+          </button>
+      </div>
+    <p id="modalUpdateArchiveDesc" class="text-lg mb-4">Click/Tap below to add photos</p>
+
+    <!-- Image Upload (same UI as upload overlay) -->
+    <div class="mb-6">
+      <label id="update-photo-title" class="block text-md mb-2">Add a photo:</label>
+
+      <article id="update-upload-block" aria-label="File Upload Modal"
         class="relative h-64 flex flex-col bg-white shadow-md rounded-md border border-gray-300"
         ondrop="dropHandler(event, 'edit-gallery')"
         ondragover="dragOverHandler(event);"
@@ -610,17 +639,10 @@
       </article>
       <div class="flex justify-end gap-2">
         <button class="bg-gray-200 hover:bg-gray-300 mt-4 text-black py-2 px-4 rounded-xl" onclick="skip()">Close</button>
-        <button class="bg-green-500 hover:bg-green-700 mt-4 text-white py-2 px-4 rounded-xl" onclick="editTree()">Update</button>
+        <button class="bg-green-500 hover:bg-green-700 mt-4 text-white py-2 px-4 rounded-xl" onclick="updateTreeArchive()">Update</button>
       </div>
     </div>
-      
-    <!-- Hidden Inputs -->
-    <input type="hidden" id="edit-action" name="edit-action">
-    <input type="hidden" id="edit-ref-id" name="edit-ref-id">
-    <input type="hidden" id="edit-latitude" name="edit-latitude">
-    <input type="hidden" id="edit-longitude" name="edit-longitude">
-    <input type="hidden" id="edit-date" name="edit-date">
-
+    <input type="hidden" id="updatearchive-ref-id" name="updatearchive-ref-id">
   </div>
 </div>
 
@@ -642,7 +664,7 @@
         <h3 id="treeTitle" class="text-2xl font-bold mb-4"></h3>
         <button class="absolute top-2 right-2 text-gray-500 hover:text-black font-bold text-xl" onclick="skip()"
           aria-label="Close">
-          X
+          &times;
         </button>
         <div id="carouselExampleCaptions" class="relative" data-twe-carousel-init data-twe-ride="carousel">
           <!--Carousel indicators-->

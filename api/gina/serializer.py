@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
-from api.gina.tree_image_utils import check_image_similarity_against_embeddings, get_image_embedding, schedule_tree_reminder
-from PIL import Image, ExifTags
-from django.core.files.base import ContentFile
+from api.gina.tree_image_utils import check_image_similarity_against_embeddings, get_image_embedding, schedule_tree_reminder, compress_image
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
@@ -18,7 +16,6 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from api.gina.models import PushSubscription
 from api.gina.tasks import send_push_notification
-import io
 import random
 
 User = get_user_model()
@@ -219,6 +216,39 @@ class UserTreeArchiveInfoSerializer(serializers.ModelSerializer):
     def get_planted_on(self, obj):
         manila = pytz_timezone('Asia/Manila')
         return obj.planted_on.astimezone(manila).strftime('%b %d, %Y %I:%M %p')
+    
+    def create(self, validated_data):
+        images = self.context['request'].FILES.getlist('images')
+        now = timezone.now()
+        archives = []
+        for img in images:
+            compressed = compress_image(img)
+            archives.append(UserTreeArchive.objects.create(
+                reference_id=validated_data['reference_id'],
+                owning_user=validated_data['owning_user'],
+                planted_on=validated_data.get('planted_on', now),
+                image=compressed,
+                image_embedding=get_image_embedding(compressed).tolist(),
+            ))
+
+        # --- update parent tree (UserTreeInfo) ---
+        if archives:
+            parent_tree = validated_data['reference_id']  # this is a UserTreeInfo object
+
+            # bump version
+            parent_tree.version = (parent_tree.version or 0) + 1
+            parent_tree.save(update_fields=['version'])
+
+            # award points if planted
+            if parent_tree.action == "Planted":
+                schedule_tree_reminder(parent_tree)
+                user_info = parent_tree.owning_user
+                if user_info:
+                    user_info.user_points = F('user_points') + 5
+                    user_info.save(update_fields=['user_points'])
+                    user_info.refresh_from_db()
+
+        return archives[-1] if archives else None
 
     def update(self, instance, validated_data):
         validated_data.pop('planted_on', None)
@@ -261,52 +291,6 @@ class UserTreeSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             return request.build_absolute_uri(latest.image.url) if request else latest.image.url
         return None
-    # def get_version(self, obj):
-    #     user_tree_count = UserTreeArchive.objects.filter(reference_id=obj.reference_id).count()
-
-    #     return f"{user_tree_count}" #  user_tree_count to be changed to the album model
-    def compress_image(self, image):
-        try:
-            img = Image.open(image)
-
-            # Handle EXIF orientation tag (auto-rotate)
-            try:
-                exif = img._getexif()
-                if exif:
-                    orientation_key = next(
-                        (k for k, v in ExifTags.TAGS.items() if v == 'Orientation'), None
-                    )
-                    if orientation_key and orientation_key in exif:
-                        orientation = exif[orientation_key]
-                        if orientation == 3:
-                            img = img.rotate(180, expand=True)
-                        elif orientation == 6:
-                            img = img.rotate(270, expand=True)
-                        elif orientation == 8:
-                            img = img.rotate(90, expand=True)
-            except Exception:
-                pass  # If EXIF handling fails, just skip it
-
-            # Convert to RGB if needed (JPEG requires RGB)
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-
-            # Optional: Resize the image to a thumbnail size (you can adjust this as needed)
-            # img.thumbnail((1024, 1024))
-                
-            # Create a buffer to save the compressed image
-            buffer = io.BytesIO()
-            
-            # Save the image to the buffer in JPEG format with reduced quality
-            img.save(buffer, format='JPEG', quality=60)
-
-            # Seek to the beginning of the buffer after saving the image
-            buffer.seek(0)
-
-            return ContentFile(buffer.read(), name=image.name)
-
-        except Exception as e:
-            raise serializers.ValidationError(f"Invalid image: {str(e)}")
 
 
     def create(self, validated_data):
@@ -321,7 +305,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
         if images:
             for img in images:
                 try:
-                    compressed_img = self.compress_image(img) # Compress image
+                    compressed_img = compress_image(img) # Compress image
                     embedding = get_image_embedding(compressed_img).tolist()
                     UserTreeArchive.objects.create(
                         reference_id=instance,
@@ -355,27 +339,12 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
     
     def update(self, instance, validated_data):
-        now = timezone.now()
-        planted_on = instance.planted_on
-        one_hour_after_planting = planted_on + timedelta(hours=1)
-
-        latest_archive = (
-            UserTreeArchive.objects.filter(reference_id=instance)
-            .order_by('-planted_on')
-            .first()
-        )
-        last_edit_time = latest_archive.planted_on if latest_archive else planted_on
-        one_hour_after_last_edit = last_edit_time + timedelta(hours=1)
-
-        in_free_edit_window = now <= one_hour_after_planting or now <= one_hour_after_last_edit
 
         validated_data.pop('planted_on', None)
         action = validated_data.pop('action', None)
         original_tree = UserTreeInfo.objects.get(reference_id=instance.reference_id)
         original_tree_name = original_tree.tree_name
 
-        # Fetch uploaded images from request.FILES
-        images = self.context['request'].FILES.getlist('images')
         updated_instance = super().update(instance, validated_data)
 
         # Update main tree info
@@ -431,44 +400,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
             else:
                 raise serializers.ValidationError("This tree has already been identified. Please refresh the app")
 
-        if not in_free_edit_window:
-            # Increment version
-            print('action', action)
-            if (str(action) != "Expert" or str(action) == "Identified") and images:
-                updated_instance.version = (updated_instance.version or 0) + 1
-                updated_instance.save(update_fields=['version'])
-            # Archive uploaded images
-            for img in images:
-                try:
-                    compressed_img = self.compress_image(img)
-                    embedding = get_image_embedding(compressed_img).tolist()
-
-                    exists = UserTreeArchive.objects.filter(
-                        reference_id=updated_instance,
-                        image__exact=compressed_img
-                    ).exists()
-
-                    if not exists:
-                        UserTreeArchive.objects.create(
-                            reference_id=updated_instance,
-                            owning_user=updated_instance.owning_user,
-                            planted_on=now,
-                            image=compressed_img,
-                            image_embedding=embedding,
-                        )
-                except Exception as e:
-                    print(f"Error processing image: {e}")
-                    continue
-
-            # Award points if planted
-            if action == "Planted":
-                schedule_tree_reminder(updated_instance)
-                user_info = updated_instance.owning_user
-                if user_info:
-                    user_info.user_points = F('user_points') + 5
-                    user_info.save(update_fields=['user_points'])
-                    user_info.refresh_from_db()
-
+   
         return updated_instance
 
     
