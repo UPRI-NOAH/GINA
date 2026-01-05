@@ -110,7 +110,6 @@ def schedule_tree_reminder(tree):
     redis_client.set(redis_key, task.id, ex=ttl_seconds)
     #  "Set Redis key {redis_key} = {task.id} for {ttl_seconds} seconds"
 
-
 def compress_image(image):
     try:
         img = Image.open(image)

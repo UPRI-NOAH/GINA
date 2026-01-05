@@ -241,7 +241,7 @@ class UserTreeArchiveInfoSerializer(serializers.ModelSerializer):
 
             # award points if planted
             if parent_tree.action == "Planted":
-                schedule_tree_reminder(parent_tree)
+                # schedule_tree_reminder(parent_tree)
                 user_info = parent_tree.owning_user
                 if user_info:
                     user_info.user_points = F('user_points') + 5
@@ -320,7 +320,7 @@ class UserTreeSerializer(serializers.ModelSerializer):
 
         # Points and reminders
         if action != "Identified":
-            schedule_tree_reminder(instance)
+            # schedule_tree_reminder(instance)
             give_points = 10 if instance.tree_name == "TBD" else 20
             if instance.tree_name == "TBD":
                 self.notify_experts_tree_help(instance)

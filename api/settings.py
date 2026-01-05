@@ -15,6 +15,7 @@ from api import get_str
 import os
 from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -30,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u08+g#%-qff+x480z9!8-xvir@q5r5s1ul&o-xz@es#lcbo(sg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -153,6 +154,13 @@ CELERY_BROKER_URL = get_str("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Manila'
+
+CELERY_BEAT_SCHEDULE = {
+    "check-tree-reminders-every-minute": {
+        "task": "api.gina.tasks.check_tree_reminders",
+        "schedule": crontab(minute="*"),
+    }
+}
 
 VAPID_PUBLIC_KEY = get_str("VAPID_PUBLIC_KEY")
 VAPID_PRIVATE_KEY = get_str("VAPID_PRIVATE_KEY")
