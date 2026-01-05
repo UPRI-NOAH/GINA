@@ -10,6 +10,11 @@ from datetime import timedelta
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import requests
+import redis
+import logging
+
+logging.basicConfig(filename='info.log', level=logging.INFO, format='%(asctime)s: %(message)s')
+
 
 @shared_task
 def send_push_notification(user_id, title, body, notif_type, tree_id=None):
@@ -124,3 +129,36 @@ def send_tree_reminder(user_id, tree_ref_id, tree_name):
 
     # Send push notification
     send_push_notification.delay(user.id, "Tree Update Reminder", message, "reminder", str(tree.reference_id))
+
+
+@shared_task
+def check_tree_reminders():
+    now = timezone.localtime()
+
+    trees = UserTreeInfo.objects.filter(action="Planted")
+    for tree in trees:
+        latest_archive = (
+            UserTreeArchive.objects
+            .filter(reference_id=tree.reference_id)
+            .order_by("-planted_on")
+            .first()
+        )
+        last_update = latest_archive.planted_on if latest_archive else tree.planted_on
+
+        tree_age = (now - tree.planted_on).days
+        interval_days = 180 if tree_age >= 1095 else 30
+
+        reminder_day = (last_update + timedelta(days=interval_days)).date()
+        
+        logging.info(f"[Checker] Tree: {tree.tree_name} ({tree.reference_id}) | Planted: {tree.planted_on} | Reminder Day: {reminder_day} | Now: {now.date()}")
+
+        # Send reminder only if today is the reminder day
+        reminder_time = last_update + timedelta(days=interval_days)
+        if now >= reminder_time and now < reminder_time + timedelta(minutes=1):
+            send_tree_reminder.delay(
+                tree.owning_user.user.id,
+                str(tree.reference_id),
+                tree.tree_name
+            )
+            
+            logging.info(f"[Checker] Reminder queued for tree {tree.tree_name} ({tree.reference_id})")
