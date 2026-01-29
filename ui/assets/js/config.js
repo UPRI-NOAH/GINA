@@ -7,6 +7,7 @@ let treeLibURL = `${http}://${url}/api/tree-info/`;
 let identifyTreeURL = `${http}://${url}/api/identify-tree-info/`;
 let treeArchiveURL = `${http}://${url}/api/archive-tree-info/`;
 let loginURL = `${http}://${url}/auth/token/login/`;
+let logoutURL = `${http}://${url}/auth/token/logout/`;
 let signupURL = `${http}://${url}/hcaptcha-register/`;
 // let signupURL = `${http}://${url}/auth/users/`;
 let userURL = `${http}://${url}/api/user-info/`;
@@ -83,6 +84,18 @@ async function logOut() {
 
     await unsubscribeUserFromPush(); // Ensure proper unsubscribe
 
+
+        // Delete token from server
+    const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    if (authToken) {
+      await fetch(logoutURL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
     // OneSignalDeferred.push(function (OneSignal) {
     //   OneSignal.removeExternalUserId();
 

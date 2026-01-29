@@ -25,7 +25,7 @@ from django.views.static import serve
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from api.gina.views import (TreeInfoViewset, TreeTypeViewset, 
                             activate_page, reset_password, unsubscribe, 
-                            mark_all_notifications_seen, pass_tree_notif,)
+                            mark_all_notifications_seen, pass_tree_notif, logout_view)
                             # onesignal_identity)
 
 router = DefaultRouter()
@@ -51,6 +51,7 @@ urlpatterns = [
     path("unsubscribe/", unsubscribe, name="delete-subscription"),  
     path('notifications/mark_all_seen/', mark_all_notifications_seen, name='mark_all_seen'),
     path('auth/token/login/', CustomTokenCreateView.as_view(), name='custom_token_login'),
+    path('auth/token/logout/', logout_view, name='custom_token_logout'),
     path("api/tree-help/pass/<uuid:reference_id>/", pass_tree_notif),
     path('hcaptcha-register/', RegisterWithCaptchaView.as_view(), name='hcaptcha-register'),
     path("api/validate-image/", ValidateImageAPIView.as_view(), name="validate-image"),

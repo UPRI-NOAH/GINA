@@ -28,15 +28,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u08+g#%-qff+x480z9!8-xvir@q5r5s1ul&o-xz@es#lcbo(sg'
+SECRET_KEY = get_str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+
+# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['https://upri-noah.github.io', 'https://gina.up.edu.ph',]
 
 # SECURITY WARNING: THIS IS DANGEROUS, DO NOT ALLOW IN PRODUCTION
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -86,8 +89,22 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_CACHE_ALIAS': 'default',
+    'DEFAULT_THROTTLE_RATES': {
+        'login': '5/min',  # adjust as needed
+    }
 }
 
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",  # change host/port/db as needed
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
@@ -96,9 +113,10 @@ DJOSER = {
     'EMAIL': {
         'activation': 'api.gina.emails.CustomActivationEmail',  # Path to the custom template
     },
+    'LOGOUT_ON_TOKEN_DELETE': True,
     'SERIALIZERS': {
         'user_create': 'api.gina.serializer.CustomUserCreateSerializer',  # your serializer
-    }
+    },
 }
 
 
