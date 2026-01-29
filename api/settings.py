@@ -34,8 +34,8 @@ SECRET_KEY = get_str("SECRET_KEY")
 DEBUG = False
 
 
-# ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ['https://upri-noah.github.io', 'https://gina.up.edu.ph',]
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ['https://upri-noah.github.io', 'https://gina.up.edu.ph', 'https://punla.up.edu.ph']
 
 # SECURITY WARNING: THIS IS DANGEROUS, DO NOT ALLOW IN PRODUCTION
 # CORS_ALLOW_ALL_ORIGINS = True
@@ -326,7 +326,7 @@ AWS_DEFAULT_ACL = "public-read"
 AWS_S3_VERIFY = False
 AWS_QUERYSTRING_AUTH = False
 
-CORS_ALLOWED_ORIGINS = ['https://upri-noah.github.io', 'https://gina.up.edu.ph',]
+CORS_ALLOWED_ORIGINS = ['https://upri-noah.github.io', 'https://gina.up.edu.ph', 'https://punla.up.edu.ph']
 
 # CORS_ALLOW_HEADERS = [
 CORS_ALLOW_HEADERS = list(default_headers) + [

@@ -496,7 +496,7 @@ function buildPopupContent(feature, username) {
     <b>Scientific Name:</b> ${scientific_name}<br>
     <b>Description:</b> ${treeDescription}<br>
     <b>Tree Type:</b> ${treeType}<br>
-    <b>Date Planted:</b> ${plantDateStr}<br>
+    <b>Date ${action}:</b> ${plantDateStr}<br>
     <b>${action} by:</b> ${user}<br>
     ${editedBy ? `<b>Verified by:</b> ${editedBy}<br>` : ""}
     <b>Version:</b> ${versionDisplay}<br>
