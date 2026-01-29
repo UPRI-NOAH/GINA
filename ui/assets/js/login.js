@@ -72,10 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'index.html';
             } else {
                 let errorMessage = 'An unexpected error occurred.';
-                if (data.error) errorMessage = data.error;
-                else if (data.detail) errorMessage = data.detail;
-                else if (data.non_field_errors) errorMessage = data.non_field_errors.join(', ');
-                else errorMessage = JSON.stringify(data);
+
+                // Custom throttle message with retry_after
+                if (data.error) {
+                    errorMessage = data.error;
+                    if (data.retry_after) {
+                        errorMessage += ` Try again in ${data.retry_after} seconds.`;
+                    }
+                } else if (data.detail) {
+                    errorMessage = data.detail;
+                } else if (data.non_field_errors) {
+                    errorMessage = data.non_field_errors.join(', ');
+                } else {
+                    errorMessage = JSON.stringify(data);
+                }
 
                 hideLoading();
                 alert(errorMessage);

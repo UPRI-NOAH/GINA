@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets, mixins
+from api.gina.throttles import FailedLoginThrottle
 from api.gina.models import TreeInfo, TreeType, UserInfo, UserTreeInfo, IdentifyTreeInfo, UserTreeArchive, Notification
 from api.gina.serializer import (TreeInfoSerializer, TreeTypeSerializer, UserInfoSerializer, UserTreeSerializer, 
                                  IdentifyTreeInfoSerializer, UserTreeArchiveInfoSerializer,NotificationSerializer, 
@@ -201,6 +202,16 @@ def pass_tree_notif(request, reference_id):
     )
 
     return Response({"detail": f"{next_expert.user.username} has been notified."}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    # Token.objects.filter(user=request.user).delete()
+    if request.auth:
+        request.auth.delete()
+    return Response({"detail": "Logged out"}, status=200)
+
 
 
 @extend_schema_view(
@@ -419,38 +430,57 @@ class CustomTokenCreateView(TokenCreateView):
     serializer_class = CustomAuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
+        throttle = FailedLoginThrottle()
+
+        # Throttle check first
+        if not throttle.allow_request(request, self):
+            return Response(
+                {"error": "Too many failed login attempts. Try again later."}, 
+                status=429
+            )
+
+        # hCaptcha check
         captcha_token = request.data.get("hcaptcha_token")
         if not captcha_token:
             return Response({"error": "Missing hCaptcha token."}, status=400)
 
-        data = {
-            'secret': settings.HCAPTCHA_SECRET_KEY,
-            'response': captcha_token
+        captcha_data = {
+            "secret": settings.HCAPTCHA_SECRET_KEY,
+            "response": captcha_token,
         }
-        captcha_response = requests.post('https://hcaptcha.com/siteverify', data=data)
+        captcha_response = requests.post("https://hcaptcha.com/siteverify", data=captcha_data)
         captcha_result = captcha_response.json()
 
-        if not captcha_result.get('success'):
+        if not captcha_result.get("success"):
             return Response({"error": "Captcha verification failed."}, status=400)
 
-        # login
+        # Attempt login
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data["user"]
+        except Exception:
+            # Increment failed attempts
+            throttle.increment(request)
+            return Response({"error": "Invalid credentials"}, status=400)
 
-        token, _ = Token.objects.get_or_create(user=user)
+        # Successful login
+        throttle.reset(request)  # reset failed attempt counter
+
+        token = Token.objects.create(user=user)
+        # token, _ = Token.objects.get_or_create(user=user)
 
         try:
-            user_info = UserInfo.objects.get(user=user)
-            user_type = user_info.user_type
+            user_type = UserInfo.objects.get(user=user).user_type
         except UserInfo.DoesNotExist:
             user_type = None
 
         return Response({
-            'auth_token': token.key,
-            'username': user.username,
-            'user_type': user_type,
+            "auth_token": token.key,
+            "username": user.username,
+            "user_type": user_type,
         }, status=200)
+    
     
 
 class RegisterWithCaptchaView(APIView):
